@@ -1,3 +1,14 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
 body {
-  background: var(--tg-theme-secondary-bg-color, white);
+  /* background: var(--tg-theme-secondary-bg-color, white); */
+  background: #fff;
+}
+
+.text-gradient {
+  background: -webkit-linear-gradient(35deg, #E9C7CF 0, #ABD6E0 50%, #BDD2DA 100%);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
 }

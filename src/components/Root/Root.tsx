@@ -20,8 +20,10 @@ import { useTelegramMock } from "@/hooks/useTelegramMock";
 import { useDidMount } from "@/hooks/useDidMount";
 
 import "./styles.css";
+import Navigation from "../Navigation";
 
 function App(props: PropsWithChildren) {
+  const ref = useState<HTMLDivElement | null>(null)[0];
   const lp = useLaunchParams();
   const miniApp = useMiniApp();
   const themeParams = useThemeParams();
@@ -41,10 +43,12 @@ function App(props: PropsWithChildren) {
 
   return (
     <AppRoot
-      appearance={miniApp.isDark ? "dark" : "light"}
+      appearance={/* miniApp.isDark ? "dark" : */ "light"}
       platform={["macos", "ios"].includes(lp.platform) ? "ios" : "base"}
     >
       {props.children}
+
+      <Navigation />
     </AppRoot>
   );
 }
@@ -56,7 +60,7 @@ function RootInner({ children }: PropsWithChildren) {
     useTelegramMock();
   }
 
-  const debug = useLaunchParams().startParam === "debug";
+  const debug = true; //useLaunchParams().startParam === "debug";
   const manifestUrl = useMemo(() => {
     return new URL("tonconnect-manifest.json", window.location.href).toString();
   }, []);
