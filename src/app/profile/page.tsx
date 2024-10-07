@@ -31,7 +31,7 @@ export default function ProfilePage() {
           completedTasks: data.taskCount,   // Используем taskCount из DTO
           totalReputation: data.earnedCount // Используем earnedCount из DTO
         });
-        setAchievementImages(data.achievementListDTO.map(achievement => `https://getquest.tech:8443${achievement.imageUrl}`));
+        setAchievementImages(data.achievementListDTO.map(achievement => `https://getquest.tech:8443/images/${achievement.imageUrl}`));
       } catch (error) {
         console.error("Ошибка при загрузке данных профиля:", error);
       }
