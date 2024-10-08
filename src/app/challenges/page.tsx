@@ -7,6 +7,7 @@ import { useRef } from "react";
 import Messages from "@/assets/messages.png";
 import Arrows from "@/assets/arrows.png";
 import Rewards from "@/assets/rewards.png";
+import Image from "next/image";
 
 const mockChallenges = [
   {
@@ -45,16 +46,18 @@ export default function ChallengesPage() {
       <div className="mt-40 rounded-t-[2rem] bg-white px-5 pt-8 pb-[calc(80px+1rem)]">
         <h1 className="text-black text-2xl font-medium tracking-[-0.05em] mb-6">
           Complete tasks{" "}
-          <img
+          <Image
             className="inline -left-1 -top-1 relative"
             src={Rewards.src}
+            alt="Награды"
             width={32}
             height={32}
           />
           <br />
-          <img
+          <Image
             className="inline -left-1 relative"
             src={Arrows.src}
+            alt="Стрелки"
             width={32}
             height={32}
           />
@@ -62,7 +65,10 @@ export default function ChallengesPage() {
         </h1>
         <div className="flex flex-col gap-3">
           {mockChallenges.map((challenge) => (
-            <div className="flex flex-col border rounded-full border-[#fcf4f4] px-6 py-4">
+            <div
+              key={challenge.label} // Добавлен ключ
+              className="flex flex-col border rounded-full border-[#fcf4f4] px-6 py-4"
+            >
               <div className="flex gap-2">
                 <figure className="size-12 bg-[#F6F6F6] rounded-xl" />
                 <div>
@@ -71,9 +77,10 @@ export default function ChallengesPage() {
                   </div>
                   <div className="text-gradient">
                     {challenge.reputation}{" "}
-                    <img
+                    <Image
                       className="inline relative -top-0.5 -left-1"
                       src={Rewards.src}
+                      alt="Награды"
                       height={18}
                       width={18}
                     />

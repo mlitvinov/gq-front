@@ -4,13 +4,35 @@ import React, { useEffect, useRef, useState } from "react";
 import Slider from "./slider"; // Анимация
 import Arrows from "@/assets/arrows.png";
 import Rewards from "@/assets/rewards.png";
+import Image from "next/image";
 import { useLaunchParams } from "@telegram-apps/sdk-react";
 
+interface Achievement {
+  imageUrl: string;
+  // Добавьте другие поля, если необходимо
+}
+
+interface UserData {
+  id: number;
+  username: string;
+  rating: number;
+  taskCount: number;
+  earnedCount: number;
+  achievementListDTO: Achievement[];
+  completedTasks:number;
+  totalReputation:number;
+
+
+  // Добавьте другие поля, если необходимо
+}
+
 export default function ProfilePage() {
-  const [userData, setUserData] = useState(null);
-  const [achievementImages, setAchievementImages] = useState([]);
-  const [videoUrls, setVideoUrls] = useState([]); // Для хранения списка videoUrl
-  const [videoResources, setVideoResources] = useState([]); // Для хранения загруженных видео
+  const [userData, setUserData] = useState<UserData | null>(null);
+  const [achievementImages, setAchievementImages] = useState<string[]>([]);
+  const [videoUrls, setVideoUrls] = useState<string[]>([]); // Для хранения списка videoUrl
+  const [videoResources, setVideoResources] = useState<
+    { videoUrl: string; fileId: string }[]
+  >([]); // Для хранения загруженных видео
   const initDataRaw = useLaunchParams().initDataRaw;
   const ref = useRef<HTMLDivElement>(null);
 
@@ -18,20 +40,32 @@ export default function ProfilePage() {
     // Загрузка данных профиля
     const fetchProfileData = async () => {
       try {
-        const response = await fetch("https://getquest.tech:8443/api/users/profile", {
-          method: "GET",
-          headers: {
-            "accept": "*/*",
-            "initData": initDataRaw
+        const headers: HeadersInit = {
+          accept: "*/*",
+        };
+
+        if (initDataRaw) {
+          headers["initData"] = initDataRaw;
+        }
+
+        const response = await fetch(
+          "https://getquest.tech:8443/api/users/profile",
+          {
+            method: "GET",
+            headers,
           }
-        });
-        const data = await response.json();
+        );
+        const data: UserData = await response.json();
         setUserData({
           ...data,
-          completedTasks: data.taskCount,   // Используем taskCount из DTO
-          totalReputation: data.earnedCount // Используем earnedCount из DTO
+          completedTasks: data.taskCount, // Используем taskCount из DTO
+          totalReputation: data.earnedCount, // Используем earnedCount из DTO
         });
-        setAchievementImages(data.achievementListDTO.map(achievement => `https://getquest.tech:8443/images/${achievement.imageUrl}`));
+        setAchievementImages(
+          data.achievementListDTO.map((achievement: Achievement) =>
+            `https://getquest.tech:8443/images/${achievement.imageUrl}`
+          )
+        );
       } catch (error) {
         console.error("Ошибка при загрузке данных профиля:", error);
       }
@@ -46,14 +80,22 @@ export default function ProfilePage() {
       if (!userData) return;
 
       try {
-        const response = await fetch(`https://getquest.tech:8443/api/challenges/user/video-urls?userId=${userData.id}`, {
-          method: "GET",
-          headers: {
-            "accept": "*/*",
-            "initData": initDataRaw
+        const headers: HeadersInit = {
+          accept: "*/*",
+        };
+
+        if (initDataRaw) {
+          headers["initData"] = initDataRaw;
+        }
+
+        const response = await fetch(
+          `https://getquest.tech:8443/api/challenges/user/video-urls?userId=${userData.id}`,
+          {
+            method: "GET",
+            headers,
           }
-        });
-        const urls = await response.json();
+        );
+        const urls: string[] = await response.json();
         setVideoUrls(urls); // Сохраняем полученные URL
       } catch (error) {
         console.error("Ошибка при получении видео URL:", error);
@@ -68,31 +110,44 @@ export default function ProfilePage() {
     const fetchVideoResources = async () => {
       if (videoUrls.length === 0) return;
 
-      const resources = await Promise.all(videoUrls.map(async (fileId) => {
-        try {
-          const response = await fetch(`https://getquest.tech:8443/api/videos/download?fileId=${fileId}`, {
-            method: "GET",
-            headers: {
-              "accept": "*/*",
-              "initData": initDataRaw
-            }
-          });
+      const headers: HeadersInit = {
+        accept: "*/*",
+      };
 
-          if (response.ok) {
-            const blob = await response.blob();
-            const videoUrl = window.URL.createObjectURL(blob);
-            return videoUrl; // Возвращаем URL загруженного видео
-          } else {
-            console.error(`Ошибка при загрузке видео ${fileId}:`, response.status);
+      if (initDataRaw) {
+        headers["initData"] = initDataRaw;
+      }
+
+      const resources = await Promise.all(
+        videoUrls.map(async (fileId) => {
+          try {
+            const response = await fetch(
+              `https://getquest.tech:8443/api/videos/download?fileId=${fileId}`,
+              {
+                method: "GET",
+                headers,
+              }
+            );
+
+            if (response.ok) {
+              const blob = await response.blob();
+              const videoUrl = window.URL.createObjectURL(blob);
+              return { videoUrl, fileId }; // Возвращаем объект с videoUrl и fileId
+            } else {
+              console.error(
+                `Ошибка при загрузке видео ${fileId}:`,
+                response.status
+              );
+              return null;
+            }
+          } catch (error) {
+            console.error("Ошибка при загрузке видео:", error);
             return null;
           }
-        } catch (error) {
-          console.error("Ошибка при загрузке видео:", error);
-          return null;
-        }
-      }));
+        })
+      );
 
-      setVideoResources(resources.filter(Boolean)); // Сохраняем только успешные загрузки
+      setVideoResources(resources.filter(Boolean) as { videoUrl: string; fileId: string }[]); // Сохраняем только успешные загрузки
     };
 
     fetchVideoResources();
@@ -105,13 +160,16 @@ export default function ProfilePage() {
   return (
     <main className="relative flex flex-col items-center rounded-t-[2rem] bg-white px-5 pt-8 pb-[calc(80px+1rem)]">
       <section className="flex flex-col justify-center items-center mb-16">
-        <img
+        <Image
           className="relative left-1"
           src={Rewards.src}
+          alt="Награды"
           width={80}
           height={80}
         />
-        <h1 className="text-gradient text-3xl font-black">{userData.rating}</h1>
+        <h1 className="text-gradient text-3xl font-black">
+          {userData.rating}
+        </h1>
         <p className="text-black">@{userData.username}</p>
       </section>
       <section className="flex flex-col gap-3 mb-6">
@@ -119,44 +177,55 @@ export default function ProfilePage() {
       </section>
       <section className="mb-6">
         <h1 className="text-black text-2xl text-left font-medium tracking-[-0.05em] mb-6">
-          Completed <span className="text-gradient font-black">{userData.completedTasks}</span> tasks{" "}
-          <img
+          Completed{" "}
+          <span className="text-gradient font-black">
+            {userData.completedTasks}
+          </span>{" "}
+          tasks{" "}
+          <Image
             className="inline -left-1 top-0 relative"
             src={Rewards.src}
+            alt="Награды"
             width={32}
             height={32}
           />
           <br />
-          <img
+          <Image
             className="inline -left-1 relative"
             src={Arrows.src}
+            alt="Стрелки"
             width={32}
             height={32}
           />
-          earn <span className="text-gradient">{userData.totalReputation}</span> reputation in total
+          earn{" "}
+          <span className="text-gradient">
+            {userData.totalReputation}
+          </span>{" "}
+          reputation in total
         </h1>
       </section>
-      <section className="video-slider flex flex-row gap-3 overflow-hidden"> {/* Добавляем класс для анимации */}
+      <section className="video-slider flex flex-row gap-3 overflow-hidden">
         {videoResources.length > 0 ? (
-          videoResources.map((videoSrc, index) => (
-            <figure key={index}
-                    className="rounded-full overflow-hidden w-64 h-64 bg-[#F6F6F6] flex items-center justify-center">
+          videoResources.map(({ videoUrl, fileId }) => (
+            <figure
+              key={fileId}
+              className="rounded-full overflow-hidden w-64 h-64 bg-[#F6F6F6] flex items-center justify-center"
+            >
               <video
                 autoPlay
                 loop
                 muted
-                className="w-full h-full object-cover rounded-full"  // Видео в форме круга
+                className="w-full h-full object-cover rounded-full"
               >
-                <source src={videoSrc} type="video/mp4" />
-                Your browser does not support the video tag.
+                <source src={videoUrl} type="video/mp4" />
+                Ваш браузер не поддерживает видео.
               </video>
             </figure>
           ))
         ) : (
-          <div>No videos available</div>
+          <div>Видео отсутствуют</div>
         )}
       </section>
     </main>
   );
 }
-

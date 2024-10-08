@@ -7,6 +7,7 @@ import { useEffect, useRef, useState } from "react";
 import Messages from "@/assets/messages.png";
 import Arrows from "@/assets/arrows.png";
 import Rewards from "@/assets/rewards.png";
+import Image from "next/image";
 import { useLaunchParams } from "@telegram-apps/sdk-react";
 
 type User = {
@@ -16,17 +17,6 @@ type User = {
   username: string;
 };
 
-/* const mockFriends: User[] = [
-  {
-    name: "John Doe",
-    reputation: 660,
-  },
-  {
-    name: "Максим Литвинов",
-    reputation: 660,
-  },
-]; */
-
 export default function FriendsPage() {
   const ref = useRef<HTMLDivElement>(null);
   const [friends, setFriends] = useState<User[]>([]);
@@ -34,12 +24,17 @@ export default function FriendsPage() {
 
   useEffect(() => {
     const getFriends = async () => {
+      const headers: HeadersInit = {
+        "Content-Type": "application/json",
+      };
+
+      if (initDataRaw) {
+        headers["initData"] = initDataRaw;
+      }
+
       const res = await fetch("https://getquest.tech:8443/api/users/friends", {
         method: "GET",
-        headers: {
-          "Content-Type": "application/json",
-          initData: initDataRaw,
-        },
+        headers,
       });
       const data = (await res.json()) as User[];
       console.log(data);
@@ -47,7 +42,7 @@ export default function FriendsPage() {
     };
 
     getFriends();
-  }, []);
+  }, [initDataRaw]); // Добавили initDataRaw в зависимости
 
   return (
     <main className="relative flex flex-col ">
@@ -72,16 +67,18 @@ export default function FriendsPage() {
       <div className="mt-40 rounded-t-[2rem] bg-white px-5 pt-8 pb-[calc(80px+1rem)]">
         <h1 className="text-black text-2xl font-medium tracking-[-0.05em] mb-6">
           Пригласите друга{" "}
-          <img
+          <Image
             className="inline -left-1 -top-1 relative"
             src={Messages.src}
+            alt="Сообщения"
             width={32}
             height={32}
           />
           <br />
-          <img
+          <Image
             className="inline -left-1 relative"
             src={Arrows.src}
+            alt="Стрелки"
             width={32}
             height={32}
           />
@@ -97,11 +94,12 @@ export default function FriendsPage() {
                 <div className="text-black font-semibold">{user.username}</div>
                 <div className="text-gradient">
                   {user.rating}{" "}
-                  <img
+                  <Image
                     className="inline relative -top-0.5 -left-1"
                     src={Rewards.src}
-                    height={18}
+                    alt="Награды"
                     width={18}
+                    height={18}
                   />
                 </div>
               </div>
