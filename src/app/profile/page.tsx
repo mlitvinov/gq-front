@@ -215,6 +215,8 @@ export default function ProfilePage() {
                 autoPlay
                 loop
                 muted
+                playsInline
+                controls={false}
                 className="w-full h-full object-cover rounded-full"
               >
                 <source src={videoUrl} type="video/mp4" />
