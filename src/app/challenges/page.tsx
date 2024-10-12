@@ -45,7 +45,7 @@ export default function ChallengesPage() {
       </div>
       <div className="mt-40 rounded-t-[2rem] bg-white px-5 pt-8 pb-[calc(80px+1rem)]">
         <h1 className="text-black text-2xl font-medium tracking-[-0.05em] mb-6">
-          Complete tasks{" "}
+          Выполняй задания{" "}
           <Image
             className="inline -left-1 -top-1 relative"
             src={Rewards.src}
@@ -61,7 +61,7 @@ export default function ChallengesPage() {
             width={32}
             height={32}
           />
-          earn <span className="text-gradient">reputation</span>
+          зарабатывай <span className="text-gradient">репутацию</span>
         </h1>
         <div className="flex flex-col gap-3">
           {mockChallenges.map((challenge) => (
