@@ -19,35 +19,30 @@ interface UserData {
   taskCount: number;
   earnedCount: number;
   achievementListDTO: Achievement[];
-  completedTasks:number;
-  totalReputation:number;
-
-
+  completedTasks: number;
+  totalReputation: number;
   // Добавьте другие поля, если необходимо
 }
 
 export default function ProfilePage() {
   const [userData, setUserData] = useState<UserData | null>(null);
   const [achievementImages, setAchievementImages] = useState<string[]>([]);
-  const [videoUrls, setVideoUrls] = useState<string[]>([]); // Для хранения списка videoUrl
+  const [videoUrls, setVideoUrls] = useState<string[]>([]);
   const [videoResources, setVideoResources] = useState<
     { videoUrl: string; fileId: string }[]
-  >([]); // Для хранения загруженных видео
+  >([]);
   const initDataRaw = useLaunchParams().initDataRaw;
   const ref = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
-    // Загрузка данных профиля
     const fetchProfileData = async () => {
       try {
         const headers: HeadersInit = {
           accept: "*/*",
         };
-
         if (initDataRaw) {
           headers["initData"] = initDataRaw;
         }
-
         const response = await fetch(
           "https://getquest.tech:8443/api/users/profile",
           {
@@ -58,12 +53,13 @@ export default function ProfilePage() {
         const data: UserData = await response.json();
         setUserData({
           ...data,
-          completedTasks: data.taskCount, // Используем taskCount из DTO
-          totalReputation: data.earnedCount, // Используем earnedCount из DTO
+          completedTasks: data.taskCount,
+          totalReputation: data.earnedCount,
         });
         setAchievementImages(
-          data.achievementListDTO.map((achievement: Achievement) =>
-            `https://getquest.tech:8443/images/${achievement.imageUrl}`
+          data.achievementListDTO.map(
+            (achievement: Achievement) =>
+              `https://getquest.tech:8443/images/${achievement.imageUrl}`
           )
         );
       } catch (error) {
@@ -75,7 +71,6 @@ export default function ProfilePage() {
   }, [initDataRaw]);
 
   useEffect(() => {
-    // Загрузка списка videoUrl для пользователя
     const fetchVideoUrls = async () => {
       if (!userData) return;
 
@@ -83,7 +78,6 @@ export default function ProfilePage() {
         const headers: HeadersInit = {
           accept: "*/*",
         };
-
         if (initDataRaw) {
           headers["initData"] = initDataRaw;
         }
@@ -96,7 +90,7 @@ export default function ProfilePage() {
           }
         );
         const urls: string[] = await response.json();
-        setVideoUrls(urls); // Сохраняем полученные URL
+        setVideoUrls(urls);
       } catch (error) {
         console.error("Ошибка при получении видео URL:", error);
       }
@@ -106,14 +100,12 @@ export default function ProfilePage() {
   }, [userData, initDataRaw]);
 
   useEffect(() => {
-    // Загрузка каждого видео по fileId
     const fetchVideoResources = async () => {
       if (videoUrls.length === 0) return;
 
       const headers: HeadersInit = {
         accept: "*/*",
       };
-
       if (initDataRaw) {
         headers["initData"] = initDataRaw;
       }
@@ -132,7 +124,7 @@ export default function ProfilePage() {
             if (response.ok) {
               const blob = await response.blob();
               const videoUrl = window.URL.createObjectURL(blob);
-              return { videoUrl, fileId }; // Возвращаем объект с videoUrl и fileId
+              return { videoUrl, fileId };
             } else {
               console.error(
                 `Ошибка при загрузке видео ${fileId}:`,
@@ -147,7 +139,9 @@ export default function ProfilePage() {
         })
       );
 
-      setVideoResources(resources.filter(Boolean) as { videoUrl: string; fileId: string }[]); // Сохраняем только успешные загрузки
+      setVideoResources(
+        resources.filter(Boolean) as { videoUrl: string; fileId: string }[]
+      );
     };
 
     fetchVideoResources();
@@ -158,7 +152,7 @@ export default function ProfilePage() {
   }
 
   return (
-    <main className="relative flex flex-col items-center rounded-t-[2rem] bg-white px-5 pt-8 pb-[calc(80px+1rem)]">
+    <main className="relative flex flex-col items-center rounded-t-[2rem] bg-white px-5 pt-8 pb-[calc(80px+1rem)] overflow-hidden">
       <section className="flex flex-col justify-center items-center mb-16">
         <Image
           className="relative left-1"
@@ -167,9 +161,7 @@ export default function ProfilePage() {
           width={80}
           height={80}
         />
-        <h1 className="text-gradient text-3xl font-black">
-          {userData.rating}
-        </h1>
+        <h1 className="text-gradient text-3xl font-black">{userData.rating}</h1>
         <p className="text-black">@{userData.username}</p>
       </section>
       <section className="flex flex-col gap-3 mb-6">
@@ -177,11 +169,11 @@ export default function ProfilePage() {
       </section>
       <section className="mb-6">
         <h1 className="text-black text-2xl text-left font-medium tracking-[-0.05em] mb-6">
-          Completed{" "}
+          Выполнено{" "}
           <span className="text-gradient font-black">
             {userData.completedTasks}
           </span>{" "}
-          tasks{" "}
+          заданий{" "}
           <Image
             className="inline -left-1 top-0 relative"
             src={Rewards.src}
@@ -197,11 +189,9 @@ export default function ProfilePage() {
             width={32}
             height={32}
           />
-          earn{" "}
-          <span className="text-gradient">
-            {userData.totalReputation}
-          </span>{" "}
-          reputation in total
+          заработано{" "}
+          <span className="text-gradient">{userData.totalReputation}</span>{" "}
+          репутации
         </h1>
       </section>
       <section className="video-slider flex flex-row gap-3 overflow-hidden">
@@ -228,6 +218,13 @@ export default function ProfilePage() {
           <div>Видео отсутствуют</div>
         )}
       </section>
+      <nav className="fixed-nav fixed bottom-0 left-0 right-0 bg-white z-1000">
+        <ul className="flex justify-around p-2">
+          <li>Друзья</li>
+          <li>Испытания</li>
+          <li>Профиль</li>
+        </ul>
+      </nav>
     </main>
   );
 }
