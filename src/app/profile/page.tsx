@@ -147,6 +147,22 @@ export default function ProfilePage() {
     fetchVideoResources();
   }, [videoUrls, initDataRaw]);
 
+  // Функция для склонения числительных
+  function getDeclension(n: number, one: string, few: string, many: string): string {
+    n = Math.abs(n) % 100;
+    const n1 = n % 10;
+    if (n > 10 && n < 20) {
+      return many;
+    }
+    if (n1 > 1 && n1 < 5) {
+      return few;
+    }
+    if (n1 === 1) {
+      return one;
+    }
+    return many;
+  }
+
   if (!userData) {
     return <div>Загрузка...</div>;
   }
@@ -173,7 +189,7 @@ export default function ProfilePage() {
           <span className="text-gradient font-black">
             {userData.completedTasks}
           </span>{" "}
-          заданий{" "}
+          {getDeclension(userData.completedTasks, "задание", "задания", "заданий")}{" "}
           <Image
             className="inline -left-1 top-0 relative"
             src={Rewards.src}
