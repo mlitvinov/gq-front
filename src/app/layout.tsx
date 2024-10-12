@@ -14,6 +14,18 @@ export const metadata: Metadata = {
   description: "Your application description goes here",
 };
 
+import type { Viewport } from 'next'
+
+export const viewport: Viewport = {
+  width: 'device-width',
+  initialScale: 1,
+  maximumScale: 1,
+  userScalable: false,
+  // Also supported by less commonly used
+  // interactiveWidget: 'resizes-visual',
+}
+
+
 export default function RootLayout({ children }: PropsWithChildren) {
   return (
     <html lang="en">
