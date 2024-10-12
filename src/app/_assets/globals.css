@@ -5,10 +5,19 @@
 body {
   /* background: var(--tg-theme-secondary-bg-color, white); */
   background: #fff;
+  overflow-x: hidden; /* Отключает горизонтальную прокрутку */
+  touch-action: manipulation; /* Отключает нежелательные жесты */
+  overscroll-behavior: none; /* Отключает прокрутку за пределы страницы */
 }
 
 .text-gradient {
   background: -webkit-linear-gradient(35deg, #E9C7CF 0, #ABD6E0 50%, #BDD2DA 100%);
   -webkit-background-clip: text;
   -webkit-text-fill-color: transparent;
+}
+
+@media (max-width: 768px) {
+  html {
+    touch-action: pan-x pan-y; /* Ограничивает взаимодействие только прокруткой по вертикали */
+  }
 }
