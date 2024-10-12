@@ -7,7 +7,6 @@ import { useRef } from "react";
 import Messages from "@/assets/messages.png";
 import Arrows from "@/assets/arrows.png";
 import Rewards from "@/assets/rewards.png";
-import Image from "next/image";
 
 const mockChallenges = [
   {
@@ -46,7 +45,7 @@ export default function ChallengesPage() {
       <div className="mt-40 rounded-t-[2rem] bg-white px-5 pt-8 pb-[calc(80px+1rem)]">
         <h1 className="text-black text-2xl font-medium tracking-[-0.05em] mb-6">
           Выполняй задания{" "}
-          <Image
+          <img
             className="inline -left-1 -top-1 relative"
             src={Rewards.src}
             alt="Награды"
@@ -54,7 +53,7 @@ export default function ChallengesPage() {
             height={32}
           />
           <br />
-          <Image
+          <img
             className="inline -left-1 relative"
             src={Arrows.src}
             alt="Стрелки"
@@ -77,7 +76,7 @@ export default function ChallengesPage() {
                   </div>
                   <div className="text-gradient">
                     {challenge.reputation}{" "}
-                    <Image
+                    <img
                       className="inline relative -top-0.5 -left-1"
                       src={Rewards.src}
                       alt="Награды"

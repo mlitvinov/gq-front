@@ -4,7 +4,6 @@ import React, { useEffect, useRef, useState } from "react";
 import Slider from "./slider"; // Анимация
 import Arrows from "@/assets/arrows.png";
 import Rewards from "@/assets/rewards.png";
-import Image from "next/image";
 import { useLaunchParams } from "@telegram-apps/sdk-react";
 
 interface Achievement {
@@ -170,7 +169,7 @@ export default function ProfilePage() {
   return (
     <main className="relative flex flex-col items-center rounded-t-[2rem] bg-white px-5 pt-8 pb-[calc(80px+1rem)] overflow-hidden">
       <section className="flex flex-col justify-center items-center mb-16">
-        <Image
+        <img
           className="relative left-1"
           src={Rewards.src}
           alt="Награды"
@@ -190,7 +189,7 @@ export default function ProfilePage() {
             {userData.completedTasks}
           </span>{" "}
           {getDeclension(userData.completedTasks, "задание", "задания", "заданий")}{" "}
-          <Image
+          <img
             className="inline -left-1 top-0 relative"
             src={Rewards.src}
             alt="Награды"
@@ -198,7 +197,7 @@ export default function ProfilePage() {
             height={32}
           />
           <br />
-          <Image
+          <img
             className="inline -left-1 relative"
             src={Arrows.src}
             alt="Стрелки"

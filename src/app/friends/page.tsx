@@ -7,7 +7,6 @@ import { useEffect, useRef, useState } from "react";
 import Messages from "@/assets/messages.png";
 import Arrows from "@/assets/arrows.png";
 import Rewards from "@/assets/rewards.png";
-import Image from "next/image";
 import { useLaunchParams } from "@telegram-apps/sdk-react";
 
 type User = {
@@ -67,7 +66,7 @@ export default function FriendsPage() {
       <div className="mt-40 rounded-t-[2rem] bg-white px-5 pt-8 pb-[calc(80px+1rem)]">
         <h1 className="text-black text-2xl font-medium tracking-[-0.05em] mb-6">
           Приглашай друзей{" "}
-          <Image
+          <img
             className="inline -left-1 -top-1 relative"
             src={Messages.src}
             alt="Сообщения"
@@ -75,7 +74,7 @@ export default function FriendsPage() {
             height={32}
           />
           <br />
-          <Image
+          <img
             className="inline -left-1 relative"
             src={Arrows.src}
             alt="Стрелки"
@@ -94,7 +93,7 @@ export default function FriendsPage() {
                 <div className="text-black font-semibold">{user.username}</div>
                 <div className="text-gradient">
                   {user.rating}{" "}
-                  <Image
+                  <img
                     className="inline relative -top-0.5 -left-1"
                     src={Rewards.src}
                     alt="Награды"
