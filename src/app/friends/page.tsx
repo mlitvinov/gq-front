@@ -8,6 +8,7 @@ import Messages from "@/assets/messages.png";
 import Arrows from "@/assets/arrows.png";
 import Rewards from "@/assets/rewards.png";
 import { useLaunchParams } from "@telegram-apps/sdk-react";
+import { DrawerExample } from "./drawer";
 
 type User = {
   friendId: string;
@@ -83,6 +84,7 @@ export default function FriendsPage() {
           />
           зарабатывай <span className="text-gradient">репутацию</span>
         </h1>
+        <DrawerExample />
         <div className="flex flex-col gap-3">
           {friends.map((user) => (
             <div
