@@ -30,6 +30,10 @@ function App(props: PropsWithChildren) {
   const viewport = useViewport();
 
   useEffect(() => {
+    if (viewport?.expand) viewport.expand();
+  }, [viewport])
+
+  useEffect(() => {
     return bindMiniAppCSSVars(miniApp, themeParams);
   }, [miniApp, themeParams]);
 
