@@ -20,6 +20,7 @@ type User = {
 export default function FriendsPage() {
   const ref = useRef<HTMLDivElement>(null);
   const [friends, setFriends] = useState<User[]>([]);
+  const [drawerOpen, setDrawerOpen] = useState(false); // Управление состоянием открытого окна
   const initDataRaw = useLaunchParams().initDataRaw;
 
   useEffect(() => {
@@ -42,7 +43,7 @@ export default function FriendsPage() {
     };
 
     getFriends();
-  }, [initDataRaw]); // Добавили initDataRaw в зависимости
+  }, [initDataRaw]);
 
   return (
     <main className="relative flex flex-col ">
@@ -84,14 +85,13 @@ export default function FriendsPage() {
           />
           зарабатывай <span className="text-gradient">репутацию</span>
         </h1>
-        <DrawerExample />
         <div className="flex flex-col gap-3">
           {friends.map((user) => (
             <div
               key={user.friendId}
               className="flex border rounded-full border-[#F6F6F6] px-6 py-4"
             >
-              <div>
+              <div className="flex-grow">
                 <div className="text-black font-semibold">{user.username}</div>
                 <div className="text-gradient">
                   {user.rating}{" "}
@@ -104,6 +104,11 @@ export default function FriendsPage() {
                   />
                 </div>
               </div>
+              <DrawerExample
+                initDataRaw={initDataRaw}
+                receiverId={user.friendId}
+                onClose={() => setDrawerOpen(false)} // Закрытие окна через родительский компонент
+              />
             </div>
           ))}
         </div>
