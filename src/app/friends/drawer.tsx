@@ -13,14 +13,14 @@ import {
 } from "@/components/ui/drawer";
 
 export function DrawerExample() {
-  const [goal, setGoal] = React.useState(350);
+  const [isOpen, setIsOpen] = React.useState(false);
 
-  function onClick(adjustment: number) {
-    setGoal(Math.max(200, Math.min(400, goal + adjustment)));
+  function handleClick() {
+    setIsOpen(false);
   }
 
   return (
-    <Drawer>
+    <Drawer open={isOpen} onOpenChange={setIsOpen}>
       <DrawerTrigger asChild>
         <Button variant="secondary" className="w-full">
           Open example Drawer
@@ -34,6 +34,13 @@ export function DrawerExample() {
           </DrawerHeader>
           <div className="p-4 pb-0">Hello there!</div>
           <DrawerFooter>
+            <Button
+              onClick={handleClick}
+              variant="secondary"
+              className="w-full"
+            >
+              PROGRAMM FORCE CLOSE
+            </Button>
             <Button variant="secondary" className="w-full">
               Example submit
             </Button>
