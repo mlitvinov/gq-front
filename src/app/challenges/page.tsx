@@ -5,10 +5,9 @@ import Gradient from "./gradient";
 import { useEffect, useRef, useState } from "react";
 import { useLaunchParams } from "@telegram-apps/sdk-react";
 
-import Arrows from "@/assets/arrows.png";
 import Rewards from "@/assets/rewards.png";
 import { ChallengeDrawer } from "@/app/challenges/drawer";
-import { Button } from "@/components/ui/button"; // Подключаем компонент кнопки
+import { Button } from "@/components/ui/button";
 
 type Challenge = {
   id: number;
@@ -19,6 +18,7 @@ type Challenge = {
   status: string;
   senderUserName?: string;
   receiverUserName?: string;
+  videoUrl?: string | null;
 };
 
 const getStatusBars = (status: string) => {
@@ -218,6 +218,7 @@ export default function ChallengesPage() {
           challengeId={selectedChallenge.id}
           initDataRaw={initDataRaw || ""}
           refreshChallenges={fetchChallenges}
+          videoUrl={selectedChallenge.videoUrl}
         />
       )}
     </main>

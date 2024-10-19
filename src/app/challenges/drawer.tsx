@@ -2,11 +2,13 @@ import * as React from "react";
 import { Button } from "@/components/ui/button";
 import {
   Drawer,
-  DrawerClose,
   DrawerContent,
   DrawerFooter,
   DrawerHeader,
+  DrawerTitle,
+  DrawerDescription,
 } from "@/components/ui/drawer";
+import { useLaunchParams } from "@telegram-apps/sdk-react";
 
 type ChallengeDrawerProps = {
   isOpen: boolean;
@@ -21,6 +23,7 @@ type ChallengeDrawerProps = {
   challengeId: number;
   initDataRaw: string;
   refreshChallenges: () => void;
+  videoUrl?: string | null;
 };
 
 export function ChallengeDrawer({
@@ -36,8 +39,55 @@ export function ChallengeDrawer({
                                   challengeId,
                                   initDataRaw,
                                   refreshChallenges,
+                                  videoUrl,
                                 }: ChallengeDrawerProps) {
   const [selectedFile, setSelectedFile] = React.useState<File | null>(null);
+  const [videoResource, setVideoResource] = React.useState<{ videoUrl: string; fileId: string } | null>(null);
+
+  React.useEffect(() => {
+    let isMounted = true;
+    if (videoUrl) {
+      const fetchVideoResource = async () => {
+        try {
+          const headers: HeadersInit = {
+            accept: "*/*",
+          };
+          if (initDataRaw) {
+            headers["initData"] = initDataRaw;
+          }
+
+          const response = await fetch(
+            `https://getquest.tech:8443/api/videos/download?fileId=${videoUrl}`,
+            {
+              method: "GET",
+              headers,
+            }
+          );
+
+          if (response.ok) {
+            const blob = await response.blob();
+            const videoUrlObject = window.URL.createObjectURL(blob);
+            if (isMounted) {
+              setVideoResource({ videoUrl: videoUrlObject, fileId: videoUrl });
+            }
+          } else {
+            console.error(`Ошибка при загрузке видео ${videoUrl}:`, response.status);
+          }
+        } catch (error) {
+          console.error("Ошибка при загрузке видео:", error);
+        }
+      };
+
+      fetchVideoResource();
+    }
+
+    return () => {
+      isMounted = false;
+      if (videoResource && videoResource.videoUrl) {
+        window.URL.revokeObjectURL(videoResource.videoUrl);
+      }
+    };
+  }, [videoUrl, initDataRaw]);
 
   const handleFileChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     if (event.target.files && event.target.files.length > 0) {
@@ -192,7 +242,10 @@ export function ChallengeDrawer({
 
   return (
     <Drawer open={isOpen} onOpenChange={onClose}>
-      <DrawerContent>
+      <DrawerContent
+        aria-describedby="challenge-description"
+        aria-labelledby="challenge-title"
+      >
         <div className="mx-auto w-full max-w-sm">
           <img
             src={`https://getquest.tech:8443/images/${achievementPicsUrl}`}
@@ -200,11 +253,46 @@ export function ChallengeDrawer({
             className="w-full h-48 object-cover rounded-md mb-4"
           />
           <DrawerHeader>
-            <h2 className="text-xl font-bold">{achievementTitle}</h2>
+            <DrawerTitle id="challenge-title" className="text-xl font-bold">
+              {achievementTitle}
+            </DrawerTitle>
             <p className="text-lg text-gradient">{reputation} репутации</p>
             <p className="text-sm text-gray-600">{senderName}</p>
           </DrawerHeader>
-          <p className="mt-4 mb-8 px-4 text-sm">{description}</p>
+          <DrawerDescription id="challenge-description" className="mt-4 mb-8 px-4 text-sm">
+            {description}
+          </DrawerDescription>
+
+          {videoResource && (
+            <div className="flex justify-center mb-4">
+              <figure
+                key={videoResource.fileId}
+                className="rounded-full overflow-hidden w-24 h-24 bg-[#F6F6F6] flex items-center justify-center"
+              >
+                <video
+                  autoPlay
+                  loop
+                  muted
+                  playsInline
+                  controls={false}
+                  className="w-full h-full object-cover rounded-full"
+                  onClick={(e) => {
+                    const video = e.currentTarget;
+                    if (video.requestFullscreen) {
+                      video.requestFullscreen();
+                    } else if ((video as any).webkitEnterFullscreen) {
+                      (video as any).webkitEnterFullscreen();
+                    }
+                    video.play();
+                  }}
+                >
+                  <source src={videoResource.videoUrl} type="video/mp4" />
+                  Ваш браузер не поддерживает видео.
+                </video>
+              </figure>
+            </div>
+          )}
+
           <DrawerFooter className="flex flex-col gap-2 px-4">
             {shouldShowButtons && status === "PENDING" && (
               <>
