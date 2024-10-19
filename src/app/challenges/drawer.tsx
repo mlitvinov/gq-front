@@ -17,6 +17,7 @@ type ChallengeDrawerProps = {
   achievementTitle: string;
   reputation: number;
   senderName: string;
+  senderUsername: string; // Новое свойство
   description: string;
   status: string;
   isSent: boolean;
@@ -33,6 +34,7 @@ export function ChallengeDrawer({
                                   achievementTitle,
                                   reputation,
                                   senderName,
+                                  senderUsername, // Добавлено
                                   description,
                                   status,
                                   isSent,
@@ -257,7 +259,15 @@ export function ChallengeDrawer({
               {achievementTitle}
             </DrawerTitle>
             <p className="text-lg text-gradient">{reputation} репутации</p>
-            <p className="text-sm text-gray-600">{senderName}</p>
+            <p className="text-sm text-gray-600">
+              Отправитель:{" "}
+              <a
+                href={`/profile/${senderUsername}`}
+                className="text-blue-500 underline"
+              >
+                {senderName}
+              </a>
+            </p>
           </DrawerHeader>
           <DrawerDescription id="challenge-description" className="mt-4 mb-8 px-4 text-sm">
             {description}

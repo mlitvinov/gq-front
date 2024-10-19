@@ -135,13 +135,17 @@ export default function ChallengesPage() {
       <div className="mt-40 rounded-t-[2rem] bg-white px-5 pt-8 pb-[calc(80px+1rem)]">
         <div className="flex justify-around mb-4">
           <button
-            className={`px-4 py-2 ${currentTab === "assigned" ? "border-b-2 border-black" : ""}`}
+            className={`px-4 py-2 ${
+              currentTab === "assigned" ? "border-b-2 border-black" : ""
+            }`}
             onClick={() => setCurrentTab("assigned")}
           >
             Назначенные
           </button>
           <button
-            className={`px-4 py-2 ${currentTab === "sent" ? "border-b-2 border-black" : ""}`}
+            className={`px-4 py-2 ${
+              currentTab === "sent" ? "border-b-2 border-black" : ""
+            }`}
             onClick={() => setCurrentTab("sent")}
           >
             Отправленные
@@ -163,8 +167,13 @@ export default function ChallengesPage() {
                     alt={challenge.achievementTitle}
                     className="size-12 bg-[#F6F6F6] rounded-xl"
                   />
-                  <div className="flex-grow" onClick={() => setSelectedChallenge(challenge)}>
-                    <div className="text-black font-semibold">{challenge.achievementTitle}</div>
+                  <div
+                    className="flex-grow"
+                    onClick={() => setSelectedChallenge(challenge)}
+                  >
+                    <div className="text-black font-semibold">
+                      {challenge.achievementTitle}
+                    </div>
                     <div className="text-gradient">
                       {challenge.price}{" "}
                       <img
@@ -212,6 +221,11 @@ export default function ChallengesPage() {
               ? `@${selectedChallenge.senderUserName}`
               : `@${selectedChallenge.receiverUserName}`
           }
+          senderUsername={
+            currentTab === "assigned"
+              ? selectedChallenge.senderUserName || ""
+              : selectedChallenge.receiverUserName || ""
+          } // Передаем senderUsername
           description={selectedChallenge.description}
           status={selectedChallenge.status}
           isSent={currentTab === "sent"}
