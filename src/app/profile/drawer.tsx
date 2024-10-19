@@ -7,6 +7,7 @@ import {
   DrawerDescription,
 } from "@/components/ui/drawer";
 import Rewards from "@/assets/rewards.png";
+import { Link } from "@/components/Link/Link";
 
 type Achievement = {
   userAchievement: number;
@@ -160,9 +161,9 @@ export function AchievementDrawer({
               >
                 {challengeData.description}
                 <br />
-                <span className="text-sm text-gray-600">
-                  Отправитель: @{challengeData.sender}
-                </span>
+                <p className="text-sm text-gray-600">
+                  Отправитель: <Link href={`/profile/${challengeData.sender.replace("@", "")}`} className="text-sm text-gray-600">{challengeData.sender}</Link>
+                </p>
               </DrawerDescription>
             </>
           )}
