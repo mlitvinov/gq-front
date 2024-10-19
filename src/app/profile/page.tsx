@@ -1,26 +1,35 @@
 "use client";
 
 import React, { useEffect, useRef, useState } from "react";
-import Slider from "./slider"; // Анимация
+import Slider from "./slider"; // Компонент анимации для движения достижений
 import Arrows from "@/assets/arrows.png";
 import Rewards from "@/assets/rewards.png";
 import { useLaunchParams } from "@telegram-apps/sdk-react";
+import { AchievementDrawer } from "@/app/profile/drawer";
+
 
 interface Achievement {
+  userAchievement: number;
+  name: string;
   imageUrl: string;
-  // Добавьте другие поля, если необходимо
+}
+
+interface ChallengeData {
+  id: number;
+  description: string;
+  videoUrl: string | null;
+  price: number;
+  sender: string;
 }
 
 interface UserData {
   id: number;
   username: string;
+  name: string;
   rating: number;
+  achievementListDTO: Achievement[];
   taskCount: number;
   earnedCount: number;
-  achievementListDTO: Achievement[];
-  completedTasks: number;
-  totalReputation: number;
-  // Добавьте другие поля, если необходимо
 }
 
 export default function ProfilePage() {
@@ -30,6 +39,9 @@ export default function ProfilePage() {
   const [videoResources, setVideoResources] = useState<
     { videoUrl: string; fileId: string }[]
   >([]);
+  const [selectedAchievement, setSelectedAchievement] =
+    useState<Achievement | null>(null);
+  const [challengeData, setChallengeData] = useState<ChallengeData | null>(null);
   const initDataRaw = useLaunchParams().initDataRaw;
   const ref = useRef<HTMLDivElement>(null);
 
@@ -50,11 +62,7 @@ export default function ProfilePage() {
           }
         );
         const data: UserData = await response.json();
-        setUserData({
-          ...data,
-          completedTasks: data.taskCount,
-          totalReputation: data.earnedCount,
-        });
+        setUserData(data);
         setAchievementImages(
           data.achievementListDTO.map(
             (achievement: Achievement) =>
@@ -69,6 +77,7 @@ export default function ProfilePage() {
     fetchProfileData();
   }, [initDataRaw]);
 
+  // Возвращаем функцию fetchVideoUrls для загрузки прошлых видео
   useEffect(() => {
     const fetchVideoUrls = async () => {
       if (!userData) return;
@@ -98,6 +107,7 @@ export default function ProfilePage() {
     fetchVideoUrls();
   }, [userData, initDataRaw]);
 
+  // Возвращаем функцию fetchVideoResources для загрузки видео
   useEffect(() => {
     const fetchVideoResources = async () => {
       if (videoUrls.length === 0) return;
@@ -146,8 +156,53 @@ export default function ProfilePage() {
     fetchVideoResources();
   }, [videoUrls, initDataRaw]);
 
+  // Обработчик клика по достижению
+  const handleAchievementClick = async (index: number) => {
+    const achievement = userData?.achievementListDTO[index];
+    if (!achievement) return;
+
+    setSelectedAchievement(achievement);
+
+    // Получение данных задания по userAchievement
+    try {
+      const headers: HeadersInit = {
+        accept: "*/*",
+      };
+      if (initDataRaw) {
+        headers["initData"] = initDataRaw;
+      }
+
+      const response = await fetch(
+        `https://getquest.tech:8443/api/challenges/achievement/${achievement.userAchievement}`,
+        {
+          method: "GET",
+          headers,
+        }
+      );
+
+      if (response.ok) {
+        const data: ChallengeData[] = await response.json();
+        if (data.length > 0) {
+          setChallengeData(data[0]);
+        }
+      } else {
+        console.error(
+          `Ошибка при получении данных задания ${achievement.userAchievement}:`,
+          response.status
+        );
+      }
+    } catch (error) {
+      console.error("Ошибка при получении данных задания:", error);
+    }
+  };
+
   // Функция для склонения числительных
-  function getDeclension(n: number, one: string, few: string, many: string): string {
+  function getDeclension(
+    n: number,
+    one: string,
+    few: string,
+    many: string
+  ): string {
     n = Math.abs(n) % 100;
     const n1 = n % 10;
     if (n > 10 && n < 20) {
@@ -180,15 +235,24 @@ export default function ProfilePage() {
         <p className="text-black">@{userData.username}</p>
       </section>
       <section className="flex flex-col gap-3 mb-6">
-        <Slider elements={achievementImages} />
+        {/* Используем обновленный компонент Slider */}
+        <Slider
+          elements={achievementImages}
+          onElementClick={handleAchievementClick}
+        />
       </section>
       <section className="mb-6">
         <h1 className="text-black text-2xl text-left font-medium tracking-[-0.05em] mb-6">
           Выполнено{" "}
           <span className="text-gradient font-black">
-            {userData.completedTasks}
+            {userData.taskCount}
           </span>{" "}
-          {getDeclension(userData.completedTasks, "задание", "задания", "заданий")}{" "}
+          {getDeclension(
+            userData.taskCount,
+            "задание",
+            "задания",
+            "заданий"
+          )}{" "}
           <img
             className="inline -left-1 top-0 relative"
             src={Rewards.src}
@@ -205,11 +269,12 @@ export default function ProfilePage() {
             height={32}
           />
           заработано{" "}
-          <span className="text-gradient">{userData.totalReputation}</span>{" "}
+          <span className="text-gradient">{userData.earnedCount}</span>{" "}
           репутации
         </h1>
       </section>
-      <section className="video-slider flex flex-row gap-3 overflow-hidden">
+      {/* Возвращаем отображение прошлых видео */}
+      <section className="video-slider flex flex-row gap-3 overflow-x-auto">
         {videoResources.length > 0 ? (
           videoResources.map(({ videoUrl, fileId }) => (
             <figure
@@ -223,9 +288,18 @@ export default function ProfilePage() {
                 playsInline
                 controls={false}
                 className="w-full h-full object-cover rounded-full"
+                onClick={(e) => {
+                  const video = e.currentTarget;
+                  if (video.requestFullscreen) {
+                    video.requestFullscreen();
+                  } else if ((video as any).webkitEnterFullscreen) {
+                    (video as any).webkitEnterFullscreen();
+                  }
+                  video.play();
+                }}
               >
                 <source src={videoUrl} type="video/mp4" />
-                Ваш браузер не поддерживает видео.
+                 Ваш браузер не поддерживает видео.
               </video>
             </figure>
           ))
@@ -240,6 +314,19 @@ export default function ProfilePage() {
           <li>Профиль</li>
         </ul>
       </nav>
+
+      {selectedAchievement && (
+        <AchievementDrawer
+          isOpen={!!selectedAchievement}
+          onClose={() => {
+            setSelectedAchievement(null);
+            setChallengeData(null);
+          }}
+          achievement={selectedAchievement}
+          challengeData={challengeData}
+          initDataRaw={initDataRaw || ""}
+        />
+      )}
     </main>
   );
 }
