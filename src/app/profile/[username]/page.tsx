@@ -26,14 +26,14 @@ interface UserData {
   id: number;
   username: string;
   name: string;
+  friendStatus: "FRIEND" | "REQUESTED" | "NOT_FRIEND" | "WAITING";
   rating: number;
   achievementListDTO: Achievement[];
   taskCount: number;
   earnedCount: number;
 }
 
-export default function ProfilePage({params}:{params:{username:string}}) {
-
+export default function ProfilePage({ params }: { params: { username: string } }) {
   const [userData, setUserData] = useState<UserData | null>(null);
   const [achievementImages, setAchievementImages] = useState<string[]>([]);
   const [videoUrls, setVideoUrls] = useState<string[]>([]);
@@ -78,7 +78,6 @@ export default function ProfilePage({params}:{params:{username:string}}) {
     fetchProfileData();
   }, [initDataRaw]);
 
-  // Возвращаем функцию fetchVideoUrls для загрузки прошлых видео
   useEffect(() => {
     const fetchVideoUrls = async () => {
       if (!userData) return;
@@ -108,7 +107,6 @@ export default function ProfilePage({params}:{params:{username:string}}) {
     fetchVideoUrls();
   }, [userData, initDataRaw]);
 
-  // Возвращаем функцию fetchVideoResources для загрузки видео
   useEffect(() => {
     const fetchVideoResources = async () => {
       if (videoUrls.length === 0) return;
@@ -157,14 +155,12 @@ export default function ProfilePage({params}:{params:{username:string}}) {
     fetchVideoResources();
   }, [videoUrls, initDataRaw]);
 
-  // Обработчик клика по достижению
   const handleAchievementClick = async (index: number) => {
     const achievement = userData?.achievementListDTO[index];
     if (!achievement) return;
 
     setSelectedAchievement(achievement);
 
-    // Получение данных задания по userAchievement
     try {
       const headers: HeadersInit = {
         accept: "*/*",
@@ -197,6 +193,79 @@ export default function ProfilePage({params}:{params:{username:string}}) {
     }
   };
 
+  const handleAddFriend = async () => {
+    if (!userData) return;
+
+    try {
+      const headers: HeadersInit = {
+        "Content-Type": "application/json",
+        accept: "*/*",
+      };
+      if (initDataRaw) {
+        headers["initData"] = initDataRaw;
+      }
+      const response = await fetch(
+        `https://getquest.tech:8443/friends/request?receiverId=${userData.id}`,
+        {
+          method: "POST",
+          headers,
+        }
+      );
+      if (response.ok) {
+        // Обновляем статус дружбы на "REQUESTED"
+        setUserData((prevData) =>
+          prevData ? { ...prevData, friendStatus: "REQUESTED" } : prevData
+        );
+      } else {
+        console.error(
+          "Ошибка при отправке запроса в друзья:",
+          response.status
+        );
+      }
+    } catch (error) {
+      console.error("Ошибка при отправке запроса в друзья:", error);
+    }
+  };
+
+  const handleAcceptFriendRequest = async () => {
+    if (!userData) {
+      console.error("Данные пользователя отсутствуют.");
+      return;
+    }
+
+    try {
+      const headers: HeadersInit = {
+        "Content-Type": "application/json",
+        accept: "*/*",
+      };
+      if (initDataRaw) {
+        headers["initData"] = initDataRaw;
+      }
+      const response = await fetch(
+        `https://getquest.tech:8443/friends/accept/${userData.username}`,
+        {
+          method: "POST",
+          headers,
+        }
+      );
+      if (response.ok) {
+        // Обновляем статус дружбы на "FRIEND"
+        setUserData((prevData) =>
+          prevData
+            ? { ...prevData, friendStatus: "FRIEND" }
+            : prevData
+        );
+      } else {
+        console.error(
+          "Ошибка при принятии запроса в друзья:",
+          response.status
+        );
+      }
+    } catch (error) {
+      console.error("Ошибка при принятии запроса в друзья:", error);
+    }
+  };
+
   // Функция для склонения числительных
   function getDeclension(
     n: number,
@@ -224,19 +293,53 @@ export default function ProfilePage({params}:{params:{username:string}}) {
 
   return (
     <main className="relative flex flex-col items-center rounded-t-[2rem] bg-white px-5 pt-8 pb-[calc(80px+1rem)] overflow-hidden">
-      <section className="flex flex-col justify-center items-center mb-16">
-        <img
-          className="relative left-1"
-          src={Rewards.src}
-          alt="Награды"
-          width={80}
-          height={80}
-        />
-        <h1 className="text-gradient text-3xl font-black">{userData.rating}</h1>
-        <p className="text-black">@{userData.username}</p>
+      {/* Секция с информацией о пользователе и кнопкой добавления в друзья */}
+      <section className="flex flex-row justify-between items-center w-full mb-16">
+        {/* Информация о пользователе */}
+        <div className="flex flex-col justify-center items-center">
+          <img
+            className="relative left-1"
+            src={Rewards.src}
+            alt="Награды"
+            width={80}
+            height={80}
+          />
+          <h1 className="text-gradient text-3xl font-black">{userData.rating}</h1>
+          <p className="text-black">@{userData.username}</p>
+        </div>
+        {/* Кнопка добавления в друзья */}
+        <div>
+          {userData.friendStatus === "FRIEND" && (
+            <button className="bg-gray-200 text-gray-600 rounded-full px-4 py-2">
+              Друзья
+            </button>
+          )}
+          {userData.friendStatus === "REQUESTED" && (
+            <button className="bg-gray-200 text-gray-600 rounded-full px-4 py-2">
+              Запрошено
+            </button>
+          )}
+          {userData.friendStatus === "WAITING" && (
+            <button
+              onClick={handleAcceptFriendRequest}
+              className="bg-gradient-to-r from-blue-500 to-green-500 text-white rounded-full px-4 py-2"
+            >
+              Принять
+            </button>
+          )}
+          {userData.friendStatus === "NOT_FRIEND" && (
+            <button
+              onClick={handleAddFriend}
+              className="bg-gradient-to-r from-blue-500 to-green-500 text-white rounded-full px-4 py-2"
+            >
+              Добавить в друзья
+            </button>
+          )}
+        </div>
       </section>
+
       <section className="flex flex-col gap-3 mb-6">
-        {/* Используем обновленный компонент Slider */}
+        {/* Компонент Slider для достижений */}
         <Slider
           elements={achievementImages}
           onElementClick={handleAchievementClick}
@@ -274,7 +377,7 @@ export default function ProfilePage({params}:{params:{username:string}}) {
           репутации
         </h1>
       </section>
-      {/* Возвращаем отображение прошлых видео */}
+      {/* Отображение прошлых видео */}
       <section className="video-slider flex flex-row gap-3 overflow-x-auto">
         {videoResources.length > 0 ? (
           videoResources.map(({ videoUrl, fileId }) => (
