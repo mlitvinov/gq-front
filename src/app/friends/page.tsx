@@ -9,6 +9,9 @@ import Arrows from "@/assets/arrows.png";
 import Rewards from "@/assets/rewards.png";
 import { useLaunchParams } from "@telegram-apps/sdk-react";
 import { DrawerExample } from "./drawer";
+import { Link } from "@/components/Link/Link";
+import * as React from "react";
+
 
 type User = {
   friendId: string;
@@ -193,7 +196,7 @@ export default function FriendsPage() {
                 className="flex border rounded-full border-[#F6F6F6] px-6 py-4"
               >
                 <div className="flex-grow">
-                  <div className="text-black font-semibold">{user.username}</div>
+                  <Link href={`/profile/${user.username.replace("@", "")}`}>{user.username}</Link>
                   <div className="text-gradient">
                     {user.rating}{" "}
                     <img
@@ -224,7 +227,7 @@ export default function FriendsPage() {
               >
                 <div className="flex-grow">
                   <div className="text-black font-semibold">
-                    {request.senderName}
+                    <Link href={`/profile/${request.senderName.replace("@", "")}`}>{request.senderName.replace("@", "")}</Link>
                   </div>
                 </div>
                 <div className="flex items-center gap-2">
