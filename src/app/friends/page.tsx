@@ -182,7 +182,7 @@ export default function FriendsPage() {
         {/* Контент в зависимости от выбранного таба */}
         {activeTab === "friends" && (
           <div className="flex flex-col gap-3">
-            {/*   {friends.map((user) => (
+            {friends.map((user) => (
               <div
                 key={user.friendId}
                 className="flex border rounded-full border-[#F6F6F6] px-6 py-4"
@@ -208,7 +208,7 @@ export default function FriendsPage() {
                   onClose={() => setDrawerOpen(false)}
                 />
               </div>
-            ))} */}
+            ))}
           </div>
         )}
 
