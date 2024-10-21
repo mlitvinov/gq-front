@@ -1,6 +1,6 @@
 "use client";
 
-import { type PropsWithChildren, useEffect, useMemo, useState } from "react";
+import { type PropsWithChildren, useEffect, useMemo } from "react";
 import {
   SDKProvider,
   useLaunchParams,
@@ -23,7 +23,6 @@ import "./styles.css";
 import Navigation from "../Navigation";
 
 function App(props: PropsWithChildren) {
-  const ref = useState<HTMLDivElement | null>(null)[0];
   const lp = useLaunchParams();
   const miniApp = useMiniApp();
   const themeParams = useThemeParams();
@@ -31,7 +30,7 @@ function App(props: PropsWithChildren) {
 
   useEffect(() => {
     if (viewport?.expand) viewport.expand();
-  }, [viewport])
+  }, [viewport]);
 
   useEffect(() => {
     return bindMiniAppCSSVars(miniApp, themeParams);
@@ -47,12 +46,14 @@ function App(props: PropsWithChildren) {
 
   return (
     <AppRoot
+      className="overflow-x-hidden overflow-y-hidden h-screen select-none p-0"
       appearance={/* miniApp.isDark ? "dark" : */ "light"}
       platform={["macos", "ios"].includes(lp.platform) ? "ios" : "base"}
     >
-      {props.children}
-
-      <Navigation />
+      <main className="h-full overflow-y-auto pb-[80px]">
+        {props.children}
+        <Navigation />
+      </main>
     </AppRoot>
   );
 }
@@ -95,6 +96,6 @@ export function Root(props: PropsWithChildren) {
       <RootInner {...props} />
     </ErrorBoundary>
   ) : (
-    <div className="root__loading">Loading</div>
+    <div className="root__loading" />
   );
 }

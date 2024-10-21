@@ -5,9 +5,15 @@
 body {
   /* background: var(--tg-theme-secondary-bg-color, white); */
   background: #fff;
-  overflow-x: hidden; /* Отключает горизонтальную прокрутку */
+  overflow: hidden; /* Отключает горизонтальную прокрутку */
   touch-action: manipulation; /* Отключает нежелательные жесты */
   overscroll-behavior: none; /* Отключает прокрутку за пределы страницы */
+  height: 100vh;
+  margin: 0;
+}
+
+#root {
+  text-rendering: optimizeSpeed;
 }
 
 .text-gradient {

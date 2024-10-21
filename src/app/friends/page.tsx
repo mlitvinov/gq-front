@@ -1,17 +1,12 @@
 "use client";
 
-import Scene from "@/components/canvas/scene";
-import Gradient from "./gradient";
 import { useEffect, useRef, useState } from "react";
 
 import Messages from "@/assets/messages.png";
 import Arrows from "@/assets/arrows.png";
-import Rewards from "@/assets/rewards.png";
+// import Rewards from "@/assets/rewards.png";
 import { useLaunchParams } from "@telegram-apps/sdk-react";
-import { DrawerExample } from "./drawer";
 import { Link } from "@/components/Link/Link";
-import * as React from "react";
-
 
 type User = {
   friendId: string;
@@ -128,19 +123,14 @@ export default function FriendsPage() {
         ref={ref}
         className="bg-white h-48 overflow-hidden absolute inset-x-0 top-0 -z-10"
       >
-        <Scene
-          style={{
-            position: "absolute",
-            top: 0,
-            left: 0,
-            width: "100vw",
-            height: "100%",
-            pointerEvents: "none",
-          }}
-          eventSource={ref}
-          eventPrefix="client"
+        <video
+          loop
+          autoPlay
+          muted
+          preload="metadata"
+          src="/gradient.webm"
+          className="size-full pointer-events-none object-cover"
         />
-        <Gradient />
       </div>
       <div className="mt-40 rounded-t-[2rem] bg-white px-5 pt-8 pb-[calc(80px+1rem)]">
         <h1 className="text-black text-2xl font-medium tracking-[-0.05em] mb-6">
@@ -190,13 +180,15 @@ export default function FriendsPage() {
         {/* Контент в зависимости от выбранного таба */}
         {activeTab === "friends" && (
           <div className="flex flex-col gap-3">
-            {friends.map((user) => (
+            {/*   {friends.map((user) => (
               <div
                 key={user.friendId}
                 className="flex border rounded-full border-[#F6F6F6] px-6 py-4"
               >
                 <div className="flex-grow">
-                  <Link href={`/profile/${user.username.replace("@", "")}`}>{user.username}</Link>
+                  <Link href={`/profile/${user.username.replace("@", "")}`}>
+                    {user.username}
+                  </Link>
                   <div className="text-gradient">
                     {user.rating}{" "}
                     <img
@@ -214,7 +206,7 @@ export default function FriendsPage() {
                   onClose={() => setDrawerOpen(false)}
                 />
               </div>
-            ))}
+            ))} */}
           </div>
         )}
 
@@ -227,7 +219,11 @@ export default function FriendsPage() {
               >
                 <div className="flex-grow">
                   <div className="text-black font-semibold">
-                    <Link href={`/profile/${request.senderName.replace("@", "")}`}>{request.senderName.replace("@", "")}</Link>
+                    <Link
+                      href={`/profile/${request.senderName.replace("@", "")}`}
+                    >
+                      {request.senderName.replace("@", "")}
+                    </Link>
                   </div>
                 </div>
                 <div className="flex items-center gap-2">
