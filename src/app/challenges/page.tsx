@@ -126,6 +126,8 @@ export default function ChallengesPage() {
           loop
           autoPlay
           muted
+          playsInline
+          controls={false}
           preload="metadata"
           src="/gradient.webm"
           className="size-full pointer-events-none object-cover"
