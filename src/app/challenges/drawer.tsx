@@ -306,7 +306,7 @@ export function ChallengeDrawer({
                 </Button>
               </>
             )}
-            {status === "ACCEPTED" && (
+            {status === "ACCEPTED" && !isSent && (
               <>
                 <input
                   type="file"
