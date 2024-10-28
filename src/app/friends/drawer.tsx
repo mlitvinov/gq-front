@@ -138,7 +138,7 @@ export function DrawerExample({ initDataRaw, receiverId, onClose }: DrawerExampl
             )}
 
             <div className="mb-4">
-              <label className="block text-sm font-medium text-gray-700 mb-2">Введите число</label>
+              <label className="block text-sm font-medium text-gray-700 mb-2">Стоимость задания</label>
               <input
                 type="text"
                 value={numericValue}
