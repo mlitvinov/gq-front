@@ -1,12 +1,13 @@
 "use client";
 
-import { useEffect, useRef, useState } from "react";
+import React, { useEffect, useRef, useState } from "react";
 
 import Messages from "@/assets/messages.png";
 import Arrows from "@/assets/arrows.png";
-// import Rewards from "@/assets/rewards.png";
+import Rewards from "@/assets/rewards.png";
 import { useLaunchParams } from "@telegram-apps/sdk-react";
 import { Link } from "@/components/Link/Link";
+import { DrawerExample } from "@/app/friends/drawer";
 
 type User = {
   friendId: string;
