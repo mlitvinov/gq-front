@@ -50,7 +50,7 @@ function App(props: PropsWithChildren) {
       appearance={/* miniApp.isDark ? "dark" : */ "light"}
       platform={["macos", "ios"].includes(lp.platform) ? "ios" : "base"}
     >
-      <main className="h-full overflow-y-auto pb-[80px]">
+      <main className="h-full overflow-y-auto pb-[--nav-height]">
         {props.children}
         <Navigation />
       </main>

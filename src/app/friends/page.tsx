@@ -7,7 +7,10 @@ import Arrows from "@/assets/arrows.png";
 import Rewards from "@/assets/rewards.png";
 import { useLaunchParams } from "@telegram-apps/sdk-react";
 import { Link } from "@/components/Link/Link";
-import { DrawerExample } from "@/app/friends/drawer";
+import { cn } from "@/lib/utils";
+import { SubmitQuestDrawer } from "./drawer";
+import { PlusIcon, XMarkIcon } from "@heroicons/react/16/solid";
+import { Button } from "@/components/ui/button";
 
 type User = {
   friendId: string;
@@ -27,62 +30,79 @@ type FriendRequest = {
 };
 
 export default function FriendsPage() {
-  const ref = useRef<HTMLDivElement>(null);
+  const initDataRaw = useLaunchParams().initDataRaw;
+
   const [friends, setFriends] = useState<User[]>([]);
   const [requests, setRequests] = useState<FriendRequest[]>([]);
   const [activeTab, setActiveTab] = useState<"friends" | "requests">("friends");
-  const [drawerOpen, setDrawerOpen] = useState(false); // Управление состоянием открытого окна
-  const initDataRaw = useLaunchParams().initDataRaw;
 
-  useEffect(() => {
+  const ref = useRef<HTMLDivElement>(null);
+
+  const getFriends = async () => {
+    if (!initDataRaw) return;
+
     const headers: HeadersInit = {
       "Content-Type": "application/json",
+      initData: initDataRaw,
     };
 
-    if (initDataRaw) {
-      headers["initData"] = initDataRaw;
+    const res = await fetch("https://getquest.tech:8443/api/users/friends", {
+      method: "GET",
+      headers,
+    });
+
+    if (!res.ok) {
+      console.error("Ошибка при загрузке друзей");
+      return;
     }
 
-    if (activeTab === "friends") {
-      const getFriends = async () => {
-        const res = await fetch(
-          "https://getquest.tech:8443/api/users/friends",
-          {
-            method: "GET",
-            headers,
-          }
-        );
-        const data = (await res.json()) as User[];
-        console.log(data);
-        setFriends(data);
-      };
+    const data = (await res.json()) as User[];
 
+    setFriends(data);
+  };
+
+  const getRequests = async () => {
+    if (!initDataRaw) return;
+
+    const headers: HeadersInit = {
+      "Content-Type": "application/json",
+      initData: initDataRaw,
+    };
+
+    const res = await fetch(
+      "https://getquest.tech:8443/friends/requests/incoming",
+      {
+        method: "GET",
+        headers,
+      }
+    );
+
+    if (!res.ok) {
+      console.error("Ошибка при загрузке запроса");
+      return;
+    }
+
+    const data = (await res.json()) as FriendRequest[];
+
+    setRequests(data);
+  };
+
+  useEffect(() => {
+    if (activeTab === "friends") {
       getFriends();
     } else if (activeTab === "requests") {
-      const getRequests = async () => {
-        const res = await fetch(
-          "https://getquest.tech:8443/friends/requests/incoming",
-          {
-            method: "GET",
-            headers,
-          }
-        );
-        const data = (await res.json()) as FriendRequest[];
-        console.log(data);
-        setRequests(data);
-      };
-
       getRequests();
     }
   }, [initDataRaw, activeTab]);
 
   const handleAccept = async (requestId: number) => {
+    if (!initDataRaw) return;
+
     const headers: HeadersInit = {
       "Content-Type": "application/json",
+      initData: initDataRaw,
     };
-    if (initDataRaw) {
-      headers["initData"] = initDataRaw;
-    }
+
     const res = await fetch(
       `https://getquest.tech:8443/friends/accept?requestId=${requestId}`,
       {
@@ -90,20 +110,23 @@ export default function FriendsPage() {
         headers,
       }
     );
-    if (res.ok) {
-      setRequests((prev) => prev.filter((req) => req.id !== requestId));
-    } else {
-      // Обработка ошибок
+
+    if (!res.ok) {
+      console.error("Ошибка при загрузке друзей");
+      return;
     }
+
+    setRequests((prev) => prev.filter((req) => req.id !== requestId));
   };
 
   const handleDecline = async (requestId: number) => {
+    if (!initDataRaw) return;
+
     const headers: HeadersInit = {
       "Content-Type": "application/json",
+      initData: initDataRaw,
     };
-    if (initDataRaw) {
-      headers["initData"] = initDataRaw;
-    }
+
     const res = await fetch(
       `https://getquest.tech:8443/friends/decline?requestId=${requestId}`,
       {
@@ -111,11 +134,13 @@ export default function FriendsPage() {
         headers,
       }
     );
-    if (res.ok) {
-      setRequests((prev) => prev.filter((req) => req.id !== requestId));
-    } else {
-      // Обработка ошибок
+
+    if (!res.ok) {
+      console.error("Ошибка при загрузке друзей");
+      return;
     }
+
+    setRequests((prev) => prev.filter((req) => req.id !== requestId));
   };
 
   return (
@@ -135,7 +160,7 @@ export default function FriendsPage() {
           className="size-full pointer-events-none object-cover"
         />
       </div>
-      <div className="mt-40 rounded-t-[2rem] bg-white px-5 pt-8 pb-[calc(80px+1rem)]">
+      <div className="mt-40 rounded-t-[2rem] bg-white px-5 pt-8 pb-[calc(var(--nav-height)+1rem)]">
         <h1 className="text-black text-2xl font-medium tracking-[-0.05em] mb-6">
           Приглашай друзей{" "}
           <img
@@ -160,21 +185,19 @@ export default function FriendsPage() {
         <div className="flex mb-6">
           <button
             onClick={() => setActiveTab("friends")}
-            className={`flex-grow text-center py-2 ${
-              activeTab === "friends"
-                ? "border-b-2 border-black font-semibold"
-                : "text-gray-500"
-            }`}
+            className={cn(
+              "flex-grow text-[#B1B1B1] relative after:content after:bottom-0 after:h-[2px] after:bg-[#F6F6F6] after:inset-x-0 after:rounded-l-full after:absolute font-medium text-center py-2",
+              activeTab === "friends" && "text-black after:bg-[#FEEE9E]"
+            )}
           >
             Мои друзья
           </button>
           <button
             onClick={() => setActiveTab("requests")}
-            className={`flex-grow text-center py-2 ${
-              activeTab === "requests"
-                ? "border-b-2 border-black font-semibold"
-                : "text-gray-500"
-            }`}
+            className={cn(
+              "flex-grow text-[#B1B1B1] relative after:content after:bottom-0 after:h-[2px] after:bg-[#F6F6F6] after:inset-x-0 after:rounded-r-full after:absolute font-medium text-center py-2",
+              activeTab === "requests" && "text-black after:bg-[#FEEE9E]"
+            )}
           >
             Запросы
           </button>
@@ -184,14 +207,15 @@ export default function FriendsPage() {
         {activeTab === "friends" && (
           <div className="flex flex-col gap-3">
             {friends.map((user) => (
-              <div
+              <Link
                 key={user.friendId}
+                href={`/profile/${user.username.replace("@", "")}`}
                 className="flex border rounded-full border-[#F6F6F6] px-6 py-4"
               >
-                <div className="flex-grow">
-                  <Link href={`/profile/${user.username.replace("@", "")}`}>
+                <div className="grow">
+                  <p className="!text-black text-lg leading-tight font-semibold tracking-tight">
                     {user.username}
-                  </Link>
+                  </p>
                   <div className="text-gradient">
                     {user.rating}{" "}
                     <img
@@ -203,12 +227,15 @@ export default function FriendsPage() {
                     />
                   </div>
                 </div>
-                <DrawerExample
-                  initDataRaw={initDataRaw}
-                  receiverId={user.friendId}
-                  onClose={() => setDrawerOpen(false)}
-                />
-              </div>
+                <div onClick={(e) => e.stopPropagation()}>
+                  <SubmitQuestDrawer
+                    username={user.username}
+                    initDataRaw={initDataRaw}
+                    receiverId={user.friendId}
+                    //  onClose={() => setDrawerOpen(false)}
+                  />
+                </div>
+              </Link>
             ))}
           </div>
         )}
@@ -216,34 +243,32 @@ export default function FriendsPage() {
         {activeTab === "requests" && (
           <div className="flex flex-col gap-3">
             {requests.map((request) => (
-              <div
+              <Link
                 key={request.id}
-                className="flex border rounded-full border-[#F6F6F6] px-6 py-4"
+                href={`/profile/${request.senderName.replace("@", "")}`}
+                className="flex border rounded-full items-center border-[#F6F6F6] px-6 py-4"
               >
-                <div className="flex-grow">
-                  <div className="text-black font-semibold">
-                    <Link
-                      href={`/profile/${request.senderName.replace("@", "")}`}
-                    >
-                      {request.senderName.replace("@", "")}
-                    </Link>
-                  </div>
-                </div>
-                <div className="flex items-center gap-2">
-                  <button
+                <p className="flex-grow text-black font-semibold">
+                  {request.senderName.replace("@", "")}
+                </p>
+                <div
+                  onClick={(e) => e.stopPropagation()}
+                  className="flex items-center gap-2"
+                >
+                  <Button
+                    variant="secondary"
                     onClick={() => handleAccept(request.id)}
-                    className="bg-gradient-to-r from-blue-500 to-green-500 text-white rounded-full px-4 py-2"
                   >
-                    Принять
-                  </button>
-                  <button
+                    <PlusIcon className="size-4" />
+                  </Button>
+                  <Button
+                    variant="destructive"
                     onClick={() => handleDecline(request.id)}
-                    className="bg-white text-black border border-gray-300 rounded-full px-4 py-2"
                   >
-                    Отклонить
-                  </button>
+                    <XMarkIcon className="size-4" />
+                  </Button>
                 </div>
-              </div>
+              </Link>
             ))}
           </div>
         )}

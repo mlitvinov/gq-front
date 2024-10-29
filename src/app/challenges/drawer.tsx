@@ -1,4 +1,4 @@
-import * as React from "react";
+import React from "react";
 import { Button } from "@/components/ui/button";
 import {
   Drawer,
@@ -8,9 +8,9 @@ import {
   DrawerTitle,
   DrawerDescription,
 } from "@/components/ui/drawer";
-import { useLaunchParams } from "@telegram-apps/sdk-react";
 import { Link } from "@/components/Link/Link";
-
+import Rewards from "@/assets/rewards.png";
+import { Progress } from "@/components/ui/progress";
 
 type ChallengeDrawerProps = {
   isOpen: boolean;
@@ -25,79 +25,34 @@ type ChallengeDrawerProps = {
   challengeId: number;
   initDataRaw: string;
   refreshChallenges: () => void;
-  videoUrl?: string | null;
+  fieldId?: string | null;
 };
 
 export function ChallengeDrawer({
-                                  isOpen,
-                                  onClose,
-                                  achievementPicsUrl,
-                                  achievementTitle,
-                                  reputation,
-                                  senderName,
-                                  description,
-                                  status,
-                                  isSent,
-                                  challengeId,
-                                  initDataRaw,
-                                  refreshChallenges,
-                                  videoUrl,
-                                }: ChallengeDrawerProps) {
-  const [selectedFile, setSelectedFile] = React.useState<File | null>(null);
-  const [videoResource, setVideoResource] = React.useState<{ videoUrl: string; fileId: string } | null>(null);
+  isOpen,
+  onClose,
+  achievementPicsUrl,
+  achievementTitle,
+  reputation,
+  senderName,
+  description,
+  status,
+  isSent,
+  challengeId,
+  initDataRaw,
+  refreshChallenges,
+  fieldId,
+}: ChallengeDrawerProps) {
+  const [progress, setProgress] = React.useState<number>(0);
+  // const [selectedFile, setSelectedFile] = React.useState<File | null>(null);
 
-  React.useEffect(() => {
-    let isMounted = true;
-    if (videoUrl) {
-      const fetchVideoResource = async () => {
-        try {
-          const headers: HeadersInit = {
-            accept: "*/*",
-          };
-          if (initDataRaw) {
-            headers["initData"] = initDataRaw;
-          }
+  const fileInputRef = React.useRef<HTMLInputElement>(null);
 
-          const response = await fetch(
-            `https://getquest.tech:8443/api/videos/download?fileId=${videoUrl}`,
-            {
-              method: "GET",
-              headers,
-            }
-          );
-
-          if (response.ok) {
-            const blob = await response.blob();
-            const videoUrlObject = window.URL.createObjectURL(blob);
-            if (isMounted) {
-              setVideoResource({ videoUrl: videoUrlObject, fileId: videoUrl });
-            }
-          } else {
-            console.error(`Ошибка при загрузке видео ${videoUrl}:`, response.status);
-          }
-        } catch (error) {
-          console.error("Ошибка при загрузке видео:", error);
-        }
-      };
-
-      fetchVideoResource();
-    }
-
-    return () => {
-      isMounted = false;
-      if (videoResource && videoResource.videoUrl) {
-        window.URL.revokeObjectURL(videoResource.videoUrl);
-      }
-    };
-  }, [videoUrl, initDataRaw]);
-
-  const handleFileChange = (event: React.ChangeEvent<HTMLInputElement>) => {
-    if (event.target.files && event.target.files.length > 0) {
-      setSelectedFile(event.target.files[0]);
-    }
+  const handleApproveSubmit = () => {
+    fileInputRef.current?.click();
   };
 
-  const handleUpload = async () => {
+  const handleUpload = (selectedFile: File) => {
     if (!selectedFile) {
       alert("Пожалуйста, выберите видеофайл.");
       return;
@@ -106,30 +61,54 @@ export function ChallengeDrawer({
     const formData = new FormData();
     formData.append("file", selectedFile);
 
-    try {
-      const response = await fetch(
-        `https://getquest.tech:8443/api/challenges/${challengeId}/complete`,
-        {
-          method: "PUT",
-          headers: {
-            accept: "*/*",
-            initData: initDataRaw,
-          },
-          body: formData,
-        }
-      );
+    const xhr = new XMLHttpRequest();
 
-      if (response.ok) {
+    xhr.open(
+      "PUT",
+      `https://getquest.tech:8443/api/challenges/${challengeId}/complete`,
+      true
+    );
+
+    xhr.setRequestHeader("accept", "*/*");
+    xhr.setRequestHeader("initData", initDataRaw);
+
+    // xhr.withCredentials = true;
+
+    xhr.upload.addEventListener("progress", (event) => {
+      if (event.lengthComputable) {
+        const progress = (event.loaded / event.total) * 100;
+        setProgress(progress);
+      }
+      if (event.loaded === event.total) {
+        setProgress(100);
+      }
+    });
+
+    xhr.addEventListener("loadend", () => {
+      if (xhr.readyState === 4 && xhr.status === 200) {
         alert("Видео успешно загружено!");
         onClose();
         refreshChallenges();
       } else {
-        console.error("Ошибка при загрузке видео", response.statusText);
+        console.error("Ошибка при загрузке видео");
         alert("Не удалось загрузить видео.");
       }
-    } catch (error) {
-      console.error("Произошла ошибка при загрузке видео:", error);
-      alert("Произошла ошибка при загрузке видео.");
+    });
+
+    xhr.onerror = () => {
+      console.log("xhr.onerror", xhr);
+      console.error("Ошибка при загрузке видео");
+      alert("Не удалось загрузить видео.");
+      // elf.postMessage({ success: false, error: "Failed to upload file." });
+    };
+
+    xhr.send(formData);
+  };
+
+  const handleFileChange = (event: React.ChangeEvent<HTMLInputElement>) => {
+    if (event.target.files && event.target.files.length > 0) {
+      // setSelectedFile(event.target.files[0]);
+      handleUpload(event.target.files[0]);
     }
   };
 
@@ -240,7 +219,8 @@ export function ChallengeDrawer({
     }
   };
 
-  const shouldShowButtons = !isSent && !["APPROVE", "DECLINED", "DISPUTED"].includes(status);
+  const shouldShowButtons =
+    !isSent && !["APPROVE", "DECLINED", "DISPUTED"].includes(status);
 
   return (
     <Drawer open={isOpen} onOpenChange={onClose}>
@@ -252,25 +232,40 @@ export function ChallengeDrawer({
           <img
             src={`https://getquest.tech:8443/images/${achievementPicsUrl}`}
             alt={achievementTitle}
-            className="w-full h-48 object-cover rounded-md mb-4"
+            className="w-full h-40 aspect-square object-contain select-none pointer-events-none rounded-md mb-4"
           />
           <DrawerHeader>
             <DrawerTitle id="challenge-title" className="text-xl font-bold">
               {achievementTitle}
             </DrawerTitle>
-            <p className="text-lg text-gradient">{reputation} репутации</p>
-            <Link href={`/profile/${senderName.replace("@", "")}`} className="text-sm text-gray-600">{senderName}</Link>
+            <Link
+              href={`/profile/${senderName.replace("@", "")}`}
+              className="text-sm text-gray-600 mb-4"
+            >
+              {senderName}
+            </Link>
+
+            <p className="text-3xl text-gradient ml-4 font-black">
+              <span className="mr-1">{reputation}</span>
+              <img
+                className="inline relative -top-0.5"
+                src={Rewards.src}
+                alt="Награды"
+                height={32}
+                width={32}
+              />
+            </p>
           </DrawerHeader>
-          <DrawerDescription id="challenge-description" className="mt-4 mb-8 px-4 text-sm">
+          <DrawerDescription
+            id="challenge-description"
+            className="mt-4 mb-8 px-4 text-center font-medium text-sm"
+          >
             {description}
           </DrawerDescription>
 
-          {videoResource && (
+          {fieldId && (
             <div className="flex justify-center mb-4">
-              <figure
-                key={videoResource.fileId}
-                className="rounded-full overflow-hidden w-24 h-24 bg-[#F6F6F6] flex items-center justify-center"
-              >
+              <figure className="rounded-full overflow-hidden w-24 h-24 bg-[#F6F6F6] flex items-center justify-center">
                 <video
                   autoPlay
                   loop
@@ -288,7 +283,10 @@ export function ChallengeDrawer({
                     video.play();
                   }}
                 >
-                  <source src={videoResource.videoUrl} type="video/mp4" />
+                  <source
+                    src={`https://getquest.tech:8443/api/videos/download?fileId=${fieldId}`}
+                    type="video/mp4"
+                  />
                   Ваш браузер не поддерживает видео.
                 </video>
               </figure>
@@ -298,10 +296,18 @@ export function ChallengeDrawer({
           <DrawerFooter className="flex flex-col gap-2 px-4">
             {shouldShowButtons && status === "PENDING" && (
               <>
-                <Button variant="secondary" onClick={handleAccept} className="w-full">
+                <Button
+                  variant="secondary"
+                  onClick={handleAccept}
+                  className="w-full"
+                >
                   Принять
                 </Button>
-                <Button variant="outline" onClick={handleDecline} className="w-full">
+                <Button
+                  variant="outline"
+                  onClick={handleDecline}
+                  className="w-full"
+                >
                   Отказаться
                 </Button>
               </>
@@ -309,31 +315,61 @@ export function ChallengeDrawer({
             {status === "ACCEPTED" && !isSent && (
               <>
                 <input
+                  ref={fileInputRef}
+                  placeholder="Выберите файл"
                   type="file"
                   accept="video/*"
                   onChange={handleFileChange}
-                  className="mb-4"
+                  className="hidden"
                 />
-                <Button variant="secondary" onClick={handleUpload} className="w-full">
-                  Готово
-                </Button>
-                <Button variant="outline" onClick={handleDecline} className="w-full">
-                  Отказаться
-                </Button>
+
+                {progress > 0 ? (
+                  <Progress className="w-full h-1" value={progress} />
+                ) : (
+                  <>
+                    {" "}
+                    <Button
+                      variant="secondary"
+                      onClick={handleApproveSubmit}
+                      className="w-full"
+                    >
+                      Загрузить подтверждение
+                    </Button>
+                    <Button
+                      variant="outline"
+                      onClick={handleDecline}
+                      className="w-full"
+                    >
+                      Отказаться
+                    </Button>
+                  </>
+                )}
               </>
             )}
             {isSent && status === "COMPLETED" && (
               <>
-                <Button variant="secondary" onClick={handleApprove} className="w-full">
+                <Button
+                  variant="secondary"
+                  onClick={handleApprove}
+                  className="w-full"
+                >
                   Подтвердить
                 </Button>
-                <Button variant="outline" onClick={handleDispute} className="w-full">
+                <Button
+                  variant="outline"
+                  onClick={handleDispute}
+                  className="w-full"
+                >
                   Спор
                 </Button>
               </>
             )}
             {status === "COMPLETED" && !isSent && (
-              <Button onClick={handleDecline} variant="outline" className="w-full">
+              <Button
+                onClick={handleDecline}
+                variant="outline"
+                className="w-full"
+              >
                 Отказаться
               </Button>
             )}

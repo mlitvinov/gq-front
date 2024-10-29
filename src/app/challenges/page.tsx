@@ -6,6 +6,8 @@ import { useLaunchParams } from "@telegram-apps/sdk-react";
 import Rewards from "@/assets/rewards.png";
 import { ChallengeDrawer } from "@/app/challenges/drawer";
 import { Button } from "@/components/ui/button";
+import { cn } from "@/lib/utils";
+import { BASE_URL } from "@/lib/const";
 
 type Challenge = {
   id: number;
@@ -56,28 +58,32 @@ export default function ChallengesPage() {
   const [selectedChallenge, setSelectedChallenge] = useState<Challenge | null>(
     null
   );
-  const [currentTab, setCurrentTab] = useState<"assigned" | "sent">("assigned");
+  const [tab, setTab] = useState<"assigned" | "sent">("assigned");
   const initDataRaw = useLaunchParams().initDataRaw;
 
   const fetchChallenges = async () => {
+    if (!initDataRaw) return;
+
     const headers: HeadersInit = {
       "Content-Type": "application/json",
+      initData: initDataRaw,
     };
-    if (initDataRaw) headers["initData"] = initDataRaw;
 
     try {
       const endpoint =
-        currentTab === "assigned"
-          ? "https://getquest.tech:8443/api/challenges/assigned"
-          : "https://getquest.tech:8443/api/challenges/sent";
+        tab === "assigned"
+          ? `${BASE_URL}/api/challenges/assigned`
+          : `${BASE_URL}/api/challenges/sent`;
 
       const response = await fetch(endpoint, { method: "GET", headers });
+
       if (!response.ok) {
         console.error("Ошибка при получении данных:", response.statusText);
         return;
       }
 
       const data: Challenge[] = await response.json();
+
       setChallenges(data);
     } catch (error) {
       console.error("Произошла ошибка при получении данных:", error);
@@ -85,21 +91,24 @@ export default function ChallengesPage() {
   };
 
   const hideChallenge = async (id: number) => {
+    if (!initDataRaw) return;
+
     const confirmed = window.confirm(
       "Вы уверены, что хотите скрыть это задание?"
     );
+
     if (!confirmed) return;
 
     const headers: HeadersInit = {
       "Content-Type": "application/json",
+      initData: initDataRaw,
     };
-    if (initDataRaw) headers["initData"] = initDataRaw;
 
     try {
-      const response = await fetch(
-        `https://getquest.tech:8443/api/challenges/${id}/hide`,
-        { method: "PUT", headers }
-      );
+      const response = await fetch(`${BASE_URL}/api/challenges/${id}/hide`, {
+        method: "PUT",
+        headers,
+      });
 
       if (!response.ok) {
         console.error("Ошибка при скрытии задания:", response.statusText);
@@ -114,7 +123,7 @@ export default function ChallengesPage() {
 
   useEffect(() => {
     fetchChallenges();
-  }, [initDataRaw, currentTab]);
+  }, [initDataRaw, tab]);
 
   return (
     <main className="relative flex flex-col">
@@ -134,27 +143,29 @@ export default function ChallengesPage() {
         />
       </div>
 
-      <div className="mt-40 rounded-t-[2rem] bg-white px-5 pt-8 pb-[calc(80px+1rem)]">
+      <div className="mt-40 rounded-t-[2rem] bg-white px-5 pt-8 pb-[calc(var(--nav-height)+1rem)]">
         <div className="flex justify-around mb-4">
           <button
-            className={`px-4 py-2 ${
-              currentTab === "assigned" ? "border-b-2 border-black" : ""
-            }`}
-            onClick={() => setCurrentTab("assigned")}
+            className={cn(
+              "flex-grow text-[#B1B1B1] relative after:content after:bottom-0 after:h-[2px] after:bg-[#F6F6F6] after:inset-x-0 after:rounded-l-full after:absolute font-medium text-center py-2",
+              tab === "assigned" && "text-black after:bg-[#FEEE9E]"
+            )}
+            onClick={() => setTab("assigned")}
           >
             Назначенные
           </button>
           <button
-            className={`px-4 py-2 ${
-              currentTab === "sent" ? "border-b-2 border-black" : ""
-            }`}
-            onClick={() => setCurrentTab("sent")}
+            className={cn(
+              "flex-grow text-[#B1B1B1] relative after:content after:bottom-0 after:h-[2px] after:bg-[#F6F6F6] after:inset-x-0 after:rounded-l-full after:absolute font-medium text-center py-2",
+              tab === "sent" && "text-black after:bg-[#FEEE9E]"
+            )}
+            onClick={() => setTab("sent")}
           >
             Отправленные
           </button>
         </div>
 
-        <div className="flex flex-col gap-3">
+        <div className="flex flex-col gap-3 mb-24">
           {challenges.map((challenge) => {
             const { bars, color } = getStatusBars(challenge.status);
 
@@ -224,17 +235,17 @@ export default function ChallengesPage() {
           achievementTitle={selectedChallenge.achievementTitle}
           reputation={selectedChallenge.price}
           senderName={
-            currentTab === "assigned"
+            tab === "assigned"
               ? `@${selectedChallenge.senderUserName}`
               : `@${selectedChallenge.receiverUserName}`
           }
           description={selectedChallenge.description}
           status={selectedChallenge.status}
-          isSent={currentTab === "sent"}
+          isSent={tab === "sent"}
           challengeId={selectedChallenge.id}
           initDataRaw={initDataRaw || ""}
           refreshChallenges={fetchChallenges}
-          videoUrl={selectedChallenge.videoUrl}
+          fieldId={selectedChallenge.videoUrl}
         />
       )}
     </main>

@@ -32,12 +32,12 @@ type AchievementDrawerProps = {
 };
 
 export function AchievementDrawer({
-                                    isOpen,
-                                    onClose,
-                                    achievement,
-                                    challengeData,
-                                    initDataRaw,
-                                  }: AchievementDrawerProps) {
+  isOpen,
+  onClose,
+  achievement,
+  challengeData,
+  initDataRaw,
+}: AchievementDrawerProps) {
   const [videoSrc, setVideoSrc] = React.useState<string | null>(null);
 
   // Загружаем видео при наличии videoUrl
@@ -107,7 +107,9 @@ export function AchievementDrawer({
                 className="size-12 bg-[#F6F6F6] rounded-xl"
               />
               <div className="flex-grow">
-                <div className="text-black font-semibold">{achievement.name}</div>
+                <div className="text-black font-semibold">
+                  {achievement.name}
+                </div>
                 {challengeData && (
                   <div className="text-gradient">
                     {challengeData.price}{" "}
@@ -151,7 +153,10 @@ export function AchievementDrawer({
           {challengeData && (
             <>
               <DrawerHeader>
-                <DrawerTitle id="achievement-title" className="text-xl font-bold">
+                <DrawerTitle
+                  id="achievement-title"
+                  className="text-xl font-bold"
+                >
                   {achievement.name}
                 </DrawerTitle>
               </DrawerHeader>
@@ -162,7 +167,13 @@ export function AchievementDrawer({
                 {challengeData.description}
                 <br />
                 <p className="text-sm text-gray-600">
-                  Отправитель: <Link href={`/profile/${challengeData.sender.replace("@", "")}`} className="text-sm text-gray-600">{challengeData.sender}</Link>
+                  Отправитель:{" "}
+                  <Link
+                    href={`/profile/${challengeData.sender.replace("@", "")}`}
+                    className="text-sm text-gray-600"
+                  >
+                    {challengeData.sender}
+                  </Link>
                 </p>
               </DrawerDescription>
             </>

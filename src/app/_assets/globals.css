@@ -13,6 +13,8 @@ body {
 }
 
 #root {
+  --safe-area-inset-bottom: calc(100vh - var(--tg-viewport-stable-height, 100vh))
+  --nav-height: 80px;
   text-rendering: optimizeSpeed;
 }
 

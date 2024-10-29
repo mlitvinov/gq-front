@@ -10,6 +10,8 @@
     "lint": "next lint"
   },
   "dependencies": {
+    "@heroicons/react": "^2.1.5",
+    "@radix-ui/react-progress": "^1.1.0",
     "@telegram-apps/react-router-integration": "^1.0.1",
     "@telegram-apps/sdk-react": "^1.1.3",
     "@telegram-apps/telegram-ui": "^2.1.8",
