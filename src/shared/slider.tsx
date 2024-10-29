@@ -1,5 +1,4 @@
 // slider.tsx
-"use client";
 
 import React from "react";
 
@@ -17,9 +16,7 @@ const Slider: React.FC<SliderProps> = ({ elements, onElementClick }) => {
           <div
             key={index}
             className="flex-shrink-0 size-16 rounded-xl bg-[#F6F6F6] px-4"
-            onClick={() =>
-              onElementClick && onElementClick(index % elements.length)
-            } // Обработчик клика
+            onClick={() => onElementClick && onElementClick(index % elements.length)} // Обработчик клика
           >
             <img
               src={logo}
@@ -31,13 +28,11 @@ const Slider: React.FC<SliderProps> = ({ elements, onElementClick }) => {
       </div>
       <div className="flex gap-8 animate-scroll [&>*:nth-child(odd)]:mt-2 group-hover:animation-none group-hover:translate-x-0 transition-transform duration-500 ease-in-out">
         {/* Дублируем элементы для бесшовной прокрутки */}
-        {[...elements, ...elements]?.map((logo, index) => (
+        {[...elements, ...elements].map((logo, index) => (
           <div
             key={index + elements.length}
             className="flex-shrink-0 size-16 rounded-xl bg-[#F6F6F6] px-4"
-            onClick={() =>
-              onElementClick && onElementClick(index % elements.length)
-            } // Обработчик клика
+            onClick={() => onElementClick && onElementClick(index % elements.length)} // Обработчик клика
           >
             <img
               src={logo}

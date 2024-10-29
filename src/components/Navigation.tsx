@@ -44,7 +44,7 @@ const Navigation = () => {
       <ul className="flex gap-8 justify-between items-center h-full px-8">
         {tabs.map((tab) => {
           const isActive =
-            pathname.split("/").slice(-1).pop() === tab.id.toString();
+            pathname?.split("/").slice(-1).pop() === tab.id.toString();
 
           return (
             <li key={tab.label}>
