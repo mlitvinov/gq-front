@@ -12,8 +12,10 @@ import { BASE_URL } from "@/lib/const";
 type Challenge = {
   id: number;
   description: string;
-  achievementTitle: string;
-  achievementPicsUrl: string;
+  achievementTitle?: string;
+  achievementPicsUrl?: string;
+  promoAchievementTitle?: string;
+  promoAchievementPicsUrl?: string;
   price: number;
   status: string;
   senderUserName?: string;
@@ -33,7 +35,8 @@ const getStatusBars = (status: string) => {
       bars = 2;
       break;
     case "COMPLETED":
-      bars = 3;
+      bars = 4;
+      color = "#4CAF50";
       break;
     case "APPROVE":
       bars = 4;
@@ -58,7 +61,7 @@ export default function ChallengesPage() {
   const [selectedChallenge, setSelectedChallenge] = useState<Challenge | null>(
     null
   );
-  const [tab, setTab] = useState<"assigned" | "sent">("assigned");
+  const [tab, setTab] = useState<"assigned" | "sent" | "promo">("assigned");
   const initDataRaw = useLaunchParams().initDataRaw;
 
   const fetchChallenges = async () => {
@@ -70,10 +73,15 @@ export default function ChallengesPage() {
     };
 
     try {
-      const endpoint =
-        tab === "assigned"
-          ? `${BASE_URL}/api/challenges/assigned`
-          : `${BASE_URL}/api/challenges/sent`;
+      let endpoint = "";
+
+      if (tab === "assigned") {
+        endpoint = `${BASE_URL}/api/challenges/assigned`;
+      } else if (tab === "sent") {
+        endpoint = `${BASE_URL}/api/challenges/sent`;
+      } else if (tab === "promo") {
+        endpoint = `${BASE_URL}/api/promochallenges`;
+      }
 
       const response = await fetch(endpoint, { method: "GET", headers });
 
@@ -88,6 +96,76 @@ export default function ChallengesPage() {
     } catch (error) {
       console.error("Произошла ошибка при получении данных:", error);
     }
+  };
+
+  const acceptPromoChallenge = async (id: number) => {
+    if (!initDataRaw) return;
+
+    const headers: HeadersInit = {
+      "Content-Type": "application/json",
+      initData: initDataRaw,
+    };
+
+    try {
+      const response = await fetch(`${BASE_URL}/api/promochallenges/${id}/start`, {
+        method: "POST",
+        headers,
+      });
+
+      if (!response.ok) {
+        console.error("Ошибка при принятии промо-испытания:", response.statusText);
+        return;
+      }
+
+      await fetchChallenges();
+    } catch (error) {
+      console.error("Произошла ошибка при принятии промо-испытания:", error);
+    }
+  };
+
+  const completePromoChallenge = async (id: number) => {
+    if (!initDataRaw) return;
+
+    const fileInput = document.createElement("input");
+    fileInput.type = "file";
+    fileInput.accept = "video/*";
+
+    fileInput.onchange = async () => {
+      const file = fileInput.files?.[0];
+      if (!file) return;
+
+      const formData = new FormData();
+      formData.append("file", file);
+
+      const headers: HeadersInit = {
+        initData: initDataRaw,
+      };
+
+      try {
+        const response = await fetch(
+          `${BASE_URL}/api/promochallenges/${id}/complete`,
+          {
+            method: "POST",
+            headers,
+            body: formData,
+          }
+        );
+
+        if (!response.ok) {
+          console.error(
+            "Ошибка при завершении промо-испытания:",
+            response.statusText
+          );
+          return;
+        }
+
+        await fetchChallenges();
+      } catch (error) {
+        console.error("Произошла ошибка при завершении промо-испытания:", error);
+      }
+    };
+
+    fileInput.click();
   };
 
   const hideChallenge = async (id: number) => {
@@ -115,7 +193,7 @@ export default function ChallengesPage() {
         return;
       }
 
-      await fetchChallenges(); // Обновляем список заданий
+      await fetchChallenges();
     } catch (error) {
       console.error("Произошла ошибка при удалении задания:", error);
     }
@@ -163,11 +241,21 @@ export default function ChallengesPage() {
           >
             Отправленные
           </button>
+          <button
+            className={cn(
+              "flex-grow text-[#B1B1B1] relative after:content after:bottom-0 after:h-[2px] after:bg-[#F6F6F6] after:inset-x-0 after:rounded-l-full after:absolute font-medium text-center py-2",
+              tab === "promo" && "text-black after:bg-[#FEEE9E]"
+            )}
+            onClick={() => setTab("promo")}
+          >
+            Промо
+          </button>
         </div>
 
         <div className="flex flex-col gap-3 mb-24">
           {challenges.map((challenge) => {
             const { bars, color } = getStatusBars(challenge.status);
+            const isPromo = tab === "promo";
 
             return (
               <div
@@ -176,8 +264,16 @@ export default function ChallengesPage() {
               >
                 <div className="flex gap-2 items-center">
                   <img
-                    src={`https://getquest.tech:8443/images/${challenge.achievementPicsUrl}`}
-                    alt={challenge.achievementTitle}
+                    src={
+                      isPromo
+                        ? `https://getquest.tech:8443/images/${challenge.promoAchievementPicsUrl}`
+                        : `https://getquest.tech:8443/images/${challenge.achievementPicsUrl}`
+                    }
+                    alt={
+                      isPromo
+                        ? challenge.promoAchievementTitle || "Промо испытание"
+                        : challenge.achievementTitle
+                    }
                     className="size-12 bg-[#F6F6F6] rounded-xl"
                   />
                   <div
@@ -185,7 +281,9 @@ export default function ChallengesPage() {
                     onClick={() => setSelectedChallenge(challenge)}
                   >
                     <div className="text-black font-semibold">
-                      {challenge.achievementTitle}
+                      {isPromo
+                        ? challenge.promoAchievementTitle
+                        : challenge.achievementTitle}
                     </div>
                     <div className="text-gradient">
                       {challenge.price}{" "}
@@ -198,29 +296,42 @@ export default function ChallengesPage() {
                       />
                     </div>
                   </div>
-                  {(challenge.status === "DISPUTED" ||
-                    challenge.status === "DECLINED" ||
-                    challenge.status === "APPROVE") && (
-                    <Button
-                      variant="ghost"
-                      onClick={() => hideChallenge(challenge.id)}
-                    >
-                      ✖
+                  {isPromo && challenge.status === "PENDING" && (
+                    <Button onClick={() => acceptPromoChallenge(challenge.id)}>
+                      Принять
                     </Button>
                   )}
+                  {isPromo && challenge.status === "ACCEPTED" && (
+                    <Button onClick={() => completePromoChallenge(challenge.id)}>
+                      Готово
+                    </Button>
+                  )}
+                  {!isPromo &&
+                    (challenge.status === "DISPUTED" ||
+                      challenge.status === "DECLINED" ||
+                      challenge.status === "APPROVE") && (
+                      <Button
+                        variant="ghost"
+                        onClick={() => hideChallenge(challenge.id)}
+                      >
+                        ✖
+                      </Button>
+                    )}
                 </div>
 
-                <div className="flex gap-[10px] mt-2">
-                  {Array.from({ length: 4 }).map((_, index) => (
-                    <figure
-                      key={index}
-                      className="h-[5px] grow rounded-full"
-                      style={{
-                        backgroundColor: index < bars ? color : "#F6F6F6",
-                      }}
-                    />
-                  ))}
-                </div>
+                {!isPromo || challenge.status !== "PENDING" ? (
+                  <div className="flex gap-[10px] mt-2">
+                    {Array.from({ length: 4 }).map((_, index) => (
+                      <figure
+                        key={index}
+                        className="h-[5px] grow rounded-full"
+                        style={{
+                          backgroundColor: index < bars ? color : "#F6F6F6",
+                        }}
+                      />
+                    ))}
+                  </div>
+                ) : null}
               </div>
             );
           })}
@@ -231,17 +342,28 @@ export default function ChallengesPage() {
         <ChallengeDrawer
           isOpen={!!selectedChallenge}
           onClose={() => setSelectedChallenge(null)}
-          achievementPicsUrl={selectedChallenge.achievementPicsUrl}
-          achievementTitle={selectedChallenge.achievementTitle}
+          achievementPicsUrl={
+            tab === "promo"
+              ? selectedChallenge.promoAchievementPicsUrl || ""
+              : selectedChallenge.achievementPicsUrl || ""
+          }
+          achievementTitle={
+            tab === "promo"
+              ? selectedChallenge.promoAchievementTitle || ""
+              : selectedChallenge.achievementTitle || ""
+          }
           reputation={selectedChallenge.price}
           senderName={
             tab === "assigned"
               ? `@${selectedChallenge.senderUserName}`
-              : `@${selectedChallenge.receiverUserName}`
+              : tab === "sent"
+                ? `@${selectedChallenge.receiverUserName}`
+                : "Промо"
           }
           description={selectedChallenge.description}
           status={selectedChallenge.status}
           isSent={tab === "sent"}
+          isPromo={tab === "promo"}
           challengeId={selectedChallenge.id}
           initDataRaw={initDataRaw || ""}
           refreshChallenges={fetchChallenges}
