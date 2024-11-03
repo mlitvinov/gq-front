@@ -27,7 +27,7 @@ type ChallengeDrawerProps = {
   isSent: boolean;
   challengeId: number;
   initDataRaw: string;
-  refreshChallenges: () => void;
+  refreshChallenges: () => Promise<void>;
   fieldId?: string | null;
 };
 
@@ -186,8 +186,8 @@ export function ChallengeDrawer({
 
     if (response.ok) {
       alert("Задание подтверждено.");
+      await refreshChallenges();
       onClose();
-      refreshChallenges();
     } else {
       console.error("Ошибка при подтверждении задания", response.statusText);
       alert("Не удалось подтвердить задание.");
@@ -214,8 +214,8 @@ export function ChallengeDrawer({
 
     if (response.ok) {
       alert("Спор начат.");
+      await refreshChallenges();
       onClose();
-      refreshChallenges();
     } else {
       console.error("Ошибка при начале спора", response.statusText);
       alert("Не удалось начать спор.");
