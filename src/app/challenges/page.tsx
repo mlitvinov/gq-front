@@ -296,16 +296,6 @@ export default function ChallengesPage() {
                       />
                     </div>
                   </div>
-                  {isPromo && challenge.status === "PENDING" && (
-                    <Button onClick={() => acceptPromoChallenge(challenge.id)}>
-                      Принять
-                    </Button>
-                  )}
-                  {isPromo && challenge.status === "ACCEPTED" && (
-                    <Button onClick={() => completePromoChallenge(challenge.id)}>
-                      Готово
-                    </Button>
-                  )}
                   {!isPromo &&
                     (challenge.status === "DISPUTED" ||
                       challenge.status === "DECLINED" ||
