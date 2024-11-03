@@ -257,13 +257,19 @@ export default function FriendsPage() {
                 >
                   <Button
                     variant="secondary"
-                    onClick={() => handleAccept(request.id)}
+                    onClick={(e) => {
+                      e.stopPropagation();
+                      handleAccept(request.id);
+                    }}
                   >
                     <PlusIcon className="size-4" />
                   </Button>
                   <Button
                     variant="destructive"
-                    onClick={() => handleDecline(request.id)}
+                    onClick={(e) => {
+                      e.stopPropagation();
+                      handleDecline(request.id);
+                    }}
                   >
                     <XMarkIcon className="size-4" />
                   </Button>
