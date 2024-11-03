@@ -205,7 +205,7 @@ export default function FriendsPage() {
 
         {/* Контент в зависимости от выбранного таба */}
         {activeTab === "friends" && (
-          <div className="flex flex-col gap-3">
+          <div className="flex flex-col gap-3 mb-24">
             {friends.map((user) => (
               <Link
                 key={user.friendId}
@@ -241,7 +241,7 @@ export default function FriendsPage() {
         )}
 
         {activeTab === "requests" && (
-          <div className="flex flex-col gap-3">
+          <div className="flex flex-col gap-3 mb-24">
             {requests.map((request) => (
               <Link
                 key={request.id}
