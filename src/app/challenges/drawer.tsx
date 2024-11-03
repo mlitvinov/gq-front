@@ -13,6 +13,7 @@ import {
 import { Link } from "@/components/Link/Link";
 import Rewards from "@/assets/rewards.png";
 import { Progress } from "@/components/ui/progress";
+import { BASE_URL } from "@/lib/const";
 
 type ChallengeDrawerProps = {
   isOpen: boolean;
@@ -221,6 +222,38 @@ export function ChallengeDrawer({
     }
   };
 
+  const hideChallenge = async (id: number) => {
+    if (!initDataRaw) return;
+
+    const confirmed = window.confirm(
+      "Вы уверены, что хотите удалить это задание у себя из истории?"
+    );
+
+    if (!confirmed) return;
+
+    const headers: HeadersInit = {
+      "Content-Type": "application/json",
+      initData: initDataRaw,
+    };
+
+    try {
+      const response = await fetch(`${BASE_URL}/api/challenges/${id}/hide`, {
+        method: "PUT",
+        headers,
+      });
+
+      if (!response.ok) {
+        console.error("Ошибка при удалении задания:", response.statusText);
+        return;
+      }
+
+      await refreshChallenges();
+      onClose();
+    } catch (error) {
+      console.error("Произошла ошибка при удалении задания:", error);
+    }
+  };
+
   const shouldShowButtons =
     !isSent && !["APPROVE", "DECLINED", "DISPUTED"].includes(status);
 
@@ -373,6 +406,17 @@ export function ChallengeDrawer({
                 className="w-full"
               >
                 Отказаться
+              </Button>
+            )}
+            {(status === "DISPUTED" ||
+              status === "DECLINED" ||
+              status === "APPROVE") && (
+              <Button
+                variant="ghost"
+                className="text-red-700 bg-red-100/50"
+                onClick={() => hideChallenge(challengeId)}
+              >
+                Скрыть
               </Button>
             )}
           </DrawerFooter>

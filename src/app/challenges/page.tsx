@@ -90,37 +90,6 @@ export default function ChallengesPage() {
     }
   };
 
-  const hideChallenge = async (id: number) => {
-    if (!initDataRaw) return;
-
-    const confirmed = window.confirm(
-      "Вы уверены, что хотите удалить это задание у себя из истории?"
-    );
-
-    if (!confirmed) return;
-
-    const headers: HeadersInit = {
-      "Content-Type": "application/json",
-      initData: initDataRaw,
-    };
-
-    try {
-      const response = await fetch(`${BASE_URL}/api/challenges/${id}/hide`, {
-        method: "PUT",
-        headers,
-      });
-
-      if (!response.ok) {
-        console.error("Ошибка при удалении задания:", response.statusText);
-        return;
-      }
-
-      await fetchChallenges(); // Обновляем список заданий
-    } catch (error) {
-      console.error("Произошла ошибка при удалении задания:", error);
-    }
-  };
-
   useEffect(() => {
     fetchChallenges();
   }, [initDataRaw, tab]);
@@ -198,16 +167,6 @@ export default function ChallengesPage() {
                       />
                     </div>
                   </div>
-                  {(challenge.status === "DISPUTED" ||
-                    challenge.status === "DECLINED" ||
-                    challenge.status === "APPROVE") && (
-                    <Button
-                      variant="ghost"
-                      onClick={() => hideChallenge(challenge.id)}
-                    >
-                      ✖
-                    </Button>
-                  )}
                 </div>
 
                 <div className="flex gap-[10px] mt-2">
