@@ -94,7 +94,7 @@ export default function ChallengesPage() {
     if (!initDataRaw) return;
 
     const confirmed = window.confirm(
-      "Вы уверены, что хотите скрыть это задание?"
+      "Вы уверены, что хотите удалить это задание у себя из истории?"
     );
 
     if (!confirmed) return;
@@ -111,13 +111,13 @@ export default function ChallengesPage() {
       });
 
       if (!response.ok) {
-        console.error("Ошибка при скрытии задания:", response.statusText);
+        console.error("Ошибка при удалении задания:", response.statusText);
         return;
       }
 
       await fetchChallenges(); // Обновляем список заданий
     } catch (error) {
-      console.error("Произошла ошибка при скрытии задания:", error);
+      console.error("Произошла ошибка при удалении задания:", error);
     }
   };
 
