@@ -25,6 +25,7 @@ type ChallengeDrawerProps = {
   description: string;
   status: string;
   isSent: boolean;
+  isPromo: boolean;
   challengeId: number;
   initDataRaw: string;
   refreshChallenges: () => Promise<void>;
@@ -41,13 +42,13 @@ export function ChallengeDrawer({
   description,
   status,
   isSent,
+  isPromo,
   challengeId,
   initDataRaw,
   refreshChallenges,
   fieldId,
 }: ChallengeDrawerProps) {
   const [progress, setProgress] = React.useState<number>(0);
-  // const [selectedFile, setSelectedFile] = React.useState<File | null>(null);
 
   const fileInputRef = React.useRef<HTMLInputElement>(null);
 
@@ -66,16 +67,14 @@ export function ChallengeDrawer({
 
     const xhr = new XMLHttpRequest();
 
-    xhr.open(
-      "PUT",
-      `https://getquest.tech:8443/api/challenges/${challengeId}/complete`,
-      true
-    );
+    const url = isPromo
+      ? `https://getquest.tech:8443/api/promochallenges/${challengeId}/complete`
+      : `https://getquest.tech:8443/api/challenges/${challengeId}/complete`;
+
+    xhr.open("POST", url, true);
 
     xhr.setRequestHeader("accept", "*/*");
     xhr.setRequestHeader("initData", initDataRaw);
-
-    // xhr.withCredentials = true;
 
     xhr.upload.addEventListener("progress", (event) => {
       if (event.lengthComputable) {
@@ -102,7 +101,6 @@ export function ChallengeDrawer({
       console.log("xhr.onerror", xhr);
       console.error("Ошибка при загрузке видео");
       alert("Не удалось загрузить видео.");
-      // elf.postMessage({ success: false, error: "Failed to upload file." });
     };
 
     xhr.send(formData);
@@ -110,24 +108,26 @@ export function ChallengeDrawer({
 
   const handleFileChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     if (event.target.files && event.target.files.length > 0) {
-      // setSelectedFile(event.target.files[0]);
       handleUpload(event.target.files[0]);
     }
   };
 
   const handleAccept = async () => {
     try {
-      const response = await fetch(
-        `https://getquest.tech:8443/api/challenges/${challengeId}/accept`,
-        {
-          method: "PUT",
-          headers: {
-            "Content-Type": "application/json",
-            accept: "*/*",
-            initData: initDataRaw,
-          },
-        }
-      );
+      const url = isPromo
+        ? `https://getquest.tech:8443/api/promochallenges/${challengeId}/start`
+        : `https://getquest.tech:8443/api/challenges/${challengeId}/accept`;
+
+      const method = isPromo ? "POST" : "PUT";
+
+      const response = await fetch(url, {
+        method,
+        headers: {
+          "Content-Type": "application/json",
+          accept: "*/*",
+          initData: initDataRaw,
+        },
+      });
 
       if (response.ok) {
         alert("Задание принято.");
@@ -172,17 +172,18 @@ export function ChallengeDrawer({
   };
 
   const handleApprove = async () => {
-    const response = await fetch(
-      `https://getquest.tech:8443/api/challenges/${challengeId}/approve`,
-      {
-        method: "PUT",
-        headers: {
-          "Content-Type": "application/json",
-          accept: "*/*",
-          initData: initDataRaw,
-        },
-      }
-    );
+    const url = isPromo
+      ? `https://getquest.tech:8443/api/promochallenges/${challengeId}/approve`
+      : `https://getquest.tech:8443/api/challenges/${challengeId}/approve`;
+
+    const response = await fetch(url, {
+      method: "PUT",
+      headers: {
+        "Content-Type": "application/json",
+        accept: "*/*",
+        initData: initDataRaw,
+      },
+    });
 
     if (response.ok) {
       alert("Задание подтверждено.");
@@ -200,17 +201,18 @@ export function ChallengeDrawer({
     );
     if (!confirmed) return;
 
-    const response = await fetch(
-      `https://getquest.tech:8443/api/challenges/${challengeId}/dispute`,
-      {
-        method: "PUT",
-        headers: {
-          "Content-Type": "application/json",
-          accept: "*/*",
-          initData: initDataRaw,
-        },
-      }
-    );
+    const url = isPromo
+      ? `https://getquest.tech:8443/api/promochallenges/${challengeId}/dispute`
+      : `https://getquest.tech:8443/api/challenges/${challengeId}/dispute`;
+
+    const response = await fetch(url, {
+      method: "PUT",
+      headers: {
+        "Content-Type": "application/json",
+        accept: "*/*",
+        initData: initDataRaw,
+      },
+    });
 
     if (response.ok) {
       alert("Спор начат.");
@@ -338,20 +340,21 @@ export function ChallengeDrawer({
                 >
                   Принять
                 </Button>
-                <Button
-                  variant="outline"
-                  onClick={handleDecline}
-                  className="w-full"
-                >
-                  Отказаться
-                </Button>
+                {!isPromo && (
+                  <Button
+                    variant="outline"
+                    onClick={handleDecline}
+                    className="w-full"
+                  >
+                    Отказаться
+                  </Button>
+                )}
               </>
             )}
             {status === "ACCEPTED" && !isSent && (
               <>
                 <input
                   ref={fileInputRef}
-                  placeholder="Выберите файл"
                   type="file"
                   accept="video/*"
                   onChange={handleFileChange}
@@ -362,7 +365,6 @@ export function ChallengeDrawer({
                   <Progress className="w-full h-1" value={progress} />
                 ) : (
                   <>
-                    {" "}
                     <Button
                       variant="secondary"
                       onClick={handleApproveSubmit}
@@ -370,13 +372,15 @@ export function ChallengeDrawer({
                     >
                       Загрузить подтверждение
                     </Button>
-                    <Button
-                      variant="outline"
-                      onClick={handleDecline}
-                      className="w-full"
-                    >
-                      Отказаться
-                    </Button>
+                    {!isPromo && (
+                      <Button
+                        variant="outline"
+                        onClick={handleDecline}
+                        className="w-full"
+                      >
+                        Отказаться
+                      </Button>
+                    )}
                   </>
                 )}
               </>
@@ -399,7 +403,7 @@ export function ChallengeDrawer({
                 </Button>
               </>
             )}
-            {status === "COMPLETED" && !isSent && (
+            {status === "COMPLETED" && !isSent && !isPromo && (
               <Button
                 onClick={handleDecline}
                 variant="outline"
@@ -408,7 +412,7 @@ export function ChallengeDrawer({
                 Отказаться
               </Button>
             )}
-            {(status === "DISPUTED" ||
+            {((!isPromo && status === "DISPUTED") ||
               status === "DECLINED" ||
               status === "APPROVE") && (
               <Button
