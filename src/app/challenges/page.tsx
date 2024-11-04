@@ -159,7 +159,7 @@ export default function ChallengesPage() {
             )}
             onClick={() => setTab("sent")}
           >
-            Отправленные
+            Для друзей
           </button>
         </div>
 
