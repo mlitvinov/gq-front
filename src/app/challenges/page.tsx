@@ -21,6 +21,7 @@ type Challenge = {
   senderUserName?: string;
   receiverUserName?: string;
   videoUrl?: string | null;
+  taskUrl?: string;
 };
 
 const getStatusBars = (status: string) => {
@@ -61,7 +62,7 @@ export default function ChallengesPage() {
   const [selectedChallenge, setSelectedChallenge] = useState<Challenge | null>(
     null
   );
-  const [tab, setTab] = useState<"assigned" | "sent" | "promo">("assigned");
+  const [tab, setTab] = useState<"promo" | "assigned" | "sent">("promo");
   const initDataRaw = useLaunchParams().initDataRaw;
 
   const fetchChallenges = async () => {
@@ -98,85 +99,6 @@ export default function ChallengesPage() {
     }
   };
 
-  const acceptPromoChallenge = async (id: number) => {
-    if (!initDataRaw) return;
-
-    const headers: HeadersInit = {
-      "Content-Type": "application/json",
-      initData: initDataRaw,
-    };
-
-    try {
-      const response = await fetch(
-        `${BASE_URL}/api/promochallenges/${id}/start`,
-        {
-          method: "POST",
-          headers,
-        }
-      );
-
-      if (!response.ok) {
-        console.error(
-          "Ошибка при принятии промо-испытания:",
-          response.statusText
-        );
-        return;
-      }
-
-      await fetchChallenges();
-    } catch (error) {
-      console.error("Произошла ошибка при принятии промо-испытания:", error);
-    }
-  };
-
-  const completePromoChallenge = async (id: number) => {
-    if (!initDataRaw) return;
-
-    const fileInput = document.createElement("input");
-    fileInput.type = "file";
-    fileInput.accept = "video/*";
-
-    fileInput.onchange = async () => {
-      const file = fileInput.files?.[0];
-      if (!file) return;
-
-      const formData = new FormData();
-      formData.append("file", file);
-
-      const headers: HeadersInit = {
-        initData: initDataRaw,
-      };
-
-      try {
-        const response = await fetch(
-          `${BASE_URL}/api/promochallenges/${id}/complete`,
-          {
-            method: "POST",
-            headers,
-            body: formData,
-          }
-        );
-
-        if (!response.ok) {
-          console.error(
-            "Ошибка при завершении промо-испытания:",
-            response.statusText
-          );
-          return;
-        }
-
-        await fetchChallenges();
-      } catch (error) {
-        console.error(
-          "Произошла ошибка при завершении промо-испытания:",
-          error
-        );
-      }
-    };
-
-    fileInput.click();
-  };
-
   useEffect(() => {
     fetchChallenges();
   }, [initDataRaw, tab]);
@@ -204,6 +126,15 @@ export default function ChallengesPage() {
           <button
             className={cn(
               "flex-grow text-[#B1B1B1] relative after:content after:bottom-0 after:h-[2px] after:bg-[#F6F6F6] after:inset-x-0 after:rounded-l-full after:absolute font-medium text-center py-2",
+              tab === "promo" && "text-black after:bg-[#FEEE9E]"
+            )}
+            onClick={() => setTab("promo")}
+          >
+            Промо
+          </button>
+          <button
+            className={cn(
+              "flex-grow text-[#B1B1B1] relative after:content after:bottom-0 after:h-[2px] after:bg-[#F6F6F6] after:inset-x-0 after:rounded-l-full after:absolute font-medium text-center py-2",
               tab === "assigned" && "text-black after:bg-[#FEEE9E]"
             )}
             onClick={() => setTab("assigned")}
@@ -218,15 +149,6 @@ export default function ChallengesPage() {
             onClick={() => setTab("sent")}
           >
             Отправленные
-          </button>
-          <button
-            className={cn(
-              "flex-grow text-[#B1B1B1] relative after:content after:bottom-0 after:h-[2px] after:bg-[#F6F6F6] after:inset-x-0 after:rounded-l-full after:absolute font-medium text-center py-2",
-              tab === "promo" && "text-black after:bg-[#FEEE9E]"
-            )}
-            onClick={() => setTab("promo")}
-          >
-            Промо
           </button>
         </div>
 
@@ -314,8 +236,8 @@ export default function ChallengesPage() {
             tab === "assigned"
               ? `@${selectedChallenge.senderUserName}`
               : tab === "sent"
-              ? `@${selectedChallenge.receiverUserName}`
-              : "Промо"
+                ? `@${selectedChallenge.receiverUserName}`
+                : "Промо"
           }
           description={selectedChallenge.description}
           status={selectedChallenge.status}
@@ -325,6 +247,7 @@ export default function ChallengesPage() {
           initDataRaw={initDataRaw || ""}
           refreshChallenges={fetchChallenges}
           fieldId={selectedChallenge.videoUrl}
+          taskUrl={selectedChallenge.taskUrl}
         />
       )}
     </main>

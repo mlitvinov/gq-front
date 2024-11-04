@@ -30,24 +30,26 @@ type ChallengeDrawerProps = {
   initDataRaw: string;
   refreshChallenges: () => Promise<void>;
   fieldId?: string | null;
+  taskUrl?: string;
 };
 
 export function ChallengeDrawer({
-  isOpen,
-  onClose,
-  achievementPicsUrl,
-  achievementTitle,
-  reputation,
-  senderName,
-  description,
-  status,
-  isSent,
-  isPromo,
-  challengeId,
-  initDataRaw,
-  refreshChallenges,
-  fieldId,
-}: ChallengeDrawerProps) {
+                                  isOpen,
+                                  onClose,
+                                  achievementPicsUrl,
+                                  achievementTitle,
+                                  reputation,
+                                  senderName,
+                                  description,
+                                  status,
+                                  isSent,
+                                  isPromo,
+                                  challengeId,
+                                  initDataRaw,
+                                  refreshChallenges,
+                                  fieldId,
+                                  taskUrl,
+                                }: ChallengeDrawerProps) {
   const [progress, setProgress] = React.useState<number>(0);
 
   const fileInputRef = React.useRef<HTMLInputElement>(null);
@@ -275,13 +277,23 @@ export function ChallengeDrawer({
             <DrawerTitle id="challenge-title" className="text-xl font-bold">
               {achievementTitle}
             </DrawerTitle>
-            <Link
-              href={`/profile/${senderName.replace("@", "")}`}
-              className="text-sm text-gray-600 mb-4"
-            >
-              {senderName}
-            </Link>
-
+            {isPromo ? (
+              <a
+                href={taskUrl}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="text-sm text-blue-500 mb-4"
+              >
+                Выполнить
+              </a>
+            ) : (
+              <Link
+                href={`/profile/${senderName.replace("@", "")}`}
+                className="text-sm text-gray-600 mb-4"
+              >
+                {senderName}
+              </Link>
+            )}
             <p className="text-3xl text-gradient ml-4 font-black">
               <span className="mr-1">{reputation}</span>
               <img
