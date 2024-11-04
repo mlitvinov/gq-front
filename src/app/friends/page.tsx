@@ -243,22 +243,21 @@ export default function FriendsPage() {
         {activeTab === "requests" && (
           <div className="flex flex-col gap-3 mb-24">
             {requests.map((request) => (
-              <Link
+              <div
                 key={request.id}
-                href={`/profile/${request.senderName.replace("@", "")}`}
                 className="flex border rounded-full items-center border-[#F6F6F6] px-6 py-4"
               >
-                <p className="flex-grow text-black font-semibold">
-                  {request.senderName.replace("@", "")}
-                </p>
-                <div
-                  onClick={(e) => e.stopPropagation()}
-                  className="flex items-center gap-2"
+                <Link
+                  href={`/profile/${request.senderName.replace("@", "")}`}
+                  className="flex-grow font-semibold text-black no-underline"
                 >
+                  {request.senderName.replace("@", "")}
+                </Link>
+                <div className="flex items-center gap-2">
                   <Button
                     variant="secondary"
                     onClick={(e) => {
-                      e.stopPropagation();
+                      e.preventDefault();
                       handleAccept(request.id);
                     }}
                   >
@@ -274,7 +273,7 @@ export default function FriendsPage() {
                     <XMarkIcon className="size-4" />
                   </Button>
                 </div>
-              </Link>
+              </div>
             ))}
           </div>
         )}
