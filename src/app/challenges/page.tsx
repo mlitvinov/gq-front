@@ -62,7 +62,7 @@ export default function ChallengesPage() {
   const [selectedChallenge, setSelectedChallenge] = useState<Challenge | null>(
     null
   );
-  const [tab, setTab] = useState<"promo" | "assigned" | "sent">("promo");
+  const [tab, setTab] = useState<"promo" | "targets" | "assigned" | "sent">("promo");
   const initDataRaw = useLaunchParams().initDataRaw;
 
   const fetchChallenges = async () => {
@@ -82,6 +82,8 @@ export default function ChallengesPage() {
         endpoint = `${BASE_URL}/api/challenges/sent`;
       } else if (tab === "promo") {
         endpoint = `${BASE_URL}/api/promochallenges`;
+      } else if (tab === "targets") {
+        endpoint = `${BASE_URL}/api/challenges/targets`;
       }
 
       const response = await fetch(endpoint, { method: "GET", headers });
@@ -135,6 +137,15 @@ export default function ChallengesPage() {
           <button
             className={cn(
               "flex-grow text-[#B1B1B1] relative after:content after:bottom-0 after:h-[2px] after:bg-[#F6F6F6] after:inset-x-0 after:rounded-l-full after:absolute font-medium text-center py-2",
+              tab === "targets" && "text-black after:bg-[#FEEE9E]"
+            )}
+            onClick={() => setTab("targets")}
+          >
+            Цели
+          </button>
+          <button
+            className={cn(
+              "flex-grow text-[#B1B1B1] relative after:content after:bottom-0 after:h-[2px] after:bg-[#F6F6F6] after:inset-x-0 after:rounded-l-full after:absolute font-medium text-center py-2",
               tab === "assigned" && "text-black after:bg-[#FEEE9E]"
             )}
             onClick={() => setTab("assigned")}
@@ -156,6 +167,7 @@ export default function ChallengesPage() {
           {challenges.map((challenge) => {
             const { bars, color } = getStatusBars(challenge.status);
             const isPromo = tab === "promo";
+            const isTarget = tab === "targets";
 
             return (
               <div
@@ -237,7 +249,9 @@ export default function ChallengesPage() {
               ? `@${selectedChallenge.senderUserName}`
               : tab === "sent"
                 ? `@${selectedChallenge.receiverUserName}`
-                : "Промо"
+                : tab === "targets"
+                  ? "Цели"
+                  : "Промо"
           }
           description={selectedChallenge.description}
           status={selectedChallenge.status}
