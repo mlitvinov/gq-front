@@ -139,7 +139,7 @@ export default function ChallengesPage() {
             )}
             onClick={() => setTab("assigned")}
           >
-            Назначенные
+            От друзей
           </button>
           <button
             className={cn(
