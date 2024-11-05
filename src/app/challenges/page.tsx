@@ -5,38 +5,11 @@ import { useLaunchParams } from "@telegram-apps/sdk-react";
 
 import Rewards from "@/assets/rewards.png";
 import { ChallengeDrawer } from "@/app/challenges/drawer";
+import { GoalDrawer } from "./drawers/goal-drawer";
 import { Button } from "@/components/ui/button";
 import { cn } from "@/lib/utils";
 import { BASE_URL } from "@/lib/const";
-
-type Challenge = {
-  id: number;
-  description: string;
-  achievementTitle?: string;
-  achievementPicsUrl?: string;
-  promoAchievementTitle?: string;
-  promoAchievementPicsUrl?: string;
-  price: number;
-  status: string;
-  senderUserName?: string;
-  receiverUserName?: string;
-  videoUrl?: string | null;
-  taskUrl?: string;
-};
-
-// Добавляем новый тип данных для целей
-type Goal = {
-  id: number;
-  description: string;
-  picUrl: string;
-  name: string;
-  targetCount: number;
-  currentCount: number;
-  status: string;
-  rewardPoints: number;
-  completionCount?: number;
-  currentTargetCount?: number;
-};
+import { Challenge, Goal } from "./types";
 
 const getStatusBars = (status: string, isPromoOrTarget: boolean) => {
   let bars = 1;
@@ -86,6 +59,7 @@ export default function ChallengesPage() {
   const ref = useRef<HTMLDivElement>(null);
   const [challenges, setChallenges] = useState<Challenge[]>([]);
   const [goals, setGoals] = useState<Goal[]>([]);
+  const [selectedGoal, setSelectedGoal] = useState<Goal | null>(null);
   const [selectedChallenge, setSelectedChallenge] = useState<Challenge | null>(
     null
   );
@@ -93,7 +67,6 @@ export default function ChallengesPage() {
     "promo"
   );
   const initDataRaw = useLaunchParams().initDataRaw;
-
   const fetchChallenges = async () => {
     if (!initDataRaw) return;
 
@@ -137,36 +110,6 @@ export default function ChallengesPage() {
   useEffect(() => {
     fetchChallenges();
   }, [initDataRaw, tab]);
-
-  // Функция для обработки получения награды
-  const handleClaimReward = async (goalId: number) => {
-    if (!initDataRaw) return;
-
-    const headers: HeadersInit = {
-      "Content-Type": "application/json",
-      initData: initDataRaw,
-    };
-
-    try {
-      const response = await fetch(
-        `${BASE_URL}/api/goals/${goalId}/claim`,
-        {
-          method: "POST",
-          headers,
-        }
-      );
-
-      if (!response.ok) {
-        console.error("Ошибка при отправке запроса на получение награды:", response.statusText);
-        return;
-      }
-
-      // Обновляем список целей после получения награды
-      fetchChallenges();
-    } catch (error) {
-      console.error("Произошла ошибка при отправке запроса на получение награды:", error);
-    }
-  };
 
   return (
     <main className="relative flex flex-col">
@@ -229,130 +172,131 @@ export default function ChallengesPage() {
         <div className="flex flex-col gap-3 mb-24">
           {tab === "targets"
             ? goals.map((goal) => {
-              // Для целей всегда передаем isPromoOrTarget = true
-              const { bars, color } = getStatusBars(goal.status, true);
+                // Для целей всегда передаем isPromoOrTarget = true
+                const { bars, color } = getStatusBars(goal.status, true);
 
-              return (
-                <div
-                  key={goal.id}
-                  className={`flex flex-col border rounded-full border-[#fcf4f4] px-6 py-4 ${
-                    goal.status === "REWARDED" ? "opacity-50" : ""
-                  }`}
-                >
-                  <div className="flex gap-2 items-center">
-                    <img
-                      src={`https://getquest.tech:8443/images/${goal.picUrl}`}
-                      alt={goal.name}
-                      className="size-12 bg-[#F6F6F6] rounded-xl"
-                    />
-                    <div className="flex-grow">
-                      <div className="text-black font-semibold">{goal.name}</div>
-                      <div className="text-gradient">
-                        {goal.rewardPoints}{" "}
+                return (
+                  <button
+                    key={goal.id}
+                    type="button"
+                    className={`flex flex-col  border rounded-full border-[#fcf4f4] px-6 py-4 ${
+                      goal.status === "REWARDED" ? "opacity-50" : ""
+                    }`}
+                    onClick={() => setSelectedGoal(goal)}
+                  >
+                    <div className="flex items-center gap-4 w-full">
+                      <div className="flex gap-2 items-start">
                         <img
-                          className="inline relative -top-0.5 -left-1"
-                          src={Rewards.src}
-                          alt="Награды"
-                          height={18}
-                          width={18}
+                          src={`https://getquest.tech:8443/images/${goal.picUrl}`}
+                          alt={goal.name}
+                          className="size-12 bg-[#F6F6F6] rounded-xl"
                         />
+                        <div className="flex-grow">
+                          <div className="text-black font-semibold">
+                            {goal.name}
+                          </div>
+                          <p className="text-gradient text-start">
+                            {goal.rewardPoints}{" "}
+                            <img
+                              className="inline relative -top-0.5 -left-1"
+                              src={Rewards.src}
+                              alt="Награды"
+                              height={18}
+                              width={18}
+                            />
+                          </p>
+                        </div>
                       </div>
                       {/* Отображение прогресса */}
-                      <div className="text-sm text-gray-500">
+                      <div className="text-base text-gradient font-black ml-auto">
                         {goal.currentCount}/{goal.targetCount}
                       </div>
                     </div>
-                    {/* Кнопка "Забрать" для статуса COMPLETED */}
-                    {goal.status === "COMPLETED" && (
-                      <button
-                        className="bg-blue-500 text-white px-4 py-2 rounded-full"
-                        onClick={() => handleClaimReward(goal.id)}
-                      >
-                        Забрать
-                      </button>
-                    )}
-                  </div>
 
-                  {/* Отображение статус-баров */}
-                  {bars > 0 ? (
-                    <div className="flex gap-[10px] mt-2">
-                      {Array.from({ length: 4 }).map((_, index) => (
-                        <figure
-                          key={index}
-                          className="h-[5px] grow rounded-full"
-                          style={{
-                            backgroundColor: index < bars ? color : "#F6F6F6",
-                          }}
-                        />
-                      ))}
-                    </div>
-                  ) : null}
-                </div>
-              );
-            })
+                    {/* Отображение статус-баров */}
+                    {bars > 0 ? (
+                      <div className="flex gap-[10px] mt-2">
+                        {Array.from({ length: 4 }).map((_, index) => (
+                          <figure
+                            key={index}
+                            className="h-[5px] grow rounded-full"
+                            style={{
+                              backgroundColor: index < bars ? color : "#F6F6F6",
+                            }}
+                          />
+                        ))}
+                      </div>
+                    ) : null}
+                  </button>
+                );
+              })
             : challenges.map((challenge) => {
-              const isPromo = tab === "promo";
-              // Передаем флаг isPromo в функцию getStatusBars
-              const { bars, color } = getStatusBars(challenge.status, isPromo);
+                const isPromo = tab === "promo";
+                // Передаем флаг isPromo в функцию getStatusBars
+                const { bars, color } = getStatusBars(
+                  challenge.status,
+                  isPromo
+                );
 
-              return (
-                <div
-                  key={challenge.id}
-                  className="flex flex-col border rounded-full border-[#fcf4f4] px-6 py-4"
-                >
-                  <div className="flex gap-2 items-center">
-                    <img
-                      src={
-                        isPromo
-                          ? `https://getquest.tech:8443/images/${challenge.promoAchievementPicsUrl}`
-                          : `https://getquest.tech:8443/images/${challenge.achievementPicsUrl}`
-                      }
-                      alt={
-                        isPromo
-                          ? challenge.promoAchievementTitle || "Промо испытание"
-                          : challenge.achievementTitle
-                      }
-                      className="size-12 bg-[#F6F6F6] rounded-xl"
-                    />
-                    <div
-                      className="flex-grow"
-                      onClick={() => setSelectedChallenge(challenge)}
-                    >
-                      <div className="text-black font-semibold">
-                        {isPromo
-                          ? challenge.promoAchievementTitle
-                          : challenge.achievementTitle}
-                      </div>
-                      <div className="text-gradient">
-                        {challenge.price}{" "}
-                        <img
-                          className="inline relative -top-0.5 -left-1"
-                          src={Rewards.src}
-                          alt="Награды"
-                          height={18}
-                          width={18}
-                        />
+                return (
+                  <div
+                    key={challenge.id}
+                    className="flex flex-col border rounded-full border-[#fcf4f4] px-6 py-4"
+                  >
+                    <div className="flex gap-2 items-center">
+                      <img
+                        src={
+                          isPromo
+                            ? `https://getquest.tech:8443/images/${challenge.promoAchievementPicsUrl}`
+                            : `https://getquest.tech:8443/images/${challenge.achievementPicsUrl}`
+                        }
+                        alt={
+                          isPromo
+                            ? challenge.promoAchievementTitle ||
+                              "Промо испытание"
+                            : challenge.achievementTitle
+                        }
+                        className="size-12 bg-[#F6F6F6] rounded-xl"
+                      />
+                      <div
+                        className="flex-grow"
+                        onClick={() => setSelectedChallenge(challenge)}
+                      >
+                        <div className="text-black font-semibold">
+                          {isPromo
+                            ? challenge.promoAchievementTitle
+                            : challenge.achievementTitle}
+                        </div>
+                        <div className="text-gradient">
+                          {challenge.price}{" "}
+                          <img
+                            className="inline relative -top-0.5 -left-1"
+                            src={Rewards.src}
+                            alt="Награды"
+                            height={18}
+                            width={18}
+                          />
+                        </div>
                       </div>
                     </div>
+
+                    {/* Отображение статус-баров */}
+                    {bars > 0 ? (
+                      <div className="flex gap-[10px] mt-2">
+                        {Array.from({ length: 4 }).map((_, index) => (
+                          <figure
+                            key={index}
+                            className="h-[5px] grow rounded-full"
+                            style={{
+                              backgroundColor: index < bars ? color : "#F6F6F6",
+                            }}
+                          />
+                        ))}
+                      </div>
+                    ) : null}
                   </div>
-
-                  {/* Отображение статус-баров */}
-                  {bars > 0 ? (
-                    <div className="flex gap-[10px] mt-2">
-                      {Array.from({ length: 4 }).map((_, index) => (
-                        <figure
-                          key={index}
-                          className="h-[5px] grow rounded-full"
-                          style={{
-                            backgroundColor: index < bars ? color : "#F6F6F6",
-                          }}
-                        />
-                      ))}
-                    </div>
-                  ) : null}
-                </div>
-              );
-            })}
+                );
+              })}
         </div>
       </div>
 
@@ -360,7 +304,9 @@ export default function ChallengesPage() {
       {selectedChallenge && tab !== "targets" && (
         <ChallengeDrawer
           isOpen={!!selectedChallenge}
-          onClose={() => setSelectedChallenge(null)}
+          onClose={() => {
+            setSelectedChallenge(null);
+          }}
           achievementPicsUrl={
             tab === "promo"
               ? selectedChallenge.promoAchievementPicsUrl || ""
@@ -376,8 +322,8 @@ export default function ChallengesPage() {
             tab === "assigned"
               ? `@${selectedChallenge.senderUserName}`
               : tab === "sent"
-                ? `@${selectedChallenge.receiverUserName}`
-                : "Промо"
+              ? `@${selectedChallenge.receiverUserName}`
+              : "Промо"
           }
           description={selectedChallenge.description}
           status={selectedChallenge.status}
@@ -388,6 +334,16 @@ export default function ChallengesPage() {
           refreshChallenges={fetchChallenges}
           fieldId={selectedChallenge.videoUrl}
           taskUrl={selectedChallenge.taskUrl}
+        />
+      )}
+      {selectedGoal && (
+        <GoalDrawer
+          isOpen={!!selectedGoal}
+          onClose={() => {
+            setSelectedGoal(null);
+          }}
+          goal={selectedGoal}
+          refreshChallenges={fetchChallenges}
         />
       )}
     </main>
