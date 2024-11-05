@@ -199,7 +199,7 @@ export default function ChallengesPage() {
                 >
                   <div className="flex gap-2 items-center">
                     <img
-                      src={goal.picUrl}
+                      src={`https://getquest.tech:8443/images/${goal.picUrl}`}
                       alt={goal.name}
                       className="size-12 bg-[#F6F6F6] rounded-xl"
                     />
