@@ -26,7 +26,6 @@ type ChallengeDrawerProps = {
   status: string;
   isSent: boolean;
   isPromo: boolean;
-  isGoal: boolean; // Новое свойство для целей
   challengeId: number;
   initDataRaw: string;
   refreshChallenges: () => Promise<void>;
@@ -45,7 +44,6 @@ export function ChallengeDrawer({
                                   status,
                                   isSent,
                                   isPromo,
-                                  isGoal, // Добавили isGoal
                                   challengeId,
                                   initDataRaw,
                                   refreshChallenges,
@@ -72,8 +70,8 @@ export function ChallengeDrawer({
     const xhr = new XMLHttpRequest();
 
     const url = isPromo
-      ? `${BASE_URL}/api/promochallenges/${challengeId}/complete`
-      : `${BASE_URL}/api/challenges/${challengeId}/complete`;
+      ? `https://getquest.tech:8443/api/promochallenges/${challengeId}/complete`
+      : `https://getquest.tech:8443/api/challenges/${challengeId}/complete`;
 
     xhr.open("POST", url, true);
 
@@ -119,8 +117,8 @@ export function ChallengeDrawer({
   const handleAccept = async () => {
     try {
       const url = isPromo
-        ? `${BASE_URL}/api/promochallenges/${challengeId}/start`
-        : `${BASE_URL}/api/challenges/${challengeId}/accept`;
+        ? `https://getquest.tech:8443/api/promochallenges/${challengeId}/start`
+        : `https://getquest.tech:8443/api/challenges/${challengeId}/accept`;
 
       const method = isPromo ? "POST" : "PUT";
 
@@ -147,41 +145,10 @@ export function ChallengeDrawer({
     }
   };
 
-  const handleClaimReward = async () => {
-    try {
-      const response = await fetch(
-        `${BASE_URL}/api/goals/${challengeId}/claim`,
-        {
-          method: "POST",
-          headers: {
-            "Content-Type": "application/json",
-            accept: "*/*",
-            initData: initDataRaw,
-          },
-        }
-      );
-
-      if (response.ok) {
-        alert("Награда получена.");
-        onClose();
-        refreshChallenges();
-      } else {
-        console.error(
-          "Ошибка при получении награды",
-          response.statusText
-        );
-        alert("Не удалось получить награду.");
-      }
-    } catch (error) {
-      console.error("Произошла ошибка при получении награды:", error);
-      alert("Произошла ошибка при получении награды.");
-    }
-  };
-
   const handleDecline = async () => {
     try {
       const response = await fetch(
-        `${BASE_URL}/api/challenges/${challengeId}/decline`,
+        `https://getquest.tech:8443/api/challenges/${challengeId}/decline`,
         {
           method: "PUT",
           headers: {
@@ -208,8 +175,8 @@ export function ChallengeDrawer({
 
   const handleApprove = async () => {
     const url = isPromo
-      ? `${BASE_URL}/api/promochallenges/${challengeId}/approve`
-      : `${BASE_URL}/api/challenges/${challengeId}/approve`;
+      ? `https://getquest.tech:8443/api/promochallenges/${challengeId}/approve`
+      : `https://getquest.tech:8443/api/challenges/${challengeId}/approve`;
 
     const response = await fetch(url, {
       method: "PUT",
@@ -237,8 +204,8 @@ export function ChallengeDrawer({
     if (!confirmed) return;
 
     const url = isPromo
-      ? `${BASE_URL}/api/promochallenges/${challengeId}/dispute`
-      : `${BASE_URL}/api/challenges/${challengeId}/dispute`;
+      ? `https://getquest.tech:8443/api/promochallenges/${challengeId}/dispute`
+      : `https://getquest.tech:8443/api/challenges/${challengeId}/dispute`;
 
     const response = await fetch(url, {
       method: "PUT",
@@ -310,24 +277,22 @@ export function ChallengeDrawer({
             <DrawerTitle id="challenge-title" className="text-xl font-bold">
               {achievementTitle}
             </DrawerTitle>
-            {!isGoal && ( // Для целей не показываем senderName
-              isPromo ? (
-                <a
-                  href={taskUrl}
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  className="text-sm text-blue-500 mb-4"
-                >
-                  Выполнить
-                </a>
-              ) : (
-                <Link
-                  href={`/profile/${senderName.replace("@", "")}`}
-                  className="text-sm text-gray-600 mb-4"
-                >
-                  {senderName}
-                </Link>
-              )
+            {isPromo ? (
+              <a
+                href={taskUrl}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="text-sm text-blue-500 mb-4"
+              >
+                Выполнить
+              </a>
+            ) : (
+              <Link
+                href={`/profile/${senderName.replace("@", "")}`}
+                className="text-sm text-gray-600 mb-4"
+              >
+                {senderName}
+              </Link>
             )}
             <p className="text-3xl text-gradient ml-4 font-black">
               <span className="mr-1">{reputation}</span>
@@ -368,7 +333,7 @@ export function ChallengeDrawer({
                   }}
                 >
                   <source
-                    src={`${BASE_URL}/api/videos/download?fileId=${fieldId}`}
+                    src={`https://getquest.tech:8443/api/videos/download?fileId=${fieldId}`}
                     type="video/mp4"
                   />
                   Ваш браузер не поддерживает видео.
@@ -378,33 +343,7 @@ export function ChallengeDrawer({
           )}
 
           <DrawerFooter className="flex flex-col gap-2 px-4">
-            {/* Кнопки для целей */}
-            {isGoal && (
-              <>
-                {status === "COMPLETED" && (
-                  <Button
-                    variant="secondary"
-                    onClick={handleClaimReward}
-                    className="w-full"
-                  >
-                    Забрать
-                  </Button>
-                )}
-                {status === "IN_PROGRESS" && (
-                  <p className="text-center text-gray-500">
-                    Продолжайте выполнять цель!
-                  </p>
-                )}
-                {status === "REWARDED" && (
-                  <p className="text-center text-gray-500">
-                    Цель полностью выполнена!
-                  </p>
-                )}
-              </>
-            )}
-
-            {/* Остальные кнопки, если это не цель */}
-            {!isGoal && shouldShowButtons && status === "PENDING" && (
+            {shouldShowButtons && status === "PENDING" && (
               <>
                 <Button
                   variant="secondary"
@@ -424,7 +363,7 @@ export function ChallengeDrawer({
                 )}
               </>
             )}
-            {!isGoal && status === "ACCEPTED" && !isSent && (
+            {status === "ACCEPTED" && !isSent && (
               <>
                 <input
                   ref={fileInputRef}
@@ -458,7 +397,7 @@ export function ChallengeDrawer({
                 )}
               </>
             )}
-            {!isGoal && isSent && status === "COMPLETED" && (
+            {isSent && status === "COMPLETED" && (
               <>
                 <Button
                   variant="secondary"
@@ -476,7 +415,7 @@ export function ChallengeDrawer({
                 </Button>
               </>
             )}
-            {!isGoal && status === "COMPLETED" && !isSent && !isPromo && (
+            {status === "COMPLETED" && !isSent && !isPromo && (
               <Button
                 onClick={handleDecline}
                 variant="outline"

@@ -24,6 +24,7 @@ type Challenge = {
   taskUrl?: string;
 };
 
+// Добавляем новый тип данных для целей
 type Goal = {
   id: number;
   description: string;
@@ -69,9 +70,9 @@ const getStatusBars = (status: string, isPromoOrTarget: boolean) => {
       bars = 1;
       color = "#F44336";
       break;
-    case "REWARDED":
+    case "REWARDED": // Обработка статуса REWARDED
       bars = 4;
-      color = "#C0C0C0";
+      color = "#C0C0C0"; // Серый цвет для неактивных целей
       break;
     case "IN_PROGRESS":
       bars = 0;
@@ -85,7 +86,9 @@ export default function ChallengesPage() {
   const ref = useRef<HTMLDivElement>(null);
   const [challenges, setChallenges] = useState<Challenge[]>([]);
   const [goals, setGoals] = useState<Goal[]>([]);
-  const [selectedChallenge, setSelectedChallenge] = useState<any>(null); // Изменили тип на any
+  const [selectedChallenge, setSelectedChallenge] = useState<Challenge | null>(
+    null
+  );
   const [tab, setTab] = useState<"promo" | "targets" | "assigned" | "sent">(
     "promo"
   );
@@ -109,25 +112,22 @@ export default function ChallengesPage() {
       } else if (tab === "promo") {
         endpoint = `${BASE_URL}/api/promochallenges`;
       } else if (tab === "targets") {
-        endpoint = `${BASE_URL}/api/goals`;
+        endpoint = `${BASE_URL}/api/goals`; // Эндпоинт для целей
       }
 
       const response = await fetch(endpoint, { method: "GET", headers });
 
       if (!response.ok) {
-        console.error(
-          "Ошибка при получении данных:",
-          response.statusText
-        );
+        console.error("Ошибка при получении данных:", response.statusText);
         return;
       }
 
       if (tab === "targets") {
         const data: Goal[] = await response.json();
-        setGoals(data);
+        setGoals(data); // Сохраняем данные целей
       } else {
         const data: Challenge[] = await response.json();
-        setChallenges(data);
+        setChallenges(data); // Сохраняем данные испытаний
       }
     } catch (error) {
       console.error("Произошла ошибка при получении данных:", error);
@@ -137,6 +137,36 @@ export default function ChallengesPage() {
   useEffect(() => {
     fetchChallenges();
   }, [initDataRaw, tab]);
+
+  // Функция для обработки получения награды
+  const handleClaimReward = async (goalId: number) => {
+    if (!initDataRaw) return;
+
+    const headers: HeadersInit = {
+      "Content-Type": "application/json",
+      initData: initDataRaw,
+    };
+
+    try {
+      const response = await fetch(
+        `${BASE_URL}/api/goals/${goalId}/claim`,
+        {
+          method: "POST",
+          headers,
+        }
+      );
+
+      if (!response.ok) {
+        console.error("Ошибка при отправке запроса на получение награды:", response.statusText);
+        return;
+      }
+
+      // Обновляем список целей после получения награды
+      fetchChallenges();
+    } catch (error) {
+      console.error("Произошла ошибка при отправке запроса на получение награды:", error);
+    }
+  };
 
   return (
     <main className="relative flex flex-col">
@@ -158,12 +188,48 @@ export default function ChallengesPage() {
 
       <div className="mt-40 rounded-t-[2rem] bg-white px-5 pt-8 pb-[calc(var(--nav-height)+1rem)]">
         <div className="flex justify-around mb-4">
-          {/* Ваши кнопки переключения вкладок */}
+          <button
+            className={cn(
+              "flex-grow text-[#B1B1B1] relative after:content after:bottom-0 after:h-[2px] after:bg-[#F6F6F6] after:inset-x-0 after:rounded-l-full after:absolute font-medium text-center py-2",
+              tab === "promo" && "text-black after:bg-[#FEEE9E]"
+            )}
+            onClick={() => setTab("promo")}
+          >
+            Промо
+          </button>
+          <button
+            className={cn(
+              "flex-grow text-[#B1B1B1] relative after:content after:bottom-0 after:h-[2px] after:bg-[#F6F6F6] after:inset-x-0 after:rounded-l-full after:absolute font-medium text-center py-2",
+              tab === "targets" && "text-black after:bg-[#FEEE9E]"
+            )}
+            onClick={() => setTab("targets")}
+          >
+            Цели
+          </button>
+          <button
+            className={cn(
+              "flex-grow text-[#B1B1B1] relative after:content after:bottom-0 after:h-[2px] after:bg-[#F6F6F6] after:inset-x-0 after:rounded-l-full after:absolute font-medium text-center py-2",
+              tab === "assigned" && "text-black after:bg-[#FEEE9E]"
+            )}
+            onClick={() => setTab("assigned")}
+          >
+            От друзей
+          </button>
+          <button
+            className={cn(
+              "flex-grow text-[#B1B1B1] relative after:content after:bottom-0 after:h-[2px] after:bg-[#F6F6F6] after:inset-x-0 after:rounded-l-full after:absolute font-medium text-center py-2",
+              tab === "sent" && "text-black after:bg-[#FEEE9E]"
+            )}
+            onClick={() => setTab("sent")}
+          >
+            Для друзей
+          </button>
         </div>
 
         <div className="flex flex-col gap-3 mb-24">
           {tab === "targets"
             ? goals.map((goal) => {
+              // Для целей всегда передаем isPromoOrTarget = true
               const { bars, color } = getStatusBars(goal.status, true);
 
               return (
@@ -172,66 +238,151 @@ export default function ChallengesPage() {
                   className={`flex flex-col border rounded-full border-[#fcf4f4] px-6 py-4 ${
                     goal.status === "REWARDED" ? "opacity-50" : ""
                   }`}
-                  onClick={() => setSelectedChallenge({ ...goal, isGoal: true })}
                 >
-                  {/* Отображение цели */}
+                  <div className="flex gap-2 items-center">
+                    <img
+                      src={`https://getquest.tech:8443/images/${goal.picUrl}`}
+                      alt={goal.name}
+                      className="size-12 bg-[#F6F6F6] rounded-xl"
+                    />
+                    <div className="flex-grow">
+                      <div className="text-black font-semibold">{goal.name}</div>
+                      <div className="text-gradient">
+                        {goal.rewardPoints}{" "}
+                        <img
+                          className="inline relative -top-0.5 -left-1"
+                          src={Rewards.src}
+                          alt="Награды"
+                          height={18}
+                          width={18}
+                        />
+                      </div>
+                      {/* Отображение прогресса */}
+                      <div className="text-sm text-gray-500">
+                        {goal.currentCount}/{goal.targetCount}
+                      </div>
+                    </div>
+                    {/* Кнопка "Забрать" для статуса COMPLETED */}
+                    {goal.status === "COMPLETED" && (
+                      <button
+                        className="bg-blue-500 text-white px-4 py-2 rounded-full"
+                        onClick={() => handleClaimReward(goal.id)}
+                      >
+                        Забрать
+                      </button>
+                    )}
+                  </div>
+
+                  {/* Отображение статус-баров */}
+                  {bars > 0 ? (
+                    <div className="flex gap-[10px] mt-2">
+                      {Array.from({ length: 4 }).map((_, index) => (
+                        <figure
+                          key={index}
+                          className="h-[5px] grow rounded-full"
+                          style={{
+                            backgroundColor: index < bars ? color : "#F6F6F6",
+                          }}
+                        />
+                      ))}
+                    </div>
+                  ) : null}
                 </div>
               );
             })
             : challenges.map((challenge) => {
               const isPromo = tab === "promo";
+              // Передаем флаг isPromo в функцию getStatusBars
               const { bars, color } = getStatusBars(challenge.status, isPromo);
 
               return (
                 <div
                   key={challenge.id}
                   className="flex flex-col border rounded-full border-[#fcf4f4] px-6 py-4"
-                  onClick={() => setSelectedChallenge({ ...challenge, isGoal: false })}
                 >
-                  {/* Отображение испытания */}
+                  <div className="flex gap-2 items-center">
+                    <img
+                      src={
+                        isPromo
+                          ? `https://getquest.tech:8443/images/${challenge.promoAchievementPicsUrl}`
+                          : `https://getquest.tech:8443/images/${challenge.achievementPicsUrl}`
+                      }
+                      alt={
+                        isPromo
+                          ? challenge.promoAchievementTitle || "Промо испытание"
+                          : challenge.achievementTitle
+                      }
+                      className="size-12 bg-[#F6F6F6] rounded-xl"
+                    />
+                    <div
+                      className="flex-grow"
+                      onClick={() => setSelectedChallenge(challenge)}
+                    >
+                      <div className="text-black font-semibold">
+                        {isPromo
+                          ? challenge.promoAchievementTitle
+                          : challenge.achievementTitle}
+                      </div>
+                      <div className="text-gradient">
+                        {challenge.price}{" "}
+                        <img
+                          className="inline relative -top-0.5 -left-1"
+                          src={Rewards.src}
+                          alt="Награды"
+                          height={18}
+                          width={18}
+                        />
+                      </div>
+                    </div>
+                  </div>
+
+                  {/* Отображение статус-баров */}
+                  {bars > 0 ? (
+                    <div className="flex gap-[10px] mt-2">
+                      {Array.from({ length: 4 }).map((_, index) => (
+                        <figure
+                          key={index}
+                          className="h-[5px] grow rounded-full"
+                          style={{
+                            backgroundColor: index < bars ? color : "#F6F6F6",
+                          }}
+                        />
+                      ))}
+                    </div>
+                  ) : null}
                 </div>
               );
             })}
         </div>
       </div>
 
-      {selectedChallenge && (
+      {/* Отображаем ChallengeDrawer только если не выбрана вкладка "targets" */}
+      {selectedChallenge && tab !== "targets" && (
         <ChallengeDrawer
           isOpen={!!selectedChallenge}
           onClose={() => setSelectedChallenge(null)}
           achievementPicsUrl={
-            selectedChallenge.isGoal
-              ? selectedChallenge.picUrl
-              : tab === "promo"
-                ? selectedChallenge.promoAchievementPicsUrl || ""
-                : selectedChallenge.achievementPicsUrl || ""
+            tab === "promo"
+              ? selectedChallenge.promoAchievementPicsUrl || ""
+              : selectedChallenge.achievementPicsUrl || ""
           }
           achievementTitle={
-            selectedChallenge.isGoal
-              ? selectedChallenge.name
-              : tab === "promo"
-                ? selectedChallenge.promoAchievementTitle || ""
-                : selectedChallenge.achievementTitle || ""
+            tab === "promo"
+              ? selectedChallenge.promoAchievementTitle || ""
+              : selectedChallenge.achievementTitle || ""
           }
-          reputation={
-            selectedChallenge.isGoal
-              ? selectedChallenge.rewardPoints
-              : selectedChallenge.price
-          }
+          reputation={selectedChallenge.price}
           senderName={
-            selectedChallenge.isGoal
-              ? ""
-              : tab === "assigned"
-                ? `@${selectedChallenge.senderUserName}`
-                : tab === "sent"
-                  ? `@${selectedChallenge.receiverUserName}`
-                  : "Промо"
+            tab === "assigned"
+              ? `@${selectedChallenge.senderUserName}`
+              : tab === "sent"
+                ? `@${selectedChallenge.receiverUserName}`
+                : "Промо"
           }
           description={selectedChallenge.description}
           status={selectedChallenge.status}
           isSent={tab === "sent"}
           isPromo={tab === "promo"}
-          isGoal={selectedChallenge.isGoal}
           challengeId={selectedChallenge.id}
           initDataRaw={initDataRaw || ""}
           refreshChallenges={fetchChallenges}
