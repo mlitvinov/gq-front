@@ -34,6 +34,8 @@ type Goal = {
   currentCount: number;
   status: string;
   rewardPoints: number;
+  completionCount?: number;
+  currentTargetCount?: number;
 };
 
 const getStatusBars = (status: string, isPromoOrTarget: boolean) => {
@@ -68,12 +70,12 @@ const getStatusBars = (status: string, isPromoOrTarget: boolean) => {
       bars = 1;
       color = "#F44336";
       break;
-    case "REWARDED": // Добавляем обработку статуса REWARDED
+    case "REWARDED": // Обработка статуса REWARDED
       bars = 4;
-      color = "#4CAF50";
+      color = "#C0C0C0"; // Серый цвет для неактивных целей
       break;
-    case "IN_PROGRESS": // Добавляем обработку статуса IN_PROGRESS
-      bars = 0; // Не отображаем статус-бары
+    case "IN_PROGRESS":
+      bars = 0;
       break;
   }
 
@@ -87,7 +89,9 @@ export default function ChallengesPage() {
   const [selectedChallenge, setSelectedChallenge] = useState<Challenge | null>(
     null
   );
-  const [tab, setTab] = useState<"promo" | "targets" | "assigned" | "sent">("promo");
+  const [tab, setTab] = useState<"promo" | "targets" | "assigned" | "sent">(
+    "promo"
+  );
   const initDataRaw = useLaunchParams().initDataRaw;
 
   const fetchChallenges = async () => {
@@ -108,7 +112,7 @@ export default function ChallengesPage() {
       } else if (tab === "promo") {
         endpoint = `${BASE_URL}/api/promochallenges`;
       } else if (tab === "targets") {
-        endpoint = `${BASE_URL}/api/goals`; // Обновляем эндпоинт для целей
+        endpoint = `${BASE_URL}/api/goals`; // Эндпоинт для целей
       }
 
       const response = await fetch(endpoint, { method: "GET", headers });
@@ -133,6 +137,36 @@ export default function ChallengesPage() {
   useEffect(() => {
     fetchChallenges();
   }, [initDataRaw, tab]);
+
+  // Функция для обработки получения награды
+  const handleClaimReward = async (goalId: number) => {
+    if (!initDataRaw) return;
+
+    const headers: HeadersInit = {
+      "Content-Type": "application/json",
+      initData: initDataRaw,
+    };
+
+    try {
+      const response = await fetch(
+        `${BASE_URL}/api/goals/${goalId}/claim`,
+        {
+          method: "POST",
+          headers,
+        }
+      );
+
+      if (!response.ok) {
+        console.error("Ошибка при отправке запроса на получение награды:", response.statusText);
+        return;
+      }
+
+      // Обновляем список целей после получения награды
+      fetchChallenges();
+    } catch (error) {
+      console.error("Произошла ошибка при отправке запроса на получение награды:", error);
+    }
+  };
 
   return (
     <main className="relative flex flex-col">
@@ -201,7 +235,9 @@ export default function ChallengesPage() {
               return (
                 <div
                   key={goal.id}
-                  className="flex flex-col border rounded-full border-[#fcf4f4] px-6 py-4"
+                  className={`flex flex-col border rounded-full border-[#fcf4f4] px-6 py-4 ${
+                    goal.status === "REWARDED" ? "opacity-50" : ""
+                  }`}
                 >
                   <div className="flex gap-2 items-center">
                     <img
@@ -226,6 +262,15 @@ export default function ChallengesPage() {
                         {goal.currentCount}/{goal.targetCount}
                       </div>
                     </div>
+                    {/* Кнопка "Забрать" для статуса COMPLETED */}
+                    {goal.status === "COMPLETED" && (
+                      <button
+                        className="bg-blue-500 text-white px-4 py-2 rounded-full"
+                        onClick={() => handleClaimReward(goal.id)}
+                      >
+                        Забрать
+                      </button>
+                    )}
                   </div>
 
                   {/* Отображение статус-баров */}
