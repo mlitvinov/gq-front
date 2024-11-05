@@ -36,7 +36,7 @@ type Goal = {
   rewardPoints: number;
 };
 
-const getStatusBars = (status: string) => {
+const getStatusBars = (status: string, isPromoOrTarget: boolean) => {
   let bars = 1;
   let color = "#FEEE9E";
 
@@ -48,8 +48,13 @@ const getStatusBars = (status: string) => {
       bars = 2;
       break;
     case "COMPLETED":
-      bars = 4;
-      color = "#4CAF50";
+      if (isPromoOrTarget) {
+        bars = 4;
+        color = "#4CAF50";
+      } else {
+        bars = 3;
+        color = "#FEEE9E";
+      }
       break;
     case "APPROVE":
       bars = 4;
@@ -190,7 +195,8 @@ export default function ChallengesPage() {
         <div className="flex flex-col gap-3 mb-24">
           {tab === "targets"
             ? goals.map((goal) => {
-              const { bars, color } = getStatusBars(goal.status);
+              // Для целей всегда передаем isPromoOrTarget = true
+              const { bars, color } = getStatusBars(goal.status, true);
 
               return (
                 <div
@@ -222,7 +228,7 @@ export default function ChallengesPage() {
                     </div>
                   </div>
 
-                  {/* Отображение статус-баров для статуса REWARDED */}
+                  {/* Отображение статус-баров */}
                   {bars > 0 ? (
                     <div className="flex gap-[10px] mt-2">
                       {Array.from({ length: 4 }).map((_, index) => (
@@ -240,8 +246,9 @@ export default function ChallengesPage() {
               );
             })
             : challenges.map((challenge) => {
-              const { bars, color } = getStatusBars(challenge.status);
               const isPromo = tab === "promo";
+              // Передаем флаг isPromo в функцию getStatusBars
+              const { bars, color } = getStatusBars(challenge.status, isPromo);
 
               return (
                 <div
@@ -284,7 +291,8 @@ export default function ChallengesPage() {
                     </div>
                   </div>
 
-                  {!isPromo || challenge.status !== "PENDING" ? (
+                  {/* Отображение статус-баров */}
+                  {bars > 0 ? (
                     <div className="flex gap-[10px] mt-2">
                       {Array.from({ length: 4 }).map((_, index) => (
                         <figure
