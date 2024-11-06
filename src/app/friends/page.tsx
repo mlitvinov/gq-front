@@ -179,7 +179,7 @@ export default function FriendsPage() {
         />
       </div>
       <div className="mt-40 rounded-t-[2rem] bg-white px-5 pt-8 pb-[calc(var(--nav-height)+1rem)]">
-        <h1 className="text-black text-2xl font-medium tracking-[-0.05em] mb-6">
+        <h1 className="text-black text-2xl font-medium tracking-[-0.05em] mb-4">
           Приглашай друзей{" "}
           <img
             className="inline -left-1 -top-1 relative"
@@ -202,7 +202,7 @@ export default function FriendsPage() {
         {/* Кнопка копирования реферальной ссылки со стилем кнопки "квест" */}
         <Button
           onClick={copyReferralLink}
-          className="w-full"
+          className="w-full mb-4"
           style={{ backgroundColor: "#FEEF9E", color: "black"}}
         >
           Скопировать реферальную ссылку
