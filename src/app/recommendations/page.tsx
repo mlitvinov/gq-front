@@ -11,11 +11,11 @@ const RecommendationsPage = () => {
           src={Cat.src}
           className="w-32 h-32 object-contain mb-6 mx-auto"
         />
-        <h1 className="text-2xl font-semibold text-black">
+        <h1 className="text-2xl font-black text-black">
           СКОРО
         </h1>
-        <h1 className="text-2xl text-black">
-          01/12/2024
+        <h1 className="text-2xl text-gradient  ml-auto font-semibold text-black">
+          12/12/2024
         </h1>
       </div>
     </main>

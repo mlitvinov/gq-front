@@ -25,7 +25,7 @@ const getStatusBars = (status: string, isPromoOrTarget: boolean) => {
     case "COMPLETED":
       if (isPromoOrTarget) {
         bars = 4;
-        color = "#59e5c0";
+        color = "#ABD6E0";
       } else {
         bars = 3;
         color = "#FEEE9E";
@@ -33,7 +33,7 @@ const getStatusBars = (status: string, isPromoOrTarget: boolean) => {
       break;
     case "APPROVE":
       bars = 4;
-      color = "#59e5c0";
+      color = "#ABD6E0";
       break;
     case "DISPUTED":
       bars = 4;
