@@ -134,20 +134,20 @@ export default function ChallengesPage() {
           <button
             className={cn(
               "flex-grow text-[#B1B1B1] relative after:content after:bottom-0 after:h-[2px] after:bg-[#F6F6F6] after:inset-x-0 after:rounded-l-full after:absolute font-medium text-center py-2",
-              tab === "promo" && "text-black after:bg-[#FEEE9E]"
-            )}
-            onClick={() => setTab("promo")}
-          >
-            Промо
-          </button>
-          <button
-            className={cn(
-              "flex-grow text-[#B1B1B1] relative after:content after:bottom-0 after:h-[2px] after:bg-[#F6F6F6] after:inset-x-0 after:rounded-l-full after:absolute font-medium text-center py-2",
               tab === "targets" && "text-black after:bg-[#FEEE9E]"
             )}
             onClick={() => setTab("targets")}
           >
             Цели
+          </button>
+          <button
+            className={cn(
+              "flex-grow text-[#B1B1B1] relative after:content after:bottom-0 after:h-[2px] after:bg-[#F6F6F6] after:inset-x-0 after:rounded-l-full after:absolute font-medium text-center py-2",
+              tab === "promo" && "text-black after:bg-[#FEEE9E]"
+            )}
+            onClick={() => setTab("promo")}
+          >
+            От нас
           </button>
           <button
             className={cn(
@@ -172,14 +172,14 @@ export default function ChallengesPage() {
         <div className="flex flex-col gap-3 mb-24">
           {tab === "targets"
             ? goals.map((goal) => {
-                // Для целей всегда передаем isPromoOrTarget = true
-                const { bars, color } = getStatusBars(goal.status, true);
+              // Для целей всегда передаем isPromoOrTarget = true
+              const { bars, color } = getStatusBars(goal.status, true);
 
-                return (
-                  <button
-                    key={goal.id}
-                    type="button"
-                    className={`flex flex-col  border rounded-full border-[#fcf4f4] px-6 py-4 ${
+              return (
+                <button
+                  key={goal.id}
+                  type="button"
+                  className={`flex flex-col  border rounded-full border-[#fcf4f4] px-6 py-4 ${
                       goal.status === "REWARDED" ? "opacity-50" : ""
                     }`}
                     onClick={() => setSelectedGoal(goal)}
@@ -208,7 +208,7 @@ export default function ChallengesPage() {
                         </div>
                       </div>
                       {/* Отображение прогресса */}
-                      <div className="text-base text-gradient font-black ml-auto">
+                      <div className="font-semibold text-gradient text-gray-500 ml-auto">
                         {goal.currentCount}/{goal.targetCount}
                       </div>
                     </div>
