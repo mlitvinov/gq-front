@@ -23,16 +23,19 @@ type GoalDrawerProps = {
 };
 
 export function GoalDrawer({
-  isOpen,
-  onClose,
-  goal,
-  refreshChallenges,
-}: GoalDrawerProps) {
+                             isOpen,
+                             onClose,
+                             goal,
+                             refreshChallenges,
+                           }: GoalDrawerProps) {
   const initDataRaw = useLaunchParams().initDataRaw;
+  const [isLoadingClaim, setIsLoadingClaim] = React.useState(false); // Добавлено состояние загрузки
 
   // Функция для обработки получения награды
   const handleClaimReward = async (goalId: number) => {
     if (!initDataRaw) return;
+
+    setIsLoadingClaim(true); // Начало загрузки
 
     const headers: HeadersInit = {
       "Content-Type": "application/json",
@@ -50,6 +53,7 @@ export function GoalDrawer({
           "Ошибка при отправке запроса на получение награды:",
           response.statusText
         );
+        // Здесь можно добавить отображение сообщения об ошибке пользователю, если необходимо
         return;
       }
 
@@ -61,6 +65,9 @@ export function GoalDrawer({
         "Произошла ошибка при отправке запроса на получение награды:",
         error
       );
+      // Здесь можно добавить отображение сообщения об ошибке пользователю, если необходимо
+    } finally {
+      setIsLoadingClaim(false); // Завершение загрузки
     }
   };
 
@@ -104,6 +111,8 @@ export function GoalDrawer({
               <Button
                 variant="secondary"
                 onClick={() => handleClaimReward(goal.id)}
+                isLoading={isLoadingClaim} // Добавлен пропс isLoading
+                disabled={isLoadingClaim} // Опционально: отключение кнопки во время загрузки
               >
                 Забрать вознаграждение
               </Button>
