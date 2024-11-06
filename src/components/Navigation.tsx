@@ -8,11 +8,20 @@ import friendsA from "@/assets/friends-a.png";
 import challenges from "@/assets/challenges.png";
 import challengesA from "@/assets/challenges-a.png";
 import profile from "@/assets/profile.png";
+import play from "@/assets/play.png";
+import playA from "@/assets/play-a.png";
 import profileA from "@/assets/profile-a.png";
 import { usePathname } from "next/navigation";
 import Link from "next/link";
 
 const tabs = [
+  {
+    id: "recommendations",
+    icon: play,
+    iconA: playA,
+    label: "Рекомендации",
+    link: "/recommendations",
+  },
   {
     id: "friends",
     icon: friends,
@@ -41,7 +50,7 @@ const Navigation = () => {
 
   return (
     <nav className="fixed bottom-0 z-[9999] left-0 w-full bg-white h-[--nav-height] pb-[22px]">
-      <ul className="flex gap-8 justify-between items-center h-full px-8">
+      <ul className="flex gap-4 justify-between items-center h-full px-4">
         {tabs.map((tab) => {
           const isActive =
             pathname?.split("/").slice(-1).pop() === tab.id.toString();
