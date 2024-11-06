@@ -51,16 +51,18 @@ export function ChallengeDrawer({
                                   taskUrl,
                                 }: ChallengeDrawerProps) {
   const [progress, setProgress] = React.useState<number>(0);
+  const [errorMessage, setErrorMessage] = React.useState<string>("");
 
   const fileInputRef = React.useRef<HTMLInputElement>(null);
 
   const handleApproveSubmit = () => {
+    setErrorMessage(""); // Очистить сообщение об ошибке при повторной попытке
     fileInputRef.current?.click();
   };
 
   const handleUpload = (selectedFile: File) => {
     if (!selectedFile) {
-      alert("Пожалуйста, выберите видеофайл.");
+      setErrorMessage("Пожалуйста, выберите видеофайл.");
       return;
     }
 
@@ -95,14 +97,14 @@ export function ChallengeDrawer({
         refreshChallenges();
       } else {
         console.error("Ошибка при загрузке видео");
-        alert("Не удалось загрузить видео.");
+        setErrorMessage("Не удалось загрузить видео.");
       }
     });
 
     xhr.onerror = () => {
       console.log("xhr.onerror", xhr);
       console.error("Ошибка при загрузке видео");
-      alert("Не удалось загрузить видео.");
+      setErrorMessage("Не удалось загрузить видео.");
     };
 
     xhr.send(formData);
@@ -110,7 +112,22 @@ export function ChallengeDrawer({
 
   const handleFileChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     if (event.target.files && event.target.files.length > 0) {
-      handleUpload(event.target.files[0]);
+      const selectedFile = event.target.files[0];
+
+      // Проверка типа файла (должен быть видео)
+      if (!selectedFile.type.startsWith("video/")) {
+        setErrorMessage("Пожалуйста, загрузите видеофайл.");
+        return;
+      }
+
+      // Проверка размера файла (не больше 20 МБ)
+      const maxSizeInBytes = 20 * 1024 * 1024; // 20 МБ в байтах
+      if (selectedFile.size > maxSizeInBytes) {
+        setErrorMessage("Размер видео не должен превышать 20 МБ.");
+        return;
+      }
+
+      handleUpload(selectedFile);
     }
   };
 
@@ -137,11 +154,11 @@ export function ChallengeDrawer({
         refreshChallenges();
       } else {
         console.error("Ошибка при принятии задания", response.statusText);
-        alert("Не удалось принять задание.");
+        setErrorMessage("Не удалось принять задание.");
       }
     } catch (error) {
       console.error("Произошла ошибка при принятии задания:", error);
-      alert("Произошла ошибка при принятии задания.");
+      setErrorMessage("Произошла ошибка при принятии задания.");
     }
   };
 
@@ -165,35 +182,40 @@ export function ChallengeDrawer({
         refreshChallenges();
       } else {
         console.error("Ошибка при отклонении задания", response.statusText);
-        alert("Не удалось отклонить задание.");
+        setErrorMessage("Не удалось отклонить задание.");
       }
     } catch (error) {
       console.error("Произошла ошибка при отклонении задания:", error);
-      alert("Произошла ошибка при отклонении задания.");
+      setErrorMessage("Произошла ошибка при отклонении задания.");
     }
   };
 
   const handleApprove = async () => {
-    const url = isPromo
-      ? `https://getquest.tech:8443/api/promochallenges/${challengeId}/approve`
-      : `https://getquest.tech:8443/api/challenges/${challengeId}/approve`;
+    try {
+      const url = isPromo
+        ? `https://getquest.tech:8443/api/promochallenges/${challengeId}/approve`
+        : `https://getquest.tech:8443/api/challenges/${challengeId}/approve`;
 
-    const response = await fetch(url, {
-      method: "PUT",
-      headers: {
-        "Content-Type": "application/json",
-        accept: "*/*",
-        initData: initDataRaw,
-      },
-    });
+      const response = await fetch(url, {
+        method: "PUT",
+        headers: {
+          "Content-Type": "application/json",
+          accept: "*/*",
+          initData: initDataRaw,
+        },
+      });
 
-    if (response.ok) {
-      alert("Задание подтверждено.");
-      await refreshChallenges();
-      onClose();
-    } else {
-      console.error("Ошибка при подтверждении задания", response.statusText);
-      alert("Не удалось подтвердить задание.");
+      if (response.ok) {
+        alert("Задание подтверждено.");
+        await refreshChallenges();
+        onClose();
+      } else {
+        console.error("Ошибка при подтверждении задания", response.statusText);
+        setErrorMessage("Не удалось подтвердить задание.");
+      }
+    } catch (error) {
+      console.error("Произошла ошибка при подтверждении задания:", error);
+      setErrorMessage("Произошла ошибка при подтверждении задания.");
     }
   };
 
@@ -203,26 +225,31 @@ export function ChallengeDrawer({
     );
     if (!confirmed) return;
 
-    const url = isPromo
-      ? `https://getquest.tech:8443/api/promochallenges/${challengeId}/dispute`
-      : `https://getquest.tech:8443/api/challenges/${challengeId}/dispute`;
+    try {
+      const url = isPromo
+        ? `https://getquest.tech:8443/api/promochallenges/${challengeId}/dispute`
+        : `https://getquest.tech:8443/api/challenges/${challengeId}/dispute`;
 
-    const response = await fetch(url, {
-      method: "PUT",
-      headers: {
-        "Content-Type": "application/json",
-        accept: "*/*",
-        initData: initDataRaw,
-      },
-    });
+      const response = await fetch(url, {
+        method: "PUT",
+        headers: {
+          "Content-Type": "application/json",
+          accept: "*/*",
+          initData: initDataRaw,
+        },
+      });
 
-    if (response.ok) {
-      alert("Спор начат.");
-      await refreshChallenges();
-      onClose();
-    } else {
-      console.error("Ошибка при начале спора", response.statusText);
-      alert("Не удалось начать спор.");
+      if (response.ok) {
+        alert("Спор начат.");
+        await refreshChallenges();
+        onClose();
+      } else {
+        console.error("Ошибка при начале спора", response.statusText);
+        setErrorMessage("Не удалось начать спор.");
+      }
+    } catch (error) {
+      console.error("Произошла ошибка при начале спора:", error);
+      setErrorMessage("Произошла ошибка при начале спора.");
     }
   };
 
@@ -248,6 +275,7 @@ export function ChallengeDrawer({
 
       if (!response.ok) {
         console.error("Ошибка при удалении задания:", response.statusText);
+        setErrorMessage("Не удалось удалить задание из истории.");
         return;
       }
 
@@ -255,6 +283,7 @@ export function ChallengeDrawer({
       onClose();
     } catch (error) {
       console.error("Произошла ошибка при удалении задания:", error);
+      setErrorMessage("Произошла ошибка при удалении задания.");
     }
   };
 
@@ -307,10 +336,17 @@ export function ChallengeDrawer({
           </DrawerHeader>
           <DrawerDescription
             id="challenge-description"
-            className="mt-4 mb-8 px-4 text-center font-medium text-sm"
+            className="mt-4 mb-4 px-4 text-center font-medium text-sm"
           >
             {description}
           </DrawerDescription>
+
+          {/* Отображение сообщения об ошибке */}
+          {errorMessage && (
+            <div className="mb-4 px-4 text-center">
+              <p className="text-red-600 font-semibold">{errorMessage}</p>
+            </div>
+          )}
 
           {fieldId && (
             <div className="flex justify-center mb-4">
@@ -363,6 +399,7 @@ export function ChallengeDrawer({
                 )}
               </>
             )}
+
             {status === "ACCEPTED" && !isSent && (
               <>
                 <input
@@ -397,6 +434,7 @@ export function ChallengeDrawer({
                 )}
               </>
             )}
+
             {isSent && status === "COMPLETED" && (
               <>
                 <Button
@@ -415,6 +453,7 @@ export function ChallengeDrawer({
                 </Button>
               </>
             )}
+
             {status === "COMPLETED" && !isSent && !isPromo && (
               <Button
                 onClick={handleDecline}
@@ -424,6 +463,7 @@ export function ChallengeDrawer({
                 Отказаться
               </Button>
             )}
+
             {((!isPromo && status === "DISPUTED") ||
               status === "DECLINED" ||
               status === "APPROVE") && (
