@@ -1,6 +1,6 @@
 "use client";
 
-import * as React from "react";
+import React from "react";
 import { Button } from "@/components/ui/button";
 import {
   Drawer,
@@ -33,6 +33,7 @@ export function SubmitQuestDrawer({
   const [achievements, setAchievements] = React.useState<Achievement[]>([]);
   const [selectedAchievement, setSelectedAchievement] =
     React.useState<Achievement | null>(null);
+  const [isLoading, setIsLoading] = React.useState(false);
   const [task, setTask] = React.useState("");
   const [imageUrl, setImageUrl] = React.useState("");
   const [numericValue, setNumericValue] = React.useState("");
@@ -58,7 +59,9 @@ export function SubmitQuestDrawer({
 
       if (data.length > 0) {
         setSelectedAchievement(data[0]);
-        setImageUrl(`https://getquest.tech:8443/api/images/${data[0].imageUrl}`);
+        setImageUrl(
+          `https://getquest.tech:8443/api/images/${data[0].imageUrl}`
+        );
       }
     };
 
@@ -66,10 +69,14 @@ export function SubmitQuestDrawer({
   }, [initDataRaw]);
 
   const handleSubmit = async () => {
+    if (!initDataRaw) return;
+
     if (!selectedAchievement || !task || !numericValue) {
       setErrorMessage("Пожалуйста, заполните все поля.");
       return;
     }
+
+    setIsLoading(true);
 
     const payload = {
       achievementId: selectedAchievement.userAchievement || 0,
@@ -83,12 +90,13 @@ export function SubmitQuestDrawer({
       headers: {
         accept: "*/*",
         "Content-Type": "application/json",
-        initData: initDataRaw || "",
+        initData: initDataRaw,
       },
       body: JSON.stringify(payload),
     });
 
     if (response.ok) {
+      setIsLoading(false);
       setIsOpen(false); // Локальное закрытие окна
       onClose?.(); // Закрытие окна через родительский компонент
       alert("Задание успешно отправлено!");
@@ -197,6 +205,7 @@ export function SubmitQuestDrawer({
 
             <DrawerFooter className="flex flex-col gap-2">
               <Button
+                isLoading={isLoading}
                 onClick={handleSubmit}
                 variant="secondary"
                 className="w-full z-[9999]"
