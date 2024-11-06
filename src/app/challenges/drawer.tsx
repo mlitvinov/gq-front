@@ -472,7 +472,7 @@ export function ChallengeDrawer({
                 className="text-red-700 bg-red-100/50"
                 onClick={() => hideChallenge(challengeId)}
               >
-                Скрыть
+                Удалить запись из истории
               </Button>
             )}
           </DrawerFooter>

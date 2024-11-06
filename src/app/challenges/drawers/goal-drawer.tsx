@@ -105,7 +105,7 @@ export function GoalDrawer({
                 variant="secondary"
                 onClick={() => handleClaimReward(goal.id)}
               >
-                Забрать
+                Забрать вознаграждение
               </Button>
             )}
           </DrawerFooter>
