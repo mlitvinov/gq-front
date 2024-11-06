@@ -5,6 +5,7 @@ import React, { useEffect, useRef, useState } from "react";
 import Messages from "@/assets/messages.png";
 import Arrows from "@/assets/arrows.png";
 import Rewards from "@/assets/rewards.png";
+import { useInitData } from "@telegram-apps/sdk-react";
 import { useLaunchParams } from "@telegram-apps/sdk-react";
 import { Link } from "@/components/Link/Link";
 import { cn } from "@/lib/utils";
@@ -30,6 +31,7 @@ type FriendRequest = {
 };
 
 export default function FriendsPage() {
+  const initData = useInitData();
   const initDataRaw = useLaunchParams().initDataRaw;
 
   const [friends, setFriends] = useState<User[]>([]);
@@ -143,6 +145,22 @@ export default function FriendsPage() {
     setRequests((prev) => prev.filter((req) => req.id !== requestId));
   };
 
+  const copyReferralLink = () => {
+    if (!initData?.user) {
+      console.error("Данные пользователя недоступны");
+      return;
+    }
+    const link = `https://t.me/CryptoMetaQuestBot?start=${initData.user.id}`;
+    navigator.clipboard.writeText(link).then(
+      () => {
+        alert("Ссылка скопирована в буфер обмена");
+      },
+      (err) => {
+        console.error("Не удалось скопировать текст: ", err);
+      }
+    );
+  };
+
   return (
     <main className="relative flex flex-col ">
       <div
@@ -180,6 +198,15 @@ export default function FriendsPage() {
           />
           зарабатывай <span className="text-gradient">репутацию</span>
         </h1>
+
+        {/* Кнопка копирования реферальной ссылки со стилем кнопки "квест" */}
+        <Button
+          onClick={copyReferralLink}
+          className="w-full"
+          style={{ backgroundColor: "#FEEF9E", color: "black"}}
+        >
+          Скопировать реферальную ссылку
+        </Button>
 
         {/* Табы */}
         <div className="flex mb-6">
