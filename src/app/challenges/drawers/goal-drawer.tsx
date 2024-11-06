@@ -72,7 +72,7 @@ export function GoalDrawer({
       >
         <div className="mx-auto w-full max-w-sm">
           <img
-            src={`https://getquest.tech:8443/images/${goal.picUrl}`}
+            src={`https://getquest.tech:8443/api/images/${goal.picUrl}`}
             alt={goal.name}
             className="w-full h-40 aspect-square object-contain select-none pointer-events-none rounded-md mb-4"
           />

@@ -58,7 +58,7 @@ export function SubmitQuestDrawer({
 
       if (data.length > 0) {
         setSelectedAchievement(data[0]);
-        setImageUrl(`https://getquest.tech:8443/images/${data[0].imageUrl}`);
+        setImageUrl(`https://getquest.tech:8443/api/images/${data[0].imageUrl}`);
       }
     };
 
@@ -140,7 +140,7 @@ export function SubmitQuestDrawer({
                     if (selected) {
                       setSelectedAchievement(selected);
                       setImageUrl(
-                        `https://getquest.tech:8443/images/${selected.imageUrl}`
+                        `https://getquest.tech:8443/api/images/${selected.imageUrl}`
                       );
                     }
                   }}

@@ -76,7 +76,7 @@ export default function ProfilePage({
         setAchievementImages(
           data.achievementListDTO.map(
             (achievement: Achievement) =>
-              `https://getquest.tech:8443/images/${achievement.imageUrl}`
+              `https://getquest.tech:8443/api/images/${achievement.imageUrl}`
           )
         );
       } catch (error) {

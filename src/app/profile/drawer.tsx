@@ -104,7 +104,7 @@ export function AchievementDrawer({
           <div className="flex flex-col border rounded-full border-[#fcf4f4] px-6 py-4">
             <div className="flex gap-2 items-center">
               <img
-                src={`https://getquest.tech:8443/images/${achievement.imageUrl}`}
+                src={`https://getquest.tech:8443/api/images/${achievement.imageUrl}`}
                 alt={achievement.name}
                 className="size-12 bg-[#F6F6F6] rounded-xl"
               />

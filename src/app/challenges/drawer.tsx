@@ -298,7 +298,7 @@ export function ChallengeDrawer({
       >
         <div className="mx-auto w-full max-w-sm">
           <img
-            src={`https://getquest.tech:8443/images/${achievementPicsUrl}`}
+            src={`https://getquest.tech:8443/api/images/${achievementPicsUrl}`}
             alt={achievementTitle}
             className="w-full h-40 aspect-square object-contain select-none pointer-events-none rounded-md mb-4"
           />
