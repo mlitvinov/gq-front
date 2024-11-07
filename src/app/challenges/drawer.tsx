@@ -233,7 +233,7 @@ export function ChallengeDrawer({
 
   const handleDispute = async () => {
     const confirmed = window.confirm(
-      "Вы уверены, что хотите начать спор? В случае спора никто не получит свои средства назад."
+      "Вы уверены, что не хотите принимать задание? В случае спора никто из участников не получит свои средства назад."
     );
     if (!confirmed) return;
 
@@ -253,7 +253,7 @@ export function ChallengeDrawer({
       });
 
       if (response.ok) {
-        alert("Спор начат.");
+        alert("Вы не приняли задание.");
         await refreshChallenges();
         onClose();
       } else {
@@ -471,7 +471,7 @@ export function ChallengeDrawer({
                   isLoading={isLoadingDispute}
                   className="w-full"
                 >
-                  Спор
+                  Не принимаю
                 </Button>
               </>
             )}
