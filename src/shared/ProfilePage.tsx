@@ -252,7 +252,9 @@ export default function ProfilePage({
           <h1 className="text-gradient text-3xl font-black">
             {Number(userData.rating).toLocaleString()}
           </h1>
-          <p className="text-black">@{userData.username}</p>
+          <p className="text-black">
+            @{userData.username ? userData.username : userData.name}
+          </p>
         </div>
 
         {!isUserPage && (
