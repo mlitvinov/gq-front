@@ -379,7 +379,7 @@ export function ChallengeDrawer({
           )}
 
           <DrawerFooter className="flex flex-col gap-2 px-4">
-            {shouldShowButtons && status === "IN_PROGRESS" && (
+            {shouldShowButtons && status === "PENDING" && (
               <>
                 <Button
                   variant="secondary"
