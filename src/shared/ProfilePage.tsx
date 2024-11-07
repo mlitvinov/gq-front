@@ -37,7 +37,7 @@ interface UserData {
 export default function ProfilePage({
                                       params,
                                     }: {
-  params?: { username: string };
+  params?: { id: number };
 }) {
   const [userData, setUserData] = useState<UserData | null>(null);
   const [achievementImages, setAchievementImages] = useState<string[]>([]);
@@ -51,7 +51,7 @@ export default function ProfilePage({
   const [isLoadingAcceptFriend, setIsLoadingAcceptFriend] = useState(false);
   const initDataRaw = useLaunchParams().initDataRaw;
 
-  const isUserPage = !params?.username;
+  const isUserPage = !params?.id;
 
   useEffect(() => {
     const fetchProfileData = async () => {
@@ -64,7 +64,7 @@ export default function ProfilePage({
         }
 
         const url = !isUserPage
-          ? `https://getquest.tech:8443/api/users/profile/${challengeData?.id}?id=${challengeData?.id}`
+          ? `https://getquest.tech:8443/api/users/profile/?id=${params?.id}`
           : "https://getquest.tech:8443/api/users/profile";
 
         const response = await fetch(url, {

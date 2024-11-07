@@ -250,7 +250,7 @@ export default function FriendsPage() {
             {friends.map((user) => (
               <Link
                 key={user.friendId}
-                href={`/profile/${user.userId}`}
+                href={`/profile/${user.friendId}`}
                 className="flex border rounded-full border-[#F6F6F6] px-6 py-4"
               >
                 <div className="grow">

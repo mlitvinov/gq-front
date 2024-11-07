@@ -2,6 +2,6 @@
 
 import ProfilePage from "@/shared/ProfilePage";
 
-export default function Page(params: { params?: { username: string } }) {
+export default function Page(params: { params?: { id: number } }) {
   return <ProfilePage {...params} />;
 }

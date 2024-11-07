@@ -10,6 +10,7 @@ export type Challenge = {
   senderUserName?: string;
   senderId: number;
   receiverUserName?: string;
+  receiverId: number;
   videoUrl?: string | null;
   taskUrl?: string;
 };
