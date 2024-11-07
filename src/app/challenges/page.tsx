@@ -325,6 +325,7 @@ export default function ChallengesPage() {
               ? `@${selectedChallenge.receiverUserName}`
               : "Промо"
           }
+          senderId={selectedChallenge.senderId}
           description={selectedChallenge.description}
           status={selectedChallenge.status}
           isSent={tab === "sent"}

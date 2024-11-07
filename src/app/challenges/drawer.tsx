@@ -22,6 +22,7 @@ type ChallengeDrawerProps = {
   achievementTitle: string;
   reputation: number;
   senderName: string;
+  senderId: number;
   description: string;
   status: string;
   isSent: boolean;
@@ -40,6 +41,7 @@ export function ChallengeDrawer({
                                   achievementTitle,
                                   reputation,
                                   senderName,
+                                  senderId,
                                   description,
                                   status,
                                   isSent,
@@ -335,7 +337,7 @@ export function ChallengeDrawer({
               </a>
             ) : (
               <Link
-                href={`/profile/${senderName.replace("@", "")}`}
+                href={`/profile/${senderId}`}
                 className="text-sm text-gray-600 mb-4"
               >
                 {senderName}

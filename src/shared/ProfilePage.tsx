@@ -20,6 +20,7 @@ interface ChallengeData {
   videoUrl: string | null;
   price: number;
   sender: string;
+  senderId: number;
 }
 
 interface UserData {
@@ -63,7 +64,7 @@ export default function ProfilePage({
         }
 
         const url = !isUserPage
-          ? `https://getquest.tech:8443/api/users/profile/${params.username}?username=${params.username}`
+          ? `https://getquest.tech:8443/api/users/profile/${challengeData?.id}?id=${challengeData?.id}`
           : "https://getquest.tech:8443/api/users/profile";
 
         const response = await fetch(url, {

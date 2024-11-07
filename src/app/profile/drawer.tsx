@@ -23,6 +23,7 @@ type ChallengeData = {
   videoUrl: string | null;
   price: number;
   sender: string;
+  senderId: number;
 };
 
 type AchievementDrawerProps = {
@@ -171,7 +172,7 @@ export function AchievementDrawer({
                 <p className="text-sm text-gray-600">
                   Отправитель:{" "}
                   <Link
-                    href={`/profile/${challengeData.sender.replace("@", "")}`}
+                    href={`/profile/${challengeData.senderId}`}
                     className="text-sm text-gray-600"
                   >
                     {challengeData.sender}

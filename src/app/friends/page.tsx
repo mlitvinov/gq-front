@@ -17,6 +17,7 @@ type User = {
   picsUrl: string;
   rating: number;
   username: string;
+  userId: string;
 };
 
 type FriendRequest = {
@@ -249,7 +250,7 @@ export default function FriendsPage() {
             {friends.map((user) => (
               <Link
                 key={user.friendId}
-                href={`/profile/${user.username.replace("@", "")}`}
+                href={`/profile/${user.userId}`}
                 className="flex border rounded-full border-[#F6F6F6] px-6 py-4"
               >
                 <div className="grow">
@@ -287,7 +288,7 @@ export default function FriendsPage() {
                 className="flex border rounded-full items-center border-[#F6F6F6] px-6 py-4"
               >
                 <Link
-                  href={`/profile/${request.senderName.replace("@", "")}`}
+                  href={`/profile/${request.senderId}`}
                   className="flex-grow font-semibold text-black no-underline"
                 >
                   {request.senderName.replace("@", "")}
