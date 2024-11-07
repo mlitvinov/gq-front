@@ -1,7 +1,6 @@
 "use client";
 
 import React, { useEffect, useRef, useState } from "react";
-
 import Messages from "@/assets/messages.png";
 import Arrows from "@/assets/arrows.png";
 import Rewards from "@/assets/rewards.png";
@@ -38,6 +37,9 @@ export default function FriendsPage() {
   const [requests, setRequests] = useState<FriendRequest[]>([]);
   const [activeTab, setActiveTab] = useState<"friends" | "requests">("friends");
 
+  const [loadingAcceptId, setLoadingAcceptId] = useState<number | null>(null);
+  const [loadingDeclineId, setLoadingDeclineId] = useState<number | null>(null);
+
   const ref = useRef<HTMLDivElement>(null);
 
   const getFriends = async () => {
@@ -59,7 +61,6 @@ export default function FriendsPage() {
     }
 
     const data = (await res.json()) as User[];
-
     setFriends(data);
   };
 
@@ -85,7 +86,6 @@ export default function FriendsPage() {
     }
 
     const data = (await res.json()) as FriendRequest[];
-
     setRequests(data);
   };
 
@@ -100,49 +100,65 @@ export default function FriendsPage() {
   const handleAccept = async (requestId: number) => {
     if (!initDataRaw) return;
 
+    setLoadingAcceptId(requestId); // Установка состояния загрузки для Accept
+
     const headers: HeadersInit = {
       "Content-Type": "application/json",
       initData: initDataRaw,
     };
 
-    const res = await fetch(
-      `https://getquest.tech:8443/friends/accept?requestId=${requestId}`,
-      {
-        method: "POST",
-        headers,
+    try {
+      const res = await fetch(
+        `https://getquest.tech:8443/friends/accept?requestId=${requestId}`,
+        {
+          method: "POST",
+          headers,
+        }
+      );
+
+      if (!res.ok) {
+        console.error("Ошибка при принятии запроса");
+        return;
       }
-    );
 
-    if (!res.ok) {
-      console.error("Ошибка при загрузке друзей");
-      return;
+      setRequests((prev) => prev.filter((req) => req.id !== requestId));
+    } catch (error) {
+      console.error("Произошла ошибка при принятии запроса:", error);
+    } finally {
+      setLoadingAcceptId(null); // Сброс состояния загрузки для Accept
     }
-
-    setRequests((prev) => prev.filter((req) => req.id !== requestId));
   };
 
   const handleDecline = async (requestId: number) => {
     if (!initDataRaw) return;
 
+    setLoadingDeclineId(requestId); // Установка состояния загрузки для Decline
+
     const headers: HeadersInit = {
       "Content-Type": "application/json",
       initData: initDataRaw,
     };
 
-    const res = await fetch(
-      `https://getquest.tech:8443/friends/decline?requestId=${requestId}`,
-      {
-        method: "POST",
-        headers,
+    try {
+      const res = await fetch(
+        `https://getquest.tech:8443/friends/decline?requestId=${requestId}`,
+        {
+          method: "POST",
+          headers,
+        }
+      );
+
+      if (!res.ok) {
+        console.error("Ошибка при отклонении запроса");
+        return;
       }
-    );
 
-    if (!res.ok) {
-      console.error("Ошибка при загрузке друзей");
-      return;
+      setRequests((prev) => prev.filter((req) => req.id !== requestId));
+    } catch (error) {
+      console.error("Произошла ошибка при отклонении запроса:", error);
+    } finally {
+      setLoadingDeclineId(null); // Сброс состояния загрузки для Decline
     }
-
-    setRequests((prev) => prev.filter((req) => req.id !== requestId));
   };
 
   const copyReferralLink = () => {
@@ -162,7 +178,7 @@ export default function FriendsPage() {
   };
 
   return (
-    <main className="relative flex flex-col ">
+    <main className="relative flex flex-col">
       <div
         ref={ref}
         className="bg-white h-48 overflow-hidden absolute inset-x-0 top-0 -z-10"
@@ -199,16 +215,14 @@ export default function FriendsPage() {
           зарабатывай <span className="text-gradient">репутацию</span>
         </h1>
 
-        {/* Кнопка копирования реферальной ссылки со стилем кнопки "квест" */}
         <Button
           onClick={copyReferralLink}
           className="w-full mb-4"
-          style={{ backgroundColor: "#FEEF9E", color: "black"}}
+          style={{ backgroundColor: "#FEEF9E", color: "black" }}
         >
           Скопировать реферальную ссылку
         </Button>
 
-        {/* Табы */}
         <div className="flex mb-6">
           <button
             onClick={() => setActiveTab("friends")}
@@ -230,7 +244,6 @@ export default function FriendsPage() {
           </button>
         </div>
 
-        {/* Контент в зависимости от выбранного таба */}
         {activeTab === "friends" && (
           <div className="flex flex-col gap-3 mb-24">
             {friends.map((user) => (
@@ -259,7 +272,6 @@ export default function FriendsPage() {
                     username={user.username}
                     initDataRaw={initDataRaw}
                     receiverId={user.friendId}
-                    //  onClose={() => setDrawerOpen(false)}
                   />
                 </div>
               </Link>
@@ -287,6 +299,8 @@ export default function FriendsPage() {
                       e.preventDefault();
                       handleAccept(request.id);
                     }}
+                    isLoading={loadingAcceptId === request.id} // Индикатор загрузки для Accept
+                    disabled={loadingAcceptId === request.id} // Отключение кнопки во время загрузки
                   >
                     <PlusIcon className="size-4" />
                   </Button>
@@ -296,6 +310,8 @@ export default function FriendsPage() {
                       e.stopPropagation();
                       handleDecline(request.id);
                     }}
+                    isLoading={loadingDeclineId === request.id} // Индикатор загрузки для Decline
+                    disabled={loadingDeclineId === request.id} // Отключение кнопки во время загрузки
                   >
                     <XMarkIcon className="size-4" />
                   </Button>

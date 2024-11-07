@@ -52,6 +52,11 @@ export function ChallengeDrawer({
                                 }: ChallengeDrawerProps) {
   const [progress, setProgress] = React.useState<number>(0);
   const [errorMessage, setErrorMessage] = React.useState<string>("");
+  const [isLoadingAccept, setIsLoadingAccept] = React.useState(false);
+  const [isLoadingDecline, setIsLoadingDecline] = React.useState(false);
+  const [isLoadingApprove, setIsLoadingApprove] = React.useState(false);
+  const [isLoadingDispute, setIsLoadingDispute] = React.useState(false);
+  const [isLoadingHide, setIsLoadingHide] = React.useState(false);
 
   const fileInputRef = React.useRef<HTMLInputElement>(null);
 
@@ -114,14 +119,12 @@ export function ChallengeDrawer({
     if (event.target.files && event.target.files.length > 0) {
       const selectedFile = event.target.files[0];
 
-      // Проверка типа файла (должен быть видео)
       if (!selectedFile.type.startsWith("video/")) {
         setErrorMessage("Пожалуйста, загрузите видеофайл.");
         return;
       }
 
-      // Проверка размера файла (не больше 20 МБ)
-      const maxSizeInBytes = 20 * 1024 * 1024; // 20 МБ в байтах
+      const maxSizeInBytes = 20 * 1024 * 1024;
       if (selectedFile.size > maxSizeInBytes) {
         setErrorMessage("Размер видео не должен превышать 20 МБ.");
         return;
@@ -132,6 +135,7 @@ export function ChallengeDrawer({
   };
 
   const handleAccept = async () => {
+    setIsLoadingAccept(true);
     try {
       const url = isPromo
         ? `https://getquest.tech:8443/api/promochallenges/${challengeId}/start`
@@ -159,10 +163,13 @@ export function ChallengeDrawer({
     } catch (error) {
       console.error("Произошла ошибка при принятии задания:", error);
       setErrorMessage("Произошла ошибка при принятии задания.");
+    } finally {
+      setIsLoadingAccept(false);
     }
   };
 
   const handleDecline = async () => {
+    setIsLoadingDecline(true);
     try {
       const response = await fetch(
         `https://getquest.tech:8443/api/challenges/${challengeId}/decline`,
@@ -187,10 +194,13 @@ export function ChallengeDrawer({
     } catch (error) {
       console.error("Произошла ошибка при отклонении задания:", error);
       setErrorMessage("Произошла ошибка при отклонении задания.");
+    } finally {
+      setIsLoadingDecline(false);
     }
   };
 
   const handleApprove = async () => {
+    setIsLoadingApprove(true);
     try {
       const url = isPromo
         ? `https://getquest.tech:8443/api/promochallenges/${challengeId}/approve`
@@ -216,6 +226,8 @@ export function ChallengeDrawer({
     } catch (error) {
       console.error("Произошла ошибка при подтверждении задания:", error);
       setErrorMessage("Произошла ошибка при подтверждении задания.");
+    } finally {
+      setIsLoadingApprove(false);
     }
   };
 
@@ -225,6 +237,7 @@ export function ChallengeDrawer({
     );
     if (!confirmed) return;
 
+    setIsLoadingDispute(true);
     try {
       const url = isPromo
         ? `https://getquest.tech:8443/api/promochallenges/${challengeId}/dispute`
@@ -250,10 +263,13 @@ export function ChallengeDrawer({
     } catch (error) {
       console.error("Произошла ошибка при начале спора:", error);
       setErrorMessage("Произошла ошибка при начале спора.");
+    } finally {
+      setIsLoadingDispute(false);
     }
   };
 
   const hideChallenge = async (id: number) => {
+    setIsLoadingHide(true);
     if (!initDataRaw) return;
 
     const confirmed = window.confirm(
@@ -284,6 +300,8 @@ export function ChallengeDrawer({
     } catch (error) {
       console.error("Произошла ошибка при удалении задания:", error);
       setErrorMessage("Произошла ошибка при удалении задания.");
+    } finally {
+      setIsLoadingHide(false);
     }
   };
 
@@ -341,7 +359,6 @@ export function ChallengeDrawer({
             {description}
           </DrawerDescription>
 
-          {/* Отображение сообщения об ошибке */}
           {errorMessage && (
             <div className="mb-4 px-4 text-center">
               <p className="text-red-600 font-semibold">{errorMessage}</p>
@@ -384,6 +401,7 @@ export function ChallengeDrawer({
                 <Button
                   variant="secondary"
                   onClick={handleAccept}
+                  isLoading={isLoadingAccept}
                   className="w-full"
                 >
                   Принять
@@ -392,6 +410,7 @@ export function ChallengeDrawer({
                   <Button
                     variant="outline"
                     onClick={handleDecline}
+                    isLoading={isLoadingDecline}
                     className="w-full"
                   >
                     Отказаться
@@ -425,6 +444,7 @@ export function ChallengeDrawer({
                       <Button
                         variant="outline"
                         onClick={handleDecline}
+                        isLoading={isLoadingDecline}
                         className="w-full"
                       >
                         Отказаться
@@ -440,6 +460,7 @@ export function ChallengeDrawer({
                 <Button
                   variant="secondary"
                   onClick={handleApprove}
+                  isLoading={isLoadingApprove}
                   className="w-full"
                 >
                   Подтвердить
@@ -447,6 +468,7 @@ export function ChallengeDrawer({
                 <Button
                   variant="outline"
                   onClick={handleDispute}
+                  isLoading={isLoadingDispute}
                   className="w-full"
                 >
                   Спор
@@ -457,6 +479,7 @@ export function ChallengeDrawer({
             {status === "COMPLETED" && !isSent && !isPromo && (
               <Button
                 onClick={handleDecline}
+                isLoading={isLoadingDecline}
                 variant="outline"
                 className="w-full"
               >
@@ -471,6 +494,7 @@ export function ChallengeDrawer({
                 variant="ghost"
                 className="text-red-700 bg-red-100/50"
                 onClick={() => hideChallenge(challengeId)}
+                isLoading={isLoadingHide}
               >
                 Удалить запись из истории
               </Button>

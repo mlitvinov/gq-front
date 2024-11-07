@@ -34,21 +34,20 @@ interface UserData {
 }
 
 export default function ProfilePage({
-  params,
-}: {
+                                      params,
+                                    }: {
   params?: { username: string };
 }) {
   const [userData, setUserData] = useState<UserData | null>(null);
   const [achievementImages, setAchievementImages] = useState<string[]>([]);
   const [videoUrls, setVideoUrls] = useState<string[]>([]);
-  const [videoResources, setVideoResources] = useState<
-    { videoUrl: string; fileId: string }[]
-  >([]);
   const [selectedAchievement, setSelectedAchievement] =
     useState<Achievement | null>(null);
   const [challengeData, setChallengeData] = useState<ChallengeData | null>(
     null
   );
+  const [isLoadingAddFriend, setIsLoadingAddFriend] = useState(false);
+  const [isLoadingAcceptFriend, setIsLoadingAcceptFriend] = useState(false);
   const initDataRaw = useLaunchParams().initDataRaw;
 
   const isUserPage = !params?.username;
@@ -157,6 +156,7 @@ export default function ProfilePage({
   const handleAddFriend = async () => {
     if (!userData) return;
 
+    setIsLoadingAddFriend(true);
     try {
       const headers: HeadersInit = {
         "Content-Type": "application/json",
@@ -173,7 +173,6 @@ export default function ProfilePage({
         }
       );
       if (response.ok) {
-        // Обновляем статус дружбы на "REQUESTED"
         setUserData((prevData) =>
           prevData ? { ...prevData, friendStatus: "REQUESTED" } : prevData
         );
@@ -182,6 +181,8 @@ export default function ProfilePage({
       }
     } catch (error) {
       console.error("Ошибка при отправке запроса в друзья:", error);
+    } finally {
+      setIsLoadingAddFriend(false);
     }
   };
 
@@ -191,6 +192,7 @@ export default function ProfilePage({
       return;
     }
 
+    setIsLoadingAcceptFriend(true);
     try {
       const headers: HeadersInit = {
         "Content-Type": "application/json",
@@ -207,7 +209,6 @@ export default function ProfilePage({
         }
       );
       if (response.ok) {
-        // Обновляем статус дружбы на "FRIEND"
         setUserData((prevData) =>
           prevData ? { ...prevData, friendStatus: "FRIEND" } : prevData
         );
@@ -216,16 +217,12 @@ export default function ProfilePage({
       }
     } catch (error) {
       console.error("Ошибка при принятии запроса в друзья:", error);
+    } finally {
+      setIsLoadingAcceptFriend(false);
     }
   };
 
-  // Функция для склонения числительных
-  function getDeclension(
-    n: number,
-    one: string,
-    few: string,
-    many: string
-  ): string {
+  function getDeclension(n: number, one: string, few: string, many: string): string {
     n = Math.abs(n) % 100;
     const n1 = n % 10;
 
@@ -242,9 +239,7 @@ export default function ProfilePage({
 
   return (
     <main className="relative flex flex-col items-center rounded-t-[2rem] bg-white px-5 pt-8 pb-[calc(var(--nav-height)+1rem)] overflow-hidden mb-24">
-      {/* Секция с информацией о пользователе и кнопкой добавления в друзья */}
       <section className="flex flex-col items-center gap-4 w-full mb-16">
-        {/* Информация о пользователе */}
         <div className="flex flex-col justify-center items-center">
           <img
             className="relative left-1"
@@ -268,12 +263,20 @@ export default function ProfilePage({
               <Button variant="destructive">Запрошено</Button>
             )}
             {userData.friendStatus === "WAITING" && (
-              <Button variant="secondary" onClick={handleAcceptFriendRequest}>
+              <Button
+                variant="secondary"
+                onClick={handleAcceptFriendRequest}
+                isLoading={isLoadingAcceptFriend}
+              >
                 Принять
               </Button>
             )}
             {userData.friendStatus === "NOT_FRIEND" && (
-              <Button variant="secondary" onClick={handleAddFriend}>
+              <Button
+                variant="secondary"
+                onClick={handleAddFriend}
+                isLoading={isLoadingAddFriend}
+              >
                 Добавить в друзья
               </Button>
             )}
@@ -282,7 +285,6 @@ export default function ProfilePage({
       </section>
 
       <section className="flex flex-col gap-3 mb-6">
-        {/* Компонент Slider для достижений */}
         <Slider
           elements={achievementImages}
           onElementClick={handleAchievementClick}
@@ -313,7 +315,7 @@ export default function ProfilePage({
           репутации
         </h1>
       </section>
-      {/* Отображение прошлых видео */}
+
       <section className="video-slider flex flex-row gap-3 overflow-x-auto">
         {videoUrls.length > 0 &&
           videoUrls.map((el) => (
@@ -347,6 +349,7 @@ export default function ProfilePage({
             </figure>
           ))}
       </section>
+
       <nav className="fixed-nav fixed bottom-0 left-0 right-0 bg-white z-1000">
         <ul className="flex justify-around p-2">
           <li>Друзья</li>
