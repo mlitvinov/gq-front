@@ -202,7 +202,7 @@ export default function ProfilePage({
         headers["initData"] = initDataRaw;
       }
       const response = await fetch(
-        `https://getquest.tech:8443/friends/accept/${userData.username}`,
+        `https://getquest.tech:8443/friends/accept/${userData.id}`,
         {
           method: "POST",
           headers,
