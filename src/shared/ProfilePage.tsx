@@ -4,7 +4,7 @@ import React, { useEffect, useState } from "react";
 import Slider from "./slider"; // Компонент анимации для движения достижений
 import Arrows from "@/assets/arrows.png";
 import Rewards from "@/assets/rewards.png";
-import { useLaunchParams } from "@telegram-apps/sdk-react";
+import { useInitData, useLaunchParams } from "@telegram-apps/sdk-react";
 import { AchievementDrawer } from "@/app/profile/drawer";
 import { Button } from "@/components/ui/button";
 
@@ -34,11 +34,7 @@ interface UserData {
   earnedCount: number;
 }
 
-export default function ProfilePage({
-                                      params,
-                                    }: {
-  params?: { id: number };
-}) {
+export default function ProfilePage({ params }: { params?: { id: number } }) {
   const [userData, setUserData] = useState<UserData | null>(null);
   const [achievementImages, setAchievementImages] = useState<string[]>([]);
   const [videoUrls, setVideoUrls] = useState<string[]>([]);
@@ -49,9 +45,11 @@ export default function ProfilePage({
   );
   const [isLoadingAddFriend, setIsLoadingAddFriend] = useState(false);
   const [isLoadingAcceptFriend, setIsLoadingAcceptFriend] = useState(false);
-  const initDataRaw = useLaunchParams().initDataRaw;
 
-  const isUserPage = !params?.id;
+  const initData = useInitData();
+  const initDataRaw = useLaunchParams().initDataRaw;
+  const isUserPage =
+    !params?.id || initData?.user?.username === userData?.username;
 
   useEffect(() => {
     const fetchProfileData = async () => {
@@ -223,7 +221,12 @@ export default function ProfilePage({
     }
   };
 
-  function getDeclension(n: number, one: string, few: string, many: string): string {
+  function getDeclension(
+    n: number,
+    one: string,
+    few: string,
+    many: string
+  ): string {
     n = Math.abs(n) % 100;
     const n1 = n % 10;
 
@@ -258,7 +261,7 @@ export default function ProfilePage({
         </div>
 
         {!isUserPage && (
-          <div>
+          <>
             {userData.friendStatus === "FRIEND" && (
               <Button variant="destructive">Друзья</Button>
             )}
@@ -283,7 +286,7 @@ export default function ProfilePage({
                 Добавить в друзья
               </Button>
             )}
-          </div>
+          </>
         )}
       </section>
 
