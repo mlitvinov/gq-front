@@ -46,11 +46,11 @@ const RecommendationsPage = () => {
   }, []);
 
   return (
-    <main className="flex flex-col items-center justify-center min-h-screen bg-white px-4">
-      <div className="text-center">
-        {/* Видео в кружке */}
+    <main className="flex flex-col items-center justify-center min-h-screen bg-black px-4">
+      <div className="text-center w-full h-full">
+        {/* Видео в большом кружке */}
         {videoSrc && (
-          <div className="w-32 h-32 rounded-full overflow-hidden mx-auto">
+          <div className="w-full h-full rounded-full overflow-hidden flex items-center justify-center">
             <video
               src={videoSrc}
               className="w-full h-full object-cover"
@@ -72,19 +72,19 @@ const RecommendationsPage = () => {
         )}
 
         {/* Текстовые элементы */}
-        <h1 className="text-xl font-bold mt-4">USERNAME</h1>
-        <h2 className="text-lg font-semibold">Гурман</h2>
-        <p className="text-base">Съешь лимон</p>
+        <h1 className="text-xl font-bold mt-4 text-white">USERNAME</h1>
+        <h2 className="text-lg font-semibold text-white">Гурман</h2>
+        <p className="text-base text-white">Съешь лимон</p>
 
         {/* Кнопки */}
         <div className="flex justify-between mt-4 w-full max-w-md mx-auto">
-          <button className="bg-gray-200 rounded-full px-4 py-2">
+          <button className="bg-gray-700 text-white rounded-full px-4 py-2">
             Dislike
           </button>
           <button className="bg-blue-500 text-white rounded-full px-4 py-2">
             Принять
           </button>
-          <button className="bg-gray-200 rounded-full px-4 py-2">
+          <button className="bg-gray-700 text-white rounded-full px-4 py-2">
             Like
           </button>
         </div>
