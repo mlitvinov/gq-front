@@ -62,8 +62,8 @@ export default function ProfilePage({ params }: { params?: { id: number } }) {
         }
 
         const url = !isUserPage
-          ? `https://getquest.tech:8443/api/users/profile/?id=${params?.id}`
-          : "https://getquest.tech:8443/api/users/profile";
+          ? `https://getquest.tech:6443/api/users/profile/?id=${params?.id}`
+          : "https://getquest.tech:6443/api/users/profile";
 
         const response = await fetch(url, {
           method: "GET",
@@ -74,7 +74,7 @@ export default function ProfilePage({ params }: { params?: { id: number } }) {
         setAchievementImages(
           data.achievementListDTO.map(
             (achievement: Achievement) =>
-              `https://getquest.tech:8443/api/images/${achievement.imageUrl}`
+              `https://getquest.tech:6443/api/images/${achievement.imageUrl}`
           )
         );
       } catch (error) {
@@ -98,7 +98,7 @@ export default function ProfilePage({ params }: { params?: { id: number } }) {
         }
 
         const response = await fetch(
-          `https://getquest.tech:8443/api/challenges/user/video-urls?userId=${userData.id}`,
+          `https://getquest.tech:6443/api/challenges/user/video-urls?userId=${userData.id}`,
           {
             method: "GET",
             headers,
@@ -129,7 +129,7 @@ export default function ProfilePage({ params }: { params?: { id: number } }) {
       };
 
       const response = await fetch(
-        `https://getquest.tech:8443/api/challenges/achievement/${achievement.userAchievement}`,
+        `https://getquest.tech:6443/api/challenges/achievement/${achievement.userAchievement}`,
         {
           method: "GET",
           headers,
@@ -165,7 +165,7 @@ export default function ProfilePage({ params }: { params?: { id: number } }) {
         headers["initData"] = initDataRaw;
       }
       const response = await fetch(
-        `https://getquest.tech:8443/friends/request?receiverId=${userData.id}`,
+        `https://getquest.tech:6443/friends/request?receiverId=${userData.id}`,
         {
           method: "POST",
           headers,
@@ -201,7 +201,7 @@ export default function ProfilePage({ params }: { params?: { id: number } }) {
         headers["initData"] = initDataRaw;
       }
       const response = await fetch(
-        `https://getquest.tech:8443/friends/accept/${userData.id}`,
+        `https://getquest.tech:6443/friends/accept/${userData.id}`,
         {
           method: "POST",
           headers,
@@ -347,7 +347,7 @@ export default function ProfilePage({ params }: { params?: { id: number } }) {
                 }}
               >
                 <source
-                  src={`https://getquest.tech:8443/api/videos/download?fileId=${el}`}
+                  src={`https://getquest.tech:6443/api/videos/download?fileId=${el}`}
                   type="video/mp4"
                 />
                 Ваш браузер не поддерживает видео.
