@@ -181,7 +181,9 @@ export function SubmitQuestDrawer({
 
           <div className="mb-4 px-4">
             <input
-              type="text"
+              type="number"
+              inputMode="numeric"
+              pattern="[0-9]*"
               value={numericValue}
               onChange={(e) =>
                 setNumericValue(e.target.value.replace(/\D/g, ""))
