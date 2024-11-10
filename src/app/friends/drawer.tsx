@@ -2,14 +2,7 @@
 
 import React from "react";
 import { Button } from "@/components/ui/button";
-import {
-  Drawer,
-  DrawerClose,
-  DrawerContent,
-  DrawerFooter,
-  DrawerHeader,
-  DrawerTrigger,
-} from "@/components/ui/drawer";
+import Drawer from "@/components/ui/drawer";
 
 type Achievement = {
   userAchievement: number | null;
@@ -122,104 +115,105 @@ export function SubmitQuestDrawer({
       >
         Квест
       </Button>
-      <Drawer open={isOpen} onOpenChange={(open: boolean) => setIsOpen(open)}>
-        <DrawerContent>
-          <div className="mx-auto w-full max-w-sm">
-            <DrawerHeader className="px-4">
-              <label className="block text-sm font-medium text-black mb-2">
-                Испытание для {username}
+      <Drawer open={isOpen} onClose={() => setIsOpen(false)}>
+        <div className="flex flex-col">
+          <header className="px-4">
+            <label className="block text-sm text-center font-medium text-black mb-2">
+              Испытание для {username}
+            </label>
+          </header>
+
+          <section className="mb-2 px-4">
+            <div className="px-5 py-3 border border-[#F6F6F6] rounded-[32px]">
+              <label className="block text-xs font-light text-black/50">
+                Категория
               </label>
-            </DrawerHeader>
 
-            <section className="mb-2 px-4">
-              <div className="px-5 py-3 border border-[#F6F6F6] rounded-[32px]">
-                <label className="block text-xs font-light text-black/50">
-                  Категория
-                </label>
-
-                <select
-                  title=""
-                  name="category"
-                  value={selectedAchievement?.name || ""}
-                  onChange={(e) => {
-                    const selected = achievements.find(
-                      (ach) => ach.name === e.target.value
+              <select
+                title=""
+                name="category"
+                value={selectedAchievement?.name || ""}
+                onChange={(e) => {
+                  const selected = achievements.find(
+                    (ach) => ach.name === e.target.value
+                  );
+                  if (selected) {
+                    setSelectedAchievement(selected);
+                    setImageUrl(
+                      `https://getquest.tech:8443/api/images/${selected.imageUrl}`
                     );
-                    if (selected) {
-                      setSelectedAchievement(selected);
-                      setImageUrl(
-                        `https://getquest.tech:8443/api/images/${selected.imageUrl}`
-                      );
-                    }
-                  }}
-                  className="border-none bg-transparent appearance-none focus:outline-none w-full"
-                >
-                  {achievements.map((achievement) => (
-                    <option key={achievement.name} value={achievement.name}>
-                      {achievement.name}
-                    </option>
-                  ))}
-                </select>
-              </div>
-            </section>
+                  }
+                }}
+                className="border-none bg-transparent appearance-none focus:outline-none w-full"
+              >
+                {achievements.map((achievement) => (
+                  <option key={achievement.name} value={achievement.name}>
+                    {achievement.name}
+                  </option>
+                ))}
+              </select>
+            </div>
+          </section>
 
-            <section className="mb-2 px-4">
-              <div className="px-5 py-3 border border-[#F6F6F6] rounded-[32px]">
-                <label className="block text-xs font-light text-black/50">
-                  Задание
-                </label>
-                <input
-                  type="text"
-                  value={task}
-                  onChange={(e) => setTask(e.target.value)}
-                  className="size-full focus:outline-none"
-                />
-              </div>
-            </section>
-
-            {imageUrl && (
-              <div className="flex justify-center my-2 px-4">
-                <img
-                  src={imageUrl}
-                  alt="Achievement"
-                  className="h-32 object-contain"
-                />
-              </div>
-            )}
-
-            <div className="mb-4 px-4">
+          <section className="mb-2 px-4">
+            <div className="px-5 py-3 border border-[#F6F6F6] rounded-[32px]">
+              <label className="block text-xs font-light text-black/50">
+                Задание
+              </label>
               <input
                 type="text"
-                value={numericValue}
-                onChange={(e) =>
-                  setNumericValue(e.target.value.replace(/\D/g, ""))
-                }
-                className="w-full text-3xl font-black focus:outline-none text-center text-gradient placeholder:text-black/10 p-2"
-                placeholder="0"
+                value={task}
+                onChange={(e) => setTask(e.target.value)}
+                className="size-full focus:outline-none"
               />
             </div>
+          </section>
 
-            {errorMessage && (
-              <div className="text-red-500 mb-4">{errorMessage}</div>
-            )}
+          {imageUrl && (
+            <div className="flex justify-center my-2 px-4">
+              <img
+                src={imageUrl}
+                alt="Achievement"
+                className="h-32 object-contain"
+              />
+            </div>
+          )}
 
-            <DrawerFooter className="flex flex-col gap-2">
-              <Button
-                isLoading={isLoading}
-                onClick={handleSubmit}
-                variant="secondary"
-                className="w-full z-[9999]"
-              >
-                Отправить
-              </Button>
-              <DrawerClose asChild>
-                <Button variant="outline" className="w-full">
-                  Отмена
-                </Button>
-              </DrawerClose>
-            </DrawerFooter>
+          <div className="mb-4 px-4">
+            <input
+              type="text"
+              value={numericValue}
+              onChange={(e) =>
+                setNumericValue(e.target.value.replace(/\D/g, ""))
+              }
+              className="w-full text-3xl font-black focus:outline-none text-center text-gradient placeholder:text-black/10 p-2"
+              placeholder="0"
+            />
           </div>
-        </DrawerContent>
+
+          {errorMessage && (
+            <div className="text-red-500 mb-4">{errorMessage}</div>
+          )}
+
+          <footer className="flex flex-col gap-2 px-4">
+            <Button
+              isLoading={isLoading}
+              onClick={handleSubmit}
+              variant="secondary"
+              className="w-full z-[9999]"
+            >
+              Отправить
+            </Button>
+
+            <Button
+              variant="outline"
+              onClick={() => setIsOpen(false)}
+              className="w-full"
+            >
+              Отмена
+            </Button>
+          </footer>
+        </div>
       </Drawer>
     </>
   );

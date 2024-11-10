@@ -1,15 +1,10 @@
 "use client";
 
 import * as React from "react";
-import {
-  Drawer,
-  DrawerContent,
-  DrawerHeader,
-  DrawerTitle,
-  DrawerDescription,
-} from "@/components/ui/drawer";
+
 import Rewards from "@/assets/rewards.png";
 import { Link } from "@/components/Link/Link";
+import Drawer from "@/components/ui/drawer";
 
 type Achievement = {
   userAchievement: number;
@@ -95,13 +90,10 @@ export function AchievementDrawer({
   }, [challengeData, initDataRaw]);
 
   return (
-    <Drawer open={isOpen} onOpenChange={onClose}>
-      <DrawerContent
-        aria-describedby="achievement-description"
-        aria-labelledby="achievement-title"
-      >
-        <div className="mx-auto w-full max-w-sm">
-          {/* Карточка достижения */}
+    <Drawer open={isOpen} onClose={onClose}>
+      <div className="flex flex-col items-center w-full">
+        {/* Карточка достижения */}
+        <div className="mt-6 w-full px-4">
           <div className="flex flex-col border rounded-full border-[#fcf4f4] px-6 py-4">
             <div className="flex gap-2 items-center">
               <img
@@ -128,61 +120,60 @@ export function AchievementDrawer({
               </div>
             </div>
           </div>
+        </div>
 
-          {/* Видео */}
+        {/* Видео */}
+
+        <div className="flex size-24 relative rounded-full justify-center my-4">
+          <div className="absolute z-0 inset-0 bg-slate-50 rounded-full animate-pulse" />
           {videoSrc && (
-            <div className="flex justify-center my-4">
-              <video
-                src={videoSrc}
-                className="w-24 h-24 rounded-full object-cover"
-                controls={false}
-                muted
-                playsInline
-                autoPlay
-                onClick={(e) => {
-                  const video = e.currentTarget;
-                  if (video.requestFullscreen) {
-                    video.requestFullscreen();
-                  } else if ((video as any).webkitEnterFullscreen) {
-                    (video as any).webkitEnterFullscreen();
-                  }
-                  video.play();
-                }}
-              />
-            </div>
-          )}
-
-          {/* Описание и отправитель */}
-          {challengeData && (
-            <>
-              <DrawerHeader>
-                <DrawerTitle
-                  id="achievement-title"
-                  className="text-xl font-bold"
-                >
-                  {achievement.name}
-                </DrawerTitle>
-              </DrawerHeader>
-              <DrawerDescription
-                id="achievement-description"
-                className="mt-4 mb-8 px-4 text-sm"
-              >
-                {challengeData.description}
-                <br />
-                <p className="text-sm text-gray-600">
-                  Отправитель:{" "}
-                  <Link
-                    href={`/profile/${challengeData.senderId}`}
-                    className="text-sm text-gray-600"
-                  >
-                    {challengeData.sender}
-                  </Link>
-                </p>
-              </DrawerDescription>
-            </>
+            <video
+              src={videoSrc}
+              className="size-full z-10 absolute inset-0 rounded-full object-cover"
+              controls={false}
+              muted
+              playsInline
+              autoPlay
+              onClick={(e) => {
+                const video = e.currentTarget;
+                if (video.requestFullscreen) {
+                  video.requestFullscreen();
+                } else if ((video as any).webkitEnterFullscreen) {
+                  (video as any).webkitEnterFullscreen();
+                }
+                video.play();
+              }}
+            />
           )}
         </div>
-      </DrawerContent>
+
+        {/* Описание и отправитель */}
+        {challengeData && (
+          <>
+            <header>
+              <h1 id="achievement-title" className="text-xl font-bold">
+                {achievement.name}
+              </h1>
+            </header>
+            <main
+              id="achievement-description"
+              className="mt-4 mb-8 px-4 text-center text-sm"
+            >
+              {challengeData.description}
+              <br />
+              <p className="text-sm text-gray-600">
+                Отправитель:{" "}
+                <Link
+                  href={`/profile/${challengeData.senderId}`}
+                  className="text-sm text-gray-600"
+                >
+                  {challengeData.sender}
+                </Link>
+              </p>
+            </main>
+          </>
+        )}
+      </div>
     </Drawer>
   );
 }

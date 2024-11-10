@@ -4,9 +4,8 @@ import { useEffect, useRef, useState } from "react";
 import { useLaunchParams } from "@telegram-apps/sdk-react";
 
 import Rewards from "@/assets/rewards.png";
-import { ChallengeDrawer } from "@/app/challenges/drawer";
+import { ChallengeDrawer } from "./drawers/challenge-drawer";
 import { GoalDrawer } from "./drawers/goal-drawer";
-import { Button } from "@/components/ui/button";
 import { cn } from "@/lib/utils";
 import { BASE_URL } from "@/lib/const";
 import { Challenge, Goal } from "./types";
@@ -172,14 +171,14 @@ export default function ChallengesPage() {
         <div className="flex flex-col gap-3 mb-24">
           {tab === "targets"
             ? goals.map((goal) => {
-              // Для целей всегда передаем isPromoOrTarget = true
-              const { bars, color } = getStatusBars(goal.status, true);
+                // Для целей всегда передаем isPromoOrTarget = true
+                const { bars, color } = getStatusBars(goal.status, true);
 
-              return (
-                <button
-                  key={goal.id}
-                  type="button"
-                  className={`flex flex-col  border rounded-full border-[#fcf4f4] px-6 py-4 ${
+                return (
+                  <button
+                    key={goal.id}
+                    type="button"
+                    className={`flex flex-col  border rounded-full border-[#fcf4f4] px-6 py-4 ${
                       goal.status === "REWARDED" ? "opacity-50" : ""
                     }`}
                     onClick={() => setSelectedGoal(goal)}
@@ -329,8 +328,8 @@ export default function ChallengesPage() {
             tab === "assigned"
               ? selectedChallenge.senderId
               : tab === "sent"
-                ? selectedChallenge.receiverId
-                : 0
+              ? selectedChallenge.receiverId
+              : 0
           }
           description={selectedChallenge.description}
           status={selectedChallenge.status}
