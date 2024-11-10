@@ -90,6 +90,7 @@ const RecommendationsPage = () => {
               loop
               playsInline
               autoPlay
+              muted
               onClick={(e) => {
                 const video = e.currentTarget as HTMLVideoElementWithWebkit;
                 if (video.requestFullscreen) {
