@@ -88,7 +88,7 @@ const RecommendationsPage = () => {
               }
             }
           }}
-          className="absolute top-2 right-2 text-white bg-black bg-opacity-50 rounded p-1"
+          className="absolute py-2 top-2 right-2 text-white bg-black bg-opacity-50 rounded p-1"
 
         >
           <FiMaximize size={24} />
@@ -102,16 +102,16 @@ const RecommendationsPage = () => {
 
         {/* Кнопки */}
         <div className="flex justify-between mt-6 w-full max-w-sm mx-auto px-4">
-          <button className="bg-gray-700 text-white rounded-full px-6 py-2">
+          <button className="bg-gray-700 text-white rounded px-6 py-2">
             Dislike
           </button>
           <button
             style={{ backgroundColor: "#FEEF9E", color: "black" }}
-            className="bg-blue-500 text-white rounded-full px-4 py-2"
+            className="bg-blue-500 text-white rounded px-4 py-2"
           >
             Принять
           </button>
-          <button className="bg-gray-700 text-white rounded-full px-6 py-2">
+          <button className="bg-gray-700 text-white rounded px-6 py-2">
             Like
           </button>
         </div>
