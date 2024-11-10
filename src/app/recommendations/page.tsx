@@ -17,7 +17,7 @@ const RecommendationsPage = () => {
         };
 
         const response = await fetch(
-          "https://getquest.tech:6443/api/videos/download?fileId=BAACAgIAAxkDAAMTZxVy_kXt2SUZFb0r5Td0BdCfuRYAAjVXAALMXrBIF2zQaJ7Yv-82BA",
+          "https://getquest.tech:8443/api/videos/download?fileId=BAACAgIAAxkDAAMTZxVy_kXt2SUZFb0r5Td0BdCfuRYAAjVXAALMXrBIF2zQaJ7Yv-82BA",
           {
             method: "GET",
             headers,
@@ -46,11 +46,12 @@ const RecommendationsPage = () => {
   }, []);
 
   return (
-    <main className="flex flex-col items-center justify-center min-h-screen bg-black px-4">
-      <div className="text-center w-full h-full">
-        {/* Видео в большом кружке */}
+    <div className="min-h-screen">
+      {/* Навигационная панель с тёмной темой */}
+      <main className="flex flex-col items-center bg-white justify-center px-4">
+        {/* Видео в круге */}
         {videoSrc && (
-          <div className="w-full h-full rounded-full overflow-hidden flex items-center justify-center">
+          <div className="w-72 h-72 rounded-full overflow-hidden mt-8">
             <video
               src={videoSrc}
               className="w-full h-full object-cover"
@@ -72,24 +73,25 @@ const RecommendationsPage = () => {
         )}
 
         {/* Текстовые элементы */}
-        <h1 className="text-xl font-bold mt-4 text-white">USERNAME</h1>
-        <h2 className="text-lg font-semibold text-white">Гурман</h2>
-        <p className="text-base text-white">Съешь лимон</p>
+        <h1 className="text-xl text-black font-bold mt-4">USERNAME</h1>
+        <h2 className="text-lg text-black font-semibold">Гурман</h2>
+        <p className="text-base text-black">Съешь лимон</p>
 
         {/* Кнопки */}
-        <div className="flex justify-between mt-4 w-full max-w-md mx-auto">
-          <button className="bg-gray-700 text-white rounded-full px-4 py-2">
+        <div className="flex justify-between mt-6 w-full max-w-sm mx-auto px-4">
+          <button className="bg-gray-700 text-white rounded-full px-6 py-2">
             Dislike
           </button>
-          <button className="bg-blue-500 text-white rounded-full px-4 py-2">
+          <button style={{ backgroundColor: "#FEEF9E", color: "black" }}
+                  className="bg-blue-500 text-white rounded-full px-4 py-2">
             Принять
           </button>
-          <button className="bg-gray-700 text-white rounded-full px-4 py-2">
+          <button className="bg-gray-700 text-white rounded-full px-6 py-2">
             Like
           </button>
         </div>
-      </div>
-    </main>
+      </main>
+    </div>
   );
 };
 
