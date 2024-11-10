@@ -1,9 +1,11 @@
 "use client";
 
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useState, useRef } from "react";
+import { FiMaximize } from 'react-icons/fi';
 
 const RecommendationsPage = () => {
   const [videoSrc, setVideoSrc] = useState<string | null>(null);
+  const videoRef = useRef<HTMLVideoElement>(null);
 
   const initDataRaw =
     "query_id=AAE7x2YTAAAAADvHZhNRiDIy&user=%7B%22id%22%3A325502779%2C%22first_name%22%3A%22%D0%9C%D0%B0%D0%BA%D1%81%D0%B8%D0%BC%22%2C%22last_name%22%3A%22%22%2C%22username%22%3A%22youngfreud%22%2C%22language_code%22%3A%22ru%22%2C%22allows_write_to_pm%22%3Atrue%7D&auth_date=1731193463&hash=75cd76133105a2fdc831829638bb9d00a4107ec29d302ef29a8de419e8377281";
@@ -48,36 +50,50 @@ const RecommendationsPage = () => {
   return (
     <div className="min-h-screen">
       <main className="flex flex-col items-center justify-center px-4">
-        <div className="w-72 h-72 rounded-full overflow-hidden mt-8 bg-gray-700 flex items-center justify-center">
+        <div
+          className="w-72 h-72 rounded-full overflow-hidden mt-8 bg-gray-700 flex items-center justify-center relative">
           {videoSrc && (
-            <video
-              src={videoSrc}
-              className="w-full h-full object-cover"
-              controls={false}
-              loop
-              playsInline
-              autoPlay
-              onClick={(e) => {
-                const video = e.currentTarget as HTMLVideoElement;
-                if (video.paused) {
-                  video.play();
-                } else {
-                  video.pause();
-                }
-              }}
-              onDoubleClick={(e) => {
-                const video = e.currentTarget as HTMLVideoElement & {
-                  webkitEnterFullscreen?: () => void;
-                };
-                if (video.requestFullscreen) {
-                  video.requestFullscreen();
-                } else if (video.webkitEnterFullscreen) {
-                  video.webkitEnterFullscreen();
-                }
-              }}
-            />
+            <>
+              <video
+                ref={videoRef}
+                src={videoSrc}
+                className="w-full h-full object-cover"
+                controls={false}
+                loop
+                playsInline
+                autoPlay
+                onClick={(e) => {
+                  const video = e.currentTarget as HTMLVideoElement;
+                  if (video.paused) {
+                    video.play();
+                  } else {
+                    video.pause();
+                  }
+                }}
+              />
+            </>
           )}
         </div>
+        <button
+          onClick={() => {
+            const video = videoRef.current;
+            if (video) {
+              const videoElement = video as HTMLVideoElement & {
+                webkitEnterFullscreen?: () => void;
+              };
+              if (videoElement.requestFullscreen) {
+                videoElement.requestFullscreen();
+              } else if (videoElement.webkitEnterFullscreen) {
+                videoElement.webkitEnterFullscreen();
+              }
+            }
+          }}
+          className="absolute top-2 right-2 text-white bg-black bg-opacity-50 rounded p-1"
+
+        >
+          <FiMaximize size={24} />
+          {/* Если не используете react-icons, можете оставить символ ⛶ */}
+        </button>
 
         {/* Текстовые элементы */}
         <h1 className="text-xl text-black font-bold mt-4">USERNAME</h1>
