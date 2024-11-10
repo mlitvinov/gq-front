@@ -1,12 +1,13 @@
 "use client";
 
 import React, { useEffect, useState } from "react";
-import Slider from "./slider"; // Компонент анимации для движения достижений
+// import Slider from "./slider"; // Компонент анимации для движения достижений
 import Arrows from "@/assets/arrows.png";
 import Rewards from "@/assets/rewards.png";
 import { useInitData, useLaunchParams } from "@telegram-apps/sdk-react";
 import { AchievementDrawer } from "@/app/profile/drawer";
 import { Button } from "@/components/ui/button";
+import { Carousel } from "@/components/carousel";
 
 interface Achievement {
   userAchievement: number;
@@ -33,6 +34,29 @@ interface UserData {
   taskCount: number;
   earnedCount: number;
 }
+
+// .reduce, который разделяет каждый второй элемент массива. Один идёт на в top, другой в bottom
+const splitArray = (array: any[]) =>
+  array.reduce(
+    (acc, el, index) => {
+      if (index % 2 === 0) {
+        acc.top.push(el);
+      } else {
+        acc.bottom.push(el);
+      }
+      return acc;
+    },
+    { top: [], bottom: [] }
+  );
+
+// дополни массив до нужного количества элементов, если их нехватает
+const fillArray = (array: any[], length: number) => {
+  const result = [...array];
+  while (result.length < length) {
+    result.push(null);
+  }
+  return result;
+};
 
 export default function ProfilePage({ params }: { params?: { id: number } }) {
   const [userData, setUserData] = useState<UserData | null>(null);
@@ -237,12 +261,14 @@ export default function ProfilePage({ params }: { params?: { id: number } }) {
     return many;
   }
 
+  const sliders = splitArray(fillArray(achievementImages, 12));
+
   if (!userData) {
     return <div />;
   }
 
   return (
-    <main className="relative flex flex-col items-center rounded-t-[2rem] bg-white px-5 pt-8 pb-[calc(var(--nav-height)+1rem)] overflow-hidden mb-24">
+    <main className="relative flex flex-col items-center rounded-t-[2rem] bg-white pt-8 pb-[calc(var(--nav-height)+1rem)] overflow-hidden mb-24">
       <section className="flex flex-col items-center gap-4 w-full mb-16">
         <div className="flex flex-col justify-center items-center">
           <img
@@ -290,12 +316,85 @@ export default function ProfilePage({ params }: { params?: { id: number } }) {
         )}
       </section>
 
-      <section className="flex flex-col gap-3 mb-6">
+      <Carousel
+        autoPlay
+        containerClassName="[&>*:nth-child(odd)]:mt-2 select-none"
+        options={{ loop: true, align: "center", dragFree: true, startIndex: 2 }}
+        items={sliders.top.map((imgUrl, index) =>
+          imgUrl ? (
+            <div
+              key={index}
+              className="flex-shrink-0 size-16 rounded-xl bg-[#F6F6F6] px-4 mr-8 mb-4"
+              onClick={() =>
+                handleAchievementClick &&
+                handleAchievementClick(index % achievementImages.length)
+              } // Обработчик клика
+            >
+              <img
+                src={imgUrl}
+                alt={`Логотип ${index + 1}`}
+                className="size-16 object-contain cursor-pointer"
+              />
+            </div>
+          ) : (
+            <div className="size-16 px-4 mr-8 mb-4 rounded-xl bg-[#F6F6F6] select-none" />
+          )
+        )}
+      />
+
+      <Carousel
+        autoPlay
+        containerClassName="[&>*:nth-child(odd)]:mt-2 select-none"
+        options={{ loop: true, align: "center", dragFree: true, startIndex: 2 }}
+        items={sliders.bottom.map((imgUrl, index) =>
+          imgUrl ? (
+            <div
+              key={index}
+              className="flex-shrink-0 size-16 rounded-xl bg-[#F6F6F6] px-4 mr-8 mb-4"
+              onClick={() =>
+                handleAchievementClick &&
+                handleAchievementClick(index % achievementImages.length)
+              } // Обработчик клика
+            >
+              <img
+                src={imgUrl}
+                alt={`Логотип ${index + 1}`}
+                className="size-16 object-contain cursor-pointer"
+              />
+            </div>
+          ) : (
+            <div className="size-16 px-4 mr-8 mb-4 rounded-xl bg-[#F6F6F6] select-none" />
+          )
+        )}
+      />
+      {/*  <Carousel
+        autoPlay
+        options={{ loop: true, align: "center", dragFree: true }}
+        items={[...achievementImages, ...achievementImages].map(
+          (imgUrl, index) => (
+            <div
+              key={index}
+              className="flex-shrink-0 size-16 rounded-xl bg-[#F6F6F6] px-4 mr-8"
+              onClick={() =>
+                handleAchievementClick &&
+                handleAchievementClick(index % achievementImages.length)
+              } // Обработчик клика
+            >
+              <img
+                src={imgUrl}
+                alt={`Логотип ${index + 1}`}
+                className="size-16 object-contain cursor-pointer"
+              />
+            </div>
+          )
+        )}
+      /> */}
+      {/*  <section className="flex flex-col gap-3 mb-6">
         <Slider
           elements={achievementImages}
           onElementClick={handleAchievementClick}
         />
-      </section>
+      </section> */}
       <section className="mb-6">
         <h1 className="text-black text-2xl text-left font-medium tracking-[-0.05em] mb-6">
           Выполнено{" "}

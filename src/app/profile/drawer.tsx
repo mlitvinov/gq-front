@@ -123,8 +123,7 @@ export function AchievementDrawer({
         </div>
 
         {/* Видео */}
-
-        <div className="flex size-24 relative rounded-full justify-center my-4">
+        <div className="flex size-64 relative rounded-full justify-center my-4">
           <div className="absolute z-0 inset-0 bg-slate-50 rounded-full animate-pulse" />
           {videoSrc && (
             <video
