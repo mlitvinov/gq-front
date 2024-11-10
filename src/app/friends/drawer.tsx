@@ -97,7 +97,7 @@ export function SubmitQuestDrawer({
       const message =
         response.status === 500
           ? "Ошибка на сервере. Попробуйте позже."
-          : "Не удалось отправить данные.";
+          : "У вас недостаточно репутации для создания этого испытания.";
       setErrorMessage(message);
     }
   };
