@@ -131,9 +131,21 @@ export function SubmitQuestDrawer({
 
               <select
                 title=""
+                onBlur={(e) => {
+                  e.stopPropagation();
+                  e.preventDefault();
+                  if (document.activeElement instanceof HTMLElement)
+                    document.activeElement.blur();
+                }}
                 name="category"
                 value={selectedAchievement?.name || ""}
                 onChange={(e) => {
+                  e.stopPropagation();
+                  e.preventDefault();
+
+                  if (document.activeElement instanceof HTMLElement)
+                    document.activeElement.blur();
+
                   const selected = achievements.find(
                     (ach) => ach.name === e.target.value
                   );
