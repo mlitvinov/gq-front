@@ -482,7 +482,6 @@ export default function ProfilePage({ params }: { params?: { id: number } }) {
           }}
           achievement={selectedAchievement}
           challengeData={challengeData}
-          initDataRaw={initDataRaw || ""}
         />
       )}
     </main>
