@@ -1,9 +1,10 @@
 "use client";
 
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useRef, useState } from "react";
 
 const RecommendationsPage = () => {
   const [videoSrc, setVideoSrc] = useState<string | null>(null);
+  const videoRef = useRef<HTMLVideoElement | null>(null);
 
   const initDataRaw =
     "query_id=AAE7x2YTAAAAADvHZhNRiDIy&user=%7B%22id%22%3A325502779%2C%22first_name%22%3A%22%D0%9C%D0%B0%D0%BA%D1%81%D0%B8%D0%BC%22%2C%22last_name%22%3A%22%22%2C%22username%22%3A%22youngfreud%22%2C%22language_code%22%3A%22ru%22%2C%22allows_write_to_pm%22%3Atrue%7D&auth_date=1731193463&hash=75cd76133105a2fdc831829638bb9d00a4107ec29d302ef29a8de419e8377281";
@@ -45,6 +46,30 @@ const RecommendationsPage = () => {
     };
   }, []);
 
+  // Обработчик для продолжения воспроизведения видео при выходе из полноэкранного режима
+  useEffect(() => {
+    const handleFullscreenChange = () => {
+      if (videoRef.current && !document.fullscreenElement) {
+        videoRef.current.play();
+      }
+    };
+
+    document.addEventListener("fullscreenchange", handleFullscreenChange);
+    document.addEventListener("webkitfullscreenchange", handleFullscreenChange);
+    document.addEventListener("mozfullscreenchange", handleFullscreenChange);
+    document.addEventListener("MSFullscreenChange", handleFullscreenChange);
+
+    return () => {
+      document.removeEventListener("fullscreenchange", handleFullscreenChange);
+      document.removeEventListener(
+        "webkitfullscreenchange",
+        handleFullscreenChange
+      );
+      document.removeEventListener("mozfullscreenchange", handleFullscreenChange);
+      document.removeEventListener("MSFullscreenChange", handleFullscreenChange);
+    };
+  }, []);
+
   return (
     <div className="min-h-screen">
       {/* Навигационная панель с тёмной темой */}
@@ -53,6 +78,7 @@ const RecommendationsPage = () => {
         <div className="w-72 h-72 rounded-full overflow-hidden mt-8 bg-gray-700 flex items-center justify-center">
           {videoSrc && (
             <video
+              ref={videoRef}
               src={videoSrc}
               className="w-full h-full object-cover"
               controls={false}
