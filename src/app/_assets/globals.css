@@ -4,7 +4,8 @@
 
 body {
   background: #fff;
-  /* Удалено overflow: hidden; */
+  /* Убираем overflow: hidden; */
+  /* overflow: hidden; */
   touch-action: manipulation;
   overscroll-behavior: none;
   height: 100%;
@@ -40,20 +41,6 @@ body.drawer-open {
   left: 0;
   right: 0;
   bottom: 0;
-}
-
-/* Стили для панели навигации */
-.navbar {
-  position: fixed;
-  top: 0;
-  left: 0;
-  right: 0;
-  z-index: 10000; /* Достаточно высокий z-index, чтобы панель была выше других элементов */
-}
-
-/* Дополнительные стили для панели навигации при открытом Drawer */
-body.drawer-open .navbar {
-  position: fixed; /* Сохраняем фиксированное позиционирование */
 }
 
 .text-gradient {
