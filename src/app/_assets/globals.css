@@ -13,12 +13,18 @@ body {
 }
 
 :root {
-  --safe-area-inset-bottom: calc(100vh - var(--tg-viewport-stable-height, 100vh))
+  --safe-area-inset-bottom: calc(100vh - var(--tg-viewport-stable-height, 100vh));
   --nav-height: 80px;
 }
 
 #root {
   text-rendering: optimizeSpeed;
+}
+
+/* Стили для Drawer */
+.drawer {
+  overflow-y: auto; /* Включает вертикальную прокрутку внутри Drawer */
+  -webkit-overflow-scrolling: touch; /* Плавная прокрутка на iOS */
 }
 
 .text-gradient {
@@ -27,6 +33,7 @@ body {
   -webkit-text-fill-color: transparent;
 }
 
+/* Дополнительные стили для мобильных устройств */
 @media (max-width: 768px) {
   html {
     touch-action: pan-x pan-y; /* Ограничивает взаимодействие только прокруткой по вертикали */
