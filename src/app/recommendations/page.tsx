@@ -11,6 +11,7 @@ interface HTMLVideoElementWithWebkit extends HTMLVideoElement {
 const RecommendationsPage = () => {
   const [videoSrc, setVideoSrc] = useState<string | null>(null);
   const videoRef = useRef<HTMLVideoElementWithWebkit | null>(null);
+  const [lastTap, setLastTap] = useState<number>(0);
 
   // Замените "YOUR_INIT_DATA" на ваши актуальные данные, избегая размещения личной информации в публичном коде
   const initDataRaw =
@@ -53,51 +54,54 @@ const RecommendationsPage = () => {
     };
   }, []);
 
-  useEffect(() => {
-    const videoElement = videoRef.current;
-
-    if (videoElement) {
-      // Обработчик для воспроизведения видео при входе в полноэкранный режим
-      const handleWebkitBeginFullscreen = () => {
-        videoElement.play().catch((error) => {
-          console.error("Ошибка воспроизведения видео в полноэкранном режиме:", error);
+  // Обработчики для событий касания (для мобильных устройств)
+  const handleVideoClick = () => {
+    if (videoRef.current) {
+      if (videoRef.current.paused) {
+        videoRef.current.play().catch((error) => {
+          console.error("Ошибка воспроизведения видео:", error);
         });
-      };
-
-      // Обработчик для продолжения воспроизведения после выхода из полноэкранного режима
-      const handleWebkitEndFullscreen = () => {
-        videoElement.play().catch((error) => {
-          console.error("Ошибка воспроизведения видео после выхода из полноэкранного режима:", error);
-        });
-      };
-
-      // Добавляем обработчики событий для iOS Safari
-      videoElement.addEventListener(
-        "webkitbeginfullscreen",
-        handleWebkitBeginFullscreen
-      );
-      videoElement.addEventListener(
-        "webkitendfullscreen",
-        handleWebkitEndFullscreen
-      );
-
-      return () => {
-        videoElement.removeEventListener(
-          "webkitbeginfullscreen",
-          handleWebkitBeginFullscreen
-        );
-        videoElement.removeEventListener(
-          "webkitendfullscreen",
-          handleWebkitEndFullscreen
-        );
-      };
+      } else {
+        videoRef.current.pause();
+      }
     }
-  }, [videoSrc]);
+  };
+
+  const handleVideoDoubleClick = () => {
+    const video = videoRef.current;
+    if (video) {
+      if (video.requestFullscreen) {
+        video.requestFullscreen();
+      } else if (video.webkitEnterFullscreen) {
+        video.webkitEnterFullscreen();
+      }
+    }
+  };
+
+  const handleTouchStart = () => {
+    const currentTime = new Date().getTime();
+    const tapGap = currentTime - lastTap;
+
+    if (tapGap < 300 && tapGap > 0) {
+      // Двойное касание
+      handleVideoDoubleClick();
+    } else {
+      // Одиночное касание
+      handleVideoClick();
+    }
+
+    setLastTap(currentTime);
+  };
 
   return (
     <div className="min-h-screen">
       <main className="flex flex-col items-center justify-center px-4">
-        <div className="w-72 h-72 rounded-full overflow-hidden mt-8 bg-gray-700 flex items-center justify-center">
+        <div
+          className="w-72 h-72 rounded-full overflow-hidden mt-8 bg-gray-700 flex items-center justify-center"
+          onClick={handleVideoClick}
+          onDoubleClick={handleVideoDoubleClick}
+          onTouchStart={handleTouchStart}
+        >
           {videoSrc && (
             <video
               ref={videoRef}
@@ -108,14 +112,6 @@ const RecommendationsPage = () => {
               playsInline
               autoPlay
               muted
-              onClick={(e) => {
-                const video = e.currentTarget as HTMLVideoElementWithWebkit;
-                if (video.requestFullscreen) {
-                  video.requestFullscreen();
-                } else if (video.webkitEnterFullscreen) {
-                  video.webkitEnterFullscreen();
-                }
-              }}
             />
           )}
         </div>
