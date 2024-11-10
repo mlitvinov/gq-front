@@ -51,7 +51,9 @@ export default function Drawer({
         <h2 className="p-4" id="modal-modal-title">
           {title}
         </h2>
-        <div className="overflow-y-auto overflow-x-hidden">{children}</div>
+        <div className="overflow-y-auto overflow-x-hidden pb-12">
+          {children}
+        </div>
       </Box>
     </Modal>
   );

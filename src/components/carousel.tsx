@@ -17,16 +17,16 @@ type CarouselProps = {
 export function Carousel({
   items,
   options,
-  autoPlay,
+  autoPlay = false,
   itemClassName,
   containerClassName,
   autoStartOptions = {},
 }: CarouselProps) {
   const [emblaRef, emblaApi] = useEmblaCarousel(options, [
     AutoScroll({
-      playOnInit: autoPlay,
+      playOnInit: !!autoPlay,
       speed: 0.5,
-      stopOnInteraction: false,
+      stopOnInteraction: !autoPlay,
       startDelay: 100,
       ...autoStartOptions,
     }),

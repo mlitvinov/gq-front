@@ -64,7 +64,7 @@ export default function ProfilePage({ params }: { params?: { id: number } }) {
   const [videoUrls, setVideoUrls] = useState<string[]>([]);
   const [selectedAchievement, setSelectedAchievement] =
     useState<Achievement | null>(null);
-  const [challengeData, setChallengeData] = useState<ChallengeData | null>(
+  const [challengeData, setChallengeData] = useState<ChallengeData[] | null>(
     null
   );
   const [isLoadingAddFriend, setIsLoadingAddFriend] = useState(false);
@@ -163,7 +163,7 @@ export default function ProfilePage({ params }: { params?: { id: number } }) {
       if (response.ok) {
         const data: ChallengeData[] = await response.json();
         if (data.length > 0) {
-          setChallengeData(data[0]);
+          setChallengeData(data);
         }
       } else {
         console.error(
@@ -278,7 +278,7 @@ export default function ProfilePage({ params }: { params?: { id: number } }) {
             width={80}
             height={80}
           />
-          <h1 className="text-gradient text-3xl font-black">
+          <h1 className="text-gradient text-center text-3xl font-black">
             {Number(userData.rating).toLocaleString()}
           </h1>
           <p className="text-black">
@@ -319,7 +319,7 @@ export default function ProfilePage({ params }: { params?: { id: number } }) {
       <Carousel
         autoPlay
         containerClassName="[&>*:nth-child(odd)]:mt-2 select-none"
-        options={{ loop: true, align: "center", dragFree: true, startIndex: 2 }}
+        options={{ loop: true, align: "center", dragFree: true }}
         items={sliders.top.map((imgUrl, index) =>
           imgUrl ? (
             <div
@@ -348,7 +348,7 @@ export default function ProfilePage({ params }: { params?: { id: number } }) {
       <Carousel
         autoPlay
         containerClassName="[&>*:nth-child(odd)]:mt-2 select-none"
-        options={{ loop: true, align: "center", dragFree: true, startIndex: 2 }}
+        options={{ loop: true, align: "center", dragFree: true }}
         items={sliders.bottom.map((imgUrl, index) =>
           imgUrl ? (
             <div
@@ -430,36 +430,38 @@ export default function ProfilePage({ params }: { params?: { id: number } }) {
       <Carousel
         autoPlay
         containerClassName="[&>*:nth-child(odd)]:mt-2 select-none"
-        options={{ loop: true, align: "center", dragFree: true, startIndex: 2 }}
+        options={{ loop: true, align: "center", dragFree: true }}
         items={videoUrls.map((videoUrl, index) => (
-          <figure
+          <div
             key={videoUrl}
-            className="rounded-full overflow-hidden w-64 h-64 bg-[#F6F6F6] flex items-center justify-center mr-6"
+            className="flex flex-col justify-center w-full px-4"
           >
-            <video
-              autoPlay
-              loop
-              muted
-              playsInline
-              controls={false}
-              className="w-full h-full object-cover rounded-full"
-              onClick={(e) => {
-                const video = e.currentTarget;
-                if (video.requestFullscreen) {
-                  video.requestFullscreen();
-                } else if ((video as any).webkitEnterFullscreen) {
-                  (video as any).webkitEnterFullscreen();
-                }
-                video.play();
-              }}
-            >
-              <source
-                src={`https://getquest.tech:8443/api/videos/download?fileId=${videoUrl}`}
-                type="video/mp4"
-              />
-              Ваш браузер не поддерживает видео.
-            </video>
-          </figure>
+            <figure className="rounded-full overflow-hidden  size-64 bg-[#F6F6F6] flex items-center justify-center mr-6">
+              <video
+                autoPlay
+                loop
+                muted
+                playsInline
+                controls={false}
+                className="w-full h-full object-cover rounded-full"
+                onClick={(e) => {
+                  const video = e.currentTarget;
+                  if (video.requestFullscreen) {
+                    video.requestFullscreen();
+                  } else if ((video as any).webkitEnterFullscreen) {
+                    (video as any).webkitEnterFullscreen();
+                  }
+                  video.play();
+                }}
+              >
+                <source
+                  src={`https://getquest.tech:8443/api/videos/download?fileId=${videoUrl}`}
+                  type="video/mp4"
+                />
+                Ваш браузер не поддерживает видео.
+              </video>
+            </figure>
+          </div>
         ))}
       />
 
