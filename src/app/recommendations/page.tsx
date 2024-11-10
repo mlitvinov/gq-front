@@ -17,7 +17,7 @@ const RecommendationsPage = () => {
         };
 
         const response = await fetch(
-          "https://getquest.tech:8443/api/videos/download?fileId=BAACAgIAAxkDAAMTZxVy_kXt2SUZFb0r5Td0BdCfuRYAAjVXAALMXrBIF2zQaJ7Yv-82BA",
+          "https://getquest.tech:6443/api/videos/download?fileId=BAACAgIAAxkDAAMTZxVy_kXt2SUZFb0r5Td0BdCfuRYAAjVXAALMXrBIF2zQaJ7Yv-82BA",
           {
             method: "GET",
             headers,
