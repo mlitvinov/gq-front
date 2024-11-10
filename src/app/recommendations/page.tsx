@@ -5,13 +5,13 @@ import React, { useEffect, useRef, useState } from "react";
 // Расширяем интерфейс HTMLVideoElement для поддержки webkit методов
 interface HTMLVideoElementWithWebkit extends HTMLVideoElement {
   webkitEnterFullscreen?: () => void;
-  webkitExitFullscreen?: () => void;
+  webkitExitFullscreen?: void;
 }
 
 const RecommendationsPage = () => {
   const [videoSrc, setVideoSrc] = useState<string | null>(null);
   const videoRef = useRef<HTMLVideoElementWithWebkit | null>(null);
-  const [lastTap, setLastTap] = useState<number>(0);
+  const [isPlaying, setIsPlaying] = useState(false);
 
   // Замените "YOUR_INIT_DATA" на ваши актуальные данные, избегая размещения личной информации в публичном коде
   const initDataRaw =
@@ -54,20 +54,30 @@ const RecommendationsPage = () => {
     };
   }, []);
 
-  // Обработчики для событий касания (для мобильных устройств)
+  const handlePlayButton = () => {
+    if (videoRef.current) {
+      videoRef.current.play().catch((error) => {
+        console.error("Ошибка воспроизведения видео:", error);
+      });
+      setIsPlaying(true);
+    }
+  };
+
   const handleVideoClick = () => {
     if (videoRef.current) {
       if (videoRef.current.paused) {
         videoRef.current.play().catch((error) => {
           console.error("Ошибка воспроизведения видео:", error);
         });
+        setIsPlaying(true);
       } else {
         videoRef.current.pause();
+        setIsPlaying(false);
       }
     }
   };
 
-  const handleVideoDoubleClick = () => {
+  const handleFullScreen = () => {
     const video = videoRef.current;
     if (video) {
       if (video.requestFullscreen) {
@@ -78,41 +88,54 @@ const RecommendationsPage = () => {
     }
   };
 
-  const handleTouchStart = () => {
-    const currentTime = new Date().getTime();
-    const tapGap = currentTime - lastTap;
-
-    if (tapGap < 300 && tapGap > 0) {
-      // Двойное касание
-      handleVideoDoubleClick();
-    } else {
-      // Одиночное касание
-      handleVideoClick();
-    }
-
-    setLastTap(currentTime);
-  };
-
   return (
     <div className="min-h-screen">
       <main className="flex flex-col items-center justify-center px-4">
-        <div
-          className="w-72 h-72 rounded-full overflow-hidden mt-8 bg-gray-700 flex items-center justify-center"
-          onClick={handleVideoClick}
-          onDoubleClick={handleVideoDoubleClick}
-          onTouchStart={handleTouchStart}
-        >
+        <div className="relative w-72 h-72 rounded-full overflow-hidden mt-8 bg-gray-700 flex items-center justify-center">
           {videoSrc && (
             <video
               ref={videoRef}
               src={videoSrc}
               className="w-full h-full object-cover"
-              controls={false}
               loop
               playsInline
-              autoPlay
               muted
+              onClick={handleVideoClick}
+              onEnded={() => setIsPlaying(false)}
             />
+          )}
+          {!isPlaying && (
+            <button
+              onClick={handlePlayButton}
+              className="absolute inset-0 flex items-center justify-center"
+            >
+              <svg
+                xmlns="http://www.w3.org/2000/svg"
+                className="h-16 w-16 text-white"
+                fill="none"
+                viewBox="0 0 24 24"
+                stroke="currentColor"
+              >
+                <polygon points="5,3 19,12 5,21" fill="currentColor" />
+              </svg>
+            </button>
+          )}
+          {/* Кнопка для полноэкранного режима */}
+          {isPlaying && (
+            <button
+              onClick={handleFullScreen}
+              className="absolute bottom-2 right-2 bg-black bg-opacity-50 text-white rounded-full p-2"
+            >
+              <svg
+                xmlns="http://www.w3.org/2000/svg"
+                className="h-6 w-6"
+                fill="none"
+                viewBox="0 0 24 24"
+                stroke="currentColor"
+              >
+                <path d="M8 3H5a2 2 0 00-2 2v3M16 3h3a2 2 0 012 2v3M8 21H5a2 2 0 01-2-2v-3M16 21h3a2 2 0 002-2v-3" />
+              </svg>
+            </button>
           )}
         </div>
 
