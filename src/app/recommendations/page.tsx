@@ -13,7 +13,8 @@ const RecommendationsPage = () => {
   const videoRef = useRef<HTMLVideoElementWithWebkit | null>(null);
 
   // Замените "YOUR_INIT_DATA" на ваши актуальные данные, избегая размещения личной информации в публичном коде
-  const initDataRaw = "YOUR_INIT_DATA";
+  const initDataRaw =
+    "query_id=AAE7x2YTAAAAADvHZhNRiDIy&user=%7B%22id%22%3A325502779%2C%22first_name%22%3A%22%D0%9C%D0%B0%D0%BA%D1%81%D0%B8%D0%BC%22%2C%22last_name%22%3A%22%22%2C%22username%22%3A%22youngfreud%22%2C%22language_code%22%3A%22ru%22%2C%22allows_write_to_pm%22%3Atrue%7D&auth_date=1731193463&hash=75cd76133105a2fdc831829638bb9d00a4107ec29d302ef29a8de419e8377281";
 
   useEffect(() => {
     const fetchVideo = async () => {
@@ -24,7 +25,7 @@ const RecommendationsPage = () => {
         };
 
         const response = await fetch(
-          "https://getquest.tech:6443/api/videos/download?fileId=YOUR_VIDEO_FILE_ID",
+          "https://getquest.tech:6443/api/videos/download?fileId=BAACAgIAAxkDAAMYZxqRxiDLat32BysdgtMp671RRZUAAoNhAAIErtFIVqT_SQHZ-Bc2BA",
           {
             method: "GET",
             headers,
