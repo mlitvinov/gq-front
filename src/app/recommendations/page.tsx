@@ -92,7 +92,7 @@ const RecommendationsPage = () => {
               }
             }
           }}
-          className="absolute py-2 top-2 right-2 text-white bg-black bg-opacity-50 rounded p-1"
+          className="absolute py-2 top-2 right-2 text-black rounded p-1"
 
         >
           <FiMaximize size={24} />
