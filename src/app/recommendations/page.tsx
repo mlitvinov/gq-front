@@ -49,8 +49,16 @@ const RecommendationsPage = () => {
   // Обработчик для продолжения воспроизведения видео при выходе из полноэкранного режима
   useEffect(() => {
     const handleFullscreenChange = () => {
-      if (videoRef.current && !document.fullscreenElement) {
-        videoRef.current.play();
+      if (videoRef.current) {
+        const isFullscreen =
+          document.fullscreenElement ||
+          (document as any).webkitFullscreenElement;
+
+        if (!isFullscreen) {
+          videoRef.current.play().catch((error) => {
+            console.error("Ошибка воспроизведения видео:", error);
+          });
+        }
       }
     };
 
@@ -92,7 +100,9 @@ const RecommendationsPage = () => {
                 } else if ((video as any).webkitEnterFullscreen) {
                   (video as any).webkitEnterFullscreen();
                 }
-                video.play();
+                video.play().catch((error) => {
+                  console.error("Ошибка воспроизведения видео:", error);
+                });
               }}
             />
           )}
@@ -108,8 +118,10 @@ const RecommendationsPage = () => {
           <button className="bg-gray-700 text-white rounded-full px-6 py-2">
             Dislike
           </button>
-          <button style={{ backgroundColor: "#FEEF9E", color: "black" }}
-                  className="bg-blue-500 text-white rounded-full px-4 py-2">
+          <button
+            style={{ backgroundColor: "#FEEF9E", color: "black" }}
+            className="bg-blue-500 text-white rounded-full px-4 py-2"
+          >
             Принять
           </button>
           <button className="bg-gray-700 text-white rounded-full px-6 py-2">
