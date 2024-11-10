@@ -36,7 +36,7 @@ interface UserData {
 }
 
 // .reduce, который разделяет каждый второй элемент массива. Один идёт на в top, другой в bottom
-const splitArray = (array: any[]) =>
+const splitArray = (array: any[]): { top: string[]; bottom: string[] } =>
   array.reduce(
     (acc, el, index) => {
       if (index % 2 === 0) {
@@ -337,7 +337,10 @@ export default function ProfilePage({ params }: { params?: { id: number } }) {
               />
             </div>
           ) : (
-            <div className="size-16 px-4 mr-8 mb-4 rounded-xl bg-[#F6F6F6] select-none" />
+            <div
+              key={index}
+              className="size-16 px-4 mr-8 mb-4 rounded-xl bg-[#F6F6F6] select-none"
+            />
           )
         )}
       />
@@ -363,7 +366,10 @@ export default function ProfilePage({ params }: { params?: { id: number } }) {
               />
             </div>
           ) : (
-            <div className="size-16 px-4 mr-8 mb-4 rounded-xl bg-[#F6F6F6] select-none" />
+            <div
+              key={index}
+              className="size-16 px-4 mr-8 mb-4 rounded-xl bg-[#F6F6F6] select-none"
+            />
           )
         )}
       />

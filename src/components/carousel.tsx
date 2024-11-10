@@ -7,7 +7,7 @@ import { cn } from "@/lib/utils";
 
 type CarouselProps = {
   items: ReactNode[];
-  offset?: number;
+
   autoPlay?: boolean;
   itemClassName?: string;
   containerClassName?: string;
@@ -18,7 +18,6 @@ export function Carousel({
   items,
   options,
   autoPlay,
-  offest,
   itemClassName,
   containerClassName,
   autoStartOptions = {},
