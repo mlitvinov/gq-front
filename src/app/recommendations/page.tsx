@@ -2,17 +2,18 @@
 
 import React, { useEffect, useRef, useState } from "react";
 
-// Расширяем интерфейс HTMLVideoElement для поддержки webkitEnterFullscreen
+// Расширяем интерфейс HTMLVideoElement для поддержки webkit методов
 interface HTMLVideoElementWithWebkit extends HTMLVideoElement {
-  webkitEnterFullscreen?: () => void; // Добавляем метод webkitEnterFullscreen
+  webkitEnterFullscreen?: () => void;
+  webkitExitFullscreen?: () => void;
 }
 
 const RecommendationsPage = () => {
   const [videoSrc, setVideoSrc] = useState<string | null>(null);
   const videoRef = useRef<HTMLVideoElementWithWebkit | null>(null);
 
-  const initDataRaw =
-    "query_id=AAE7x2YTAAAAADvHZhNRiDIy&user=%7B%22id%22%3A325502779%2C%22first_name%22%3A%22%D0%9C%D0%B0%D0%BA%D1%81%D0%B8%D0%BC%22%2C%22last_name%22%3A%22%22%2C%22username%22%3A%22youngfreud%22%2C%22language_code%22%3A%22ru%22%2C%22allows_write_to_pm%22%3Atrue%7D&auth_date=1731193463&hash=75cd76133105a2fdc831829638bb9d00a4107ec29d302ef29a8de419e8377281";
+  // Замените "YOUR_INIT_DATA" на ваши актуальные данные, избегая размещения личной информации в публичном коде
+  const initDataRaw = "YOUR_INIT_DATA";
 
   useEffect(() => {
     const fetchVideo = async () => {
@@ -23,7 +24,7 @@ const RecommendationsPage = () => {
         };
 
         const response = await fetch(
-          "https://getquest.tech:6443/api/videos/download?fileId=BAACAgIAAxkDAAMYZxqRxiDLat32BysdgtMp671RRZUAAoNhAAIErtFIVqT_SQHZ-Bc2BA",
+          "https://getquest.tech:6443/api/videos/download?fileId=YOUR_VIDEO_FILE_ID",
           {
             method: "GET",
             headers,
@@ -55,20 +56,35 @@ const RecommendationsPage = () => {
     const videoElement = videoRef.current;
 
     if (videoElement) {
-      const handleWebkitEndFullscreen = () => {
-        // Продолжаем воспроизведение после выхода из полноэкранного режима
+      // Обработчик для воспроизведения видео при входе в полноэкранный режим
+      const handleWebkitBeginFullscreen = () => {
         videoElement.play().catch((error) => {
-          console.error("Ошибка воспроизведения видео:", error);
+          console.error("Ошибка воспроизведения видео в полноэкранном режиме:", error);
         });
       };
 
-      // Добавляем обработчик события 'webkitendfullscreen' для iOS Safari
+      // Обработчик для продолжения воспроизведения после выхода из полноэкранного режима
+      const handleWebkitEndFullscreen = () => {
+        videoElement.play().catch((error) => {
+          console.error("Ошибка воспроизведения видео после выхода из полноэкранного режима:", error);
+        });
+      };
+
+      // Добавляем обработчики событий для iOS Safari
+      videoElement.addEventListener(
+        "webkitbeginfullscreen",
+        handleWebkitBeginFullscreen
+      );
       videoElement.addEventListener(
         "webkitendfullscreen",
         handleWebkitEndFullscreen
       );
 
       return () => {
+        videoElement.removeEventListener(
+          "webkitbeginfullscreen",
+          handleWebkitBeginFullscreen
+        );
         videoElement.removeEventListener(
           "webkitendfullscreen",
           handleWebkitEndFullscreen
@@ -103,10 +119,12 @@ const RecommendationsPage = () => {
           )}
         </div>
 
+        {/* Текстовые элементы */}
         <h1 className="text-xl text-black font-bold mt-4">USERNAME</h1>
         <h2 className="text-lg text-black font-semibold">Гурман</h2>
         <p className="text-base text-black">Съешь лимон</p>
 
+        {/* Кнопки */}
         <div className="flex justify-between mt-6 w-full max-w-sm mx-auto px-4">
           <button className="bg-gray-700 text-white rounded-full px-6 py-2">
             Dislike
