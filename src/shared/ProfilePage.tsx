@@ -421,39 +421,41 @@ export default function ProfilePage({ params }: { params?: { id: number } }) {
         </h1>
       </section>
 
-      <section className="video-slider flex flex-row gap-3 overflow-x-auto">
-        {videoUrls.length > 0 &&
-          videoUrls.map((el) => (
-            <figure
-              key={el}
-              className="rounded-full overflow-hidden w-64 h-64 bg-[#F6F6F6] flex items-center justify-center"
+      <Carousel
+        autoPlay
+        containerClassName="[&>*:nth-child(odd)]:mt-2 select-none"
+        options={{ loop: true, align: "center", dragFree: true, startIndex: 2 }}
+        items={videoUrls.map((videoUrl, index) => (
+          <figure
+            key={videoUrl}
+            className="rounded-full overflow-hidden w-64 h-64 bg-[#F6F6F6] flex items-center justify-center mr-6"
+          >
+            <video
+              autoPlay
+              loop
+              muted
+              playsInline
+              controls={false}
+              className="w-full h-full object-cover rounded-full"
+              onClick={(e) => {
+                const video = e.currentTarget;
+                if (video.requestFullscreen) {
+                  video.requestFullscreen();
+                } else if ((video as any).webkitEnterFullscreen) {
+                  (video as any).webkitEnterFullscreen();
+                }
+                video.play();
+              }}
             >
-              <video
-                autoPlay
-                loop
-                muted
-                playsInline
-                controls={false}
-                className="w-full h-full object-cover rounded-full"
-                onClick={(e) => {
-                  const video = e.currentTarget;
-                  if (video.requestFullscreen) {
-                    video.requestFullscreen();
-                  } else if ((video as any).webkitEnterFullscreen) {
-                    (video as any).webkitEnterFullscreen();
-                  }
-                  video.play();
-                }}
-              >
-                <source
-                  src={`https://getquest.tech:8443/api/videos/download?fileId=${el}`}
-                  type="video/mp4"
-                />
-                Ваш браузер не поддерживает видео.
-              </video>
-            </figure>
-          ))}
-      </section>
+              <source
+                src={`https://getquest.tech:8443/api/videos/download?fileId=${videoUrl}`}
+                type="video/mp4"
+              />
+              Ваш браузер не поддерживает видео.
+            </video>
+          </figure>
+        ))}
+      />
 
       <nav className="fixed-nav fixed bottom-0 left-0 right-0 bg-white z-1000">
         <ul className="flex justify-around p-2">
