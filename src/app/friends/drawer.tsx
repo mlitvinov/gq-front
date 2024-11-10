@@ -14,15 +14,15 @@ type SubmitQuestDrawerProps = {
   username: string;
   initDataRaw?: string;
   receiverId: string;
-  onClose?: () => void;
+  onClose?: () => void; // Пропс для закрытия окна
 };
 
 export function SubmitQuestDrawer({
-                                    username,
-                                    initDataRaw,
-                                    receiverId,
-                                    onClose
-                                  }: SubmitQuestDrawerProps) {
+  username,
+  initDataRaw,
+  receiverId,
+  onClose,
+}: SubmitQuestDrawerProps) {
   const [achievements, setAchievements] = React.useState<Achievement[]>([]);
   const [selectedAchievement, setSelectedAchievement] =
     React.useState<Achievement | null>(null);
@@ -78,30 +78,27 @@ export function SubmitQuestDrawer({
       price: parseInt(numericValue, 10),
     };
 
-    try {
-      const response = await fetch("https://getquest.tech:8443/api/challenges", {
-        method: "POST",
-        headers: {
-          accept: "*/*",
-          "Content-Type": "application/json",
-          initData: initDataRaw,
-        },
-        body: JSON.stringify(payload),
-      });
+    const response = await fetch("https://getquest.tech:8443/api/challenges", {
+      method: "POST",
+      headers: {
+        accept: "*/*",
+        "Content-Type": "application/json",
+        initData: initDataRaw,
+      },
+      body: JSON.stringify(payload),
+    });
 
-      if (response.ok) {
-        setIsLoading(false);
-        setIsOpen(false); // Закрытие окна
-        onClose?.();
-        alert("Challenge sent successfully!");
-      } else {
-        const errorData = await response.json();
-        setErrorMessage(errorData.errorMessage || "Failed to send data.");
-        setIsLoading(false);
-      }
-    } catch (error) {
-      setErrorMessage("Server error. Please try again later.");
+    if (response.ok) {
       setIsLoading(false);
+      setIsOpen(false); // Локальное закрытие окна
+      onClose?.(); // Закрытие окна через родительский компонент
+      alert("Задание успешно отправлено!");
+    } else {
+      const message =
+        response.status === 500
+          ? "Ошибка на сервере. Попробуйте позже."
+          : "Не удалось отправить данные.";
+      setErrorMessage(message);
     }
   };
 
