@@ -36,7 +36,7 @@ interface UserData {
 }
 
 // .reduce, который разделяет каждый второй элемент массива. Один идёт на в top, другой в bottom
-const splitArray = (array: any[]): { top: string[]; bottom: string[] } =>
+const splitArray = (array: any[]): { top: any[]; bottom: any[] } =>
   array.reduce(
     (acc, el, index) => {
       if (index % 2 === 0) {
@@ -60,7 +60,9 @@ const fillArray = (array: any[], length: number) => {
 
 export default function ProfilePage({ params }: { params?: { id: number } }) {
   const [userData, setUserData] = useState<UserData | null>(null);
-  const [achievementImages, setAchievementImages] = useState<string[]>([]);
+  const [achievementImages, setAchievementImages] = useState<
+    { imageUrl: string; id: string }[]
+  >([]);
   const [videoUrls, setVideoUrls] = useState<string[]>([]);
   const [selectedAchievement, setSelectedAchievement] =
     useState<Achievement | null>(null);
@@ -96,10 +98,10 @@ export default function ProfilePage({ params }: { params?: { id: number } }) {
         const data: UserData = await response.json();
         setUserData(data);
         setAchievementImages(
-          data.achievementListDTO.map(
-            (achievement: Achievement) =>
-              `https://getquest.tech:8443/api/images/${achievement.imageUrl}`
-          )
+          data.achievementListDTO.map((achievement: Achievement) => ({
+            id: achievement.userAchievement.toString(),
+            imageUrl: `https://getquest.tech:8443/api/images/${achievement.imageUrl}`,
+          }))
         );
       } catch (error) {
         console.error("Ошибка при загрузке данных профиля:", error);
@@ -138,10 +140,13 @@ export default function ProfilePage({ params }: { params?: { id: number } }) {
     fetchVideoUrls();
   }, [userData, initDataRaw]);
 
-  const handleAchievementClick = async (index: number) => {
+  const handleAchievementClick = async (id: string) => {
     if (!initDataRaw) return;
 
-    const achievement = userData?.achievementListDTO[index];
+    const achievement = userData?.achievementListDTO.find(
+      (el) => el.userAchievement.toString() === id
+    );
+
     if (!achievement) return;
 
     setSelectedAchievement(achievement);
@@ -320,18 +325,15 @@ export default function ProfilePage({ params }: { params?: { id: number } }) {
         autoPlay
         containerClassName="[&>*:nth-child(odd)]:mt-2 select-none"
         options={{ loop: true, align: "center", dragFree: true }}
-        items={sliders.top.map((imgUrl, index) =>
-          imgUrl ? (
+        items={sliders.top.map((el, index) =>
+          el?.imageUrl ? (
             <div
               key={index}
               className="flex-shrink-0 size-16 rounded-xl bg-[#F6F6F6] px-4 mr-8 mb-4"
-              onClick={() =>
-                handleAchievementClick &&
-                handleAchievementClick(index % achievementImages.length)
-              } // Обработчик клика
+              onClick={() => handleAchievementClick(el.id)}
             >
               <img
-                src={imgUrl}
+                src={el.imageUrl}
                 alt={`Логотип ${index + 1}`}
                 className="size-16 object-contain cursor-pointer"
               />
@@ -349,18 +351,15 @@ export default function ProfilePage({ params }: { params?: { id: number } }) {
         autoPlay
         containerClassName="[&>*:nth-child(odd)]:mt-2 select-none"
         options={{ loop: true, align: "center", dragFree: true }}
-        items={sliders.bottom.map((imgUrl, index) =>
-          imgUrl ? (
+        items={sliders.bottom.map((el, index) =>
+          el?.imageUrl ? (
             <div
               key={index}
               className="flex-shrink-0 size-16 rounded-xl bg-[#F6F6F6] px-4 mr-8 mb-4"
-              onClick={() =>
-                handleAchievementClick &&
-                handleAchievementClick(index % achievementImages.length)
-              } // Обработчик клика
+              onClick={() => handleAchievementClick(el.id)}
             >
               <img
-                src={imgUrl}
+                src={el.imageUrl}
                 alt={`Логотип ${index + 1}`}
                 className="size-16 object-contain cursor-pointer"
               />
