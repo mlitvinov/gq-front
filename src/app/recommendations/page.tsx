@@ -1,7 +1,11 @@
 "use client";
 
 import React, { useEffect, useState, useRef } from "react";
-import { FiMaximize, FiStar, FiThumbsDown, FiThumbsUp } from "react-icons/fi";
+import { FiLoader, FiMaximize, FiRefreshCw, FiRepeat, FiStar, FiThumbsDown, FiThumbsUp } from "react-icons/fi";
+import { AiOutlineReload } from "react-icons/ai";
+import { MdReplay } from "react-icons/md";
+import { BiRepeat } from "react-icons/bi";
+import { HiOutlineRefresh } from "react-icons/hi";
 
 const RecommendationsPage = () => {
   const [videoSrc, setVideoSrc] = useState<string | null>(null);
@@ -15,14 +19,14 @@ const RecommendationsPage = () => {
       try {
         const headers: HeadersInit = {
           accept: "*/*",
-          initData: initDataRaw,
+          initData: initDataRaw
         };
 
         const response = await fetch(
           "https://getquest.tech:6443/api/videos/download?fileId=BAACAgIAAxkDAAMYZxqRxiDLat32BysdgtMp671RRZUAAoNhAAIErtFIVqT_SQHZ-Bc2BA",
           {
             method: "GET",
-            headers,
+            headers
           }
         );
 
@@ -102,17 +106,17 @@ const RecommendationsPage = () => {
 
         {/* Кнопки */}
         <div className="flex justify-between mt-6 w-full max-w-sm mx-auto px-4">
-          <button className="bg-gray-700 text-white rounded px-6 py-2">
+          <button className="bg-gray-300 text-black rounded px-6 py-2">
             <FiThumbsDown size={24} />
           </button>
           <button
             style={{ backgroundColor: "#FEEF9E", color: "black" }}
             className="bg-blue-500 text-white rounded px-4 py-2"
           >
-            <FiStar  size={24} />
+            <FiRefreshCw size={24} />
           </button>
-          <button className="bg-blue-500 text-white rounded px-6 py-2">
-            <FiThumbsUp  size={24} />
+          <button className="bg-blue-500 text-white rounded px-6 py-2" style={{ backgroundColor: "#ABD6E0", color: "black" }}>
+            <FiThumbsUp size={24} />
           </button>
         </div>
       </main>
