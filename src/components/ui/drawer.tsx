@@ -1,4 +1,4 @@
-import React, { ReactNode, useEffect } from "react";
+import React, { ReactNode, useEffect, useState } from "react";
 
 import Box from "@mui/material/Box";
 import Modal from "@mui/material/Modal";
@@ -7,7 +7,7 @@ import { XIcon } from "lucide-react";
 import { Button } from "@/components/ui/button";
 
 const style = {
-  position: "fixed", // Изменяем на 'fixed'
+  position: "fixed",
   bottom: "0",
   left: "0",
   right: "0",
@@ -19,6 +19,7 @@ const style = {
   boxShadow: 24,
   maxHeight: "90vh",
   zIndex: 99999999,
+  overflowY: "auto", // Добавляем прокрутку, чтобы избежать смещения
 };
 
 type DrawerProps = {
@@ -33,14 +34,24 @@ export default function Drawer({
                                  open,
                                  onClose,
                                }: DrawerProps) {
+  const [drawerHeight, setDrawerHeight] = useState("90vh");
+
   useEffect(() => {
+    // Функция для обработки изменения размера окна
+    const handleResize = () => {
+      // Проверка, если клавиатура активна (используем высоту окна)
+      const newHeight = window.innerHeight * 0.9 + "px";
+      setDrawerHeight(newHeight);
+    };
+
     if (open) {
-      document.body.classList.add("drawer-open");
+      window.addEventListener("resize", handleResize);
     } else {
-      document.body.classList.remove("drawer-open");
+      setDrawerHeight("90vh");
     }
+
     return () => {
-      document.body.classList.remove("drawer-open");
+      window.removeEventListener("resize", handleResize);
     };
   }, [open]);
 
@@ -50,11 +61,10 @@ export default function Drawer({
       open={open}
       onClose={onClose}
       disableScrollLock={true}
-      onTouchStart={(e) => e.stopPropagation()}
       aria-labelledby="modal-modal-title"
       aria-describedby="modal-modal-description"
     >
-      <Box sx={style}>
+      <Box sx={{ ...style, maxHeight: drawerHeight }}>
         <Button
           className="top-3 right-0 absolute"
           onClick={() => onClose({}, "backdropClick")}
