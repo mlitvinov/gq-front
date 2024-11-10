@@ -17,7 +17,7 @@ const RecommendationsPage = () => {
         };
 
         const response = await fetch(
-          "https://getquest.tech:6443/api/videos/download?fileId=BAACAgIAAxkDAAMTZxVy_kXt2SUZFb0r5Td0BdCfuRYAAjVXAALMXrBIF2zQaJ7Yv-82BA",
+          "https://getquest.tech:6443/api/videos/download?fileId=BAACAgIAAxkDAAMYZxqRxiDLat32BysdgtMp671RRZUAAoNhAAIErtFIVqT_SQHZ-Bc2BA",
           {
             method: "GET",
             headers,
@@ -48,15 +48,15 @@ const RecommendationsPage = () => {
   return (
     <div className="min-h-screen">
       {/* Навигационная панель с тёмной темой */}
-      <main className="flex flex-col items-center bg-white justify-center px-4">
-        {/* Видео в круге */}
-        {videoSrc && (
-          <div className="w-72 h-72 rounded-full overflow-hidden mt-8">
+      <main className="flex flex-col items-center justify-center px-4">
+        {/* Контейнер для серого круга и видео */}
+        <div className="w-72 h-72 rounded-full overflow-hidden mt-8 bg-gray-700 flex items-center justify-center">
+          {videoSrc && (
             <video
               src={videoSrc}
               className="w-full h-full object-cover"
               controls={false}
-              muted
+              loop
               playsInline
               autoPlay
               onClick={(e) => {
@@ -69,8 +69,8 @@ const RecommendationsPage = () => {
                 video.play();
               }}
             />
-          </div>
-        )}
+          )}
+        </div>
 
         {/* Текстовые элементы */}
         <h1 className="text-xl text-black font-bold mt-4">USERNAME</h1>
