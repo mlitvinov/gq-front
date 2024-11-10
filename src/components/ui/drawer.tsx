@@ -49,8 +49,7 @@ export default function Drawer({
       sx={{ zIndex: 10005 }}
       open={open}
       onClose={onClose}
-      disableScrollLock={true}
-      onTouchStart={(e) => e.stopPropagation()}
+      disableScrollLock={true} // Отключаем встроенную блокировку прокрутки
       aria-labelledby="modal-modal-title"
       aria-describedby="modal-modal-description"
     >
