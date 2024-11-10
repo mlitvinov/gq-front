@@ -1,7 +1,7 @@
 "use client";
 
 import React, { useEffect, useState, useRef } from "react";
-import { FiMaximize } from 'react-icons/fi';
+import { FiMaximize, FiStar, FiThumbsDown, FiThumbsUp } from "react-icons/fi";
 
 const RecommendationsPage = () => {
   const [videoSrc, setVideoSrc] = useState<string | null>(null);
@@ -103,16 +103,16 @@ const RecommendationsPage = () => {
         {/* Кнопки */}
         <div className="flex justify-between mt-6 w-full max-w-sm mx-auto px-4">
           <button className="bg-gray-700 text-white rounded px-6 py-2">
-            Dislike
+            <FiThumbsDown size={24} />
           </button>
           <button
             style={{ backgroundColor: "#FEEF9E", color: "black" }}
             className="bg-blue-500 text-white rounded px-4 py-2"
           >
-            Принять
+            <FiStar  size={24} />
           </button>
-          <button className="bg-gray-700 text-white rounded px-6 py-2">
-            Like
+          <button className="bg-blue-500 text-white rounded px-6 py-2">
+            <FiThumbsUp  size={24} />
           </button>
         </div>
       </main>
