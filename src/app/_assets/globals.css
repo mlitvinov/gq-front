@@ -2,101 +2,15 @@
 @tailwind components;
 @tailwind utilities;
 
-*,
-* :before,
-* :after {
-  box-sizing: border-box;
-  -webkit-user-select: none;
-  -webkit-user-drag: none;
-  -webkit-app-region: no-drag;
-  -webkit-tap-highlight-color: transparent;
-  tap-highlight-color: transparent;
-  outline: none
-}
-
-body,
-h1,
-h2,
-h3,
-h4,
-p,
-ul[class],
-ol[class],
-li,
-figure,
-figcaption,
-blockquote,
-dl,
-dd {
-  margin: 0
-}
-
 body {
-  min-height: 100vh;
-  scroll-behavior: smooth;
-  text-rendering: optimizeSpeed;
-  line-height: 1.5
-}
-
-ul[class],
-ol[class] {
-  list-style: none
-}
-
-ul,
-li {
-  padding-inline-start: 0px
-}
-
-a:not([class]) {
-  text-decoration-skip-ink: auto
-}
-
-img {
-  max-width: 100%;
-  display: block
-}
-
-article>*+* {
-  margin-top: 1em
-}
-
-input,
-button,
-textarea,
-select {
-  font: inherit
-}
-
-body {
-  font-weight: 400;
-  background-color: #111112
-}
-
-.font-european {
-  font-size: .75rem
-}
-
-.font-asian {
-  font-size: 1rem
-}
-
-body.scroll-lock {
-  overflow: hidden
-}
-
-.scrollable {
-  overflow: auto
-}
-
-/* body {
+  /* background: var(--tg-theme-secondary-bg-color, white); */
   background: #fff;
-  overflow: hidden;
-  touch-action: manipulation;
-  overscroll-behavior: none;
+  overflow: hidden; /* Отключает горизонтальную прокрутку */
+  touch-action: manipulation; /* Отключает нежелательные жесты */
+  overscroll-behavior: none; /* Отключает прокрутку за пределы страницы */
   height: 100vh;
   margin: 0;
-} */
+}
 
 :root {
   --safe-area-inset-bottom: calc(100vh - var(--tg-viewport-stable-height, 100vh))
