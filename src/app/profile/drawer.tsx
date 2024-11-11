@@ -20,7 +20,6 @@ type ChallengeData = {
   price: number;
   sender: string;
   senderId: number | null;
-  achievementId: number;
 };
 
 type AchievementDrawerProps = {
