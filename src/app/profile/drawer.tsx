@@ -19,7 +19,8 @@ type ChallengeData = {
   videoUrl: string | null;
   price: number;
   sender: string;
-  senderId: number;
+  senderId: number | null;
+  achievementId: number;
 };
 
 type AchievementDrawerProps = {
@@ -30,11 +31,11 @@ type AchievementDrawerProps = {
 };
 
 export function AchievementDrawer({
-  isOpen,
-  onClose,
-  achievement,
-  challengeData,
-}: AchievementDrawerProps) {
+                                    isOpen,
+                                    onClose,
+                                    achievement,
+                                    challengeData,
+                                  }: AchievementDrawerProps) {
   return (
     <Drawer open={isOpen} onClose={onClose}>
       <div className="flex flex-col items-center w-full">
@@ -51,11 +52,7 @@ export function AchievementDrawer({
                 <div className="text-black font-semibold">
                   {achievement.name}
                 </div>
-                {challengeData && (
-                  <div className="text-gradient">
-                    {challengeData[0].price}{" "}
-                  </div>
-                )}
+                {/* Удаляем отображение отправителя из карточки достижения */}
               </div>
             </div>
           </div>
@@ -69,7 +66,7 @@ export function AchievementDrawer({
             }}
             itemClassName="w-full"
             items={challengeData.map((el, index) => (
-              <>
+              <div key={index}>
                 <div className="flex size-64 relative mx-auto rounded-full justify-center my-4">
                   <div className="absolute z-0 inset-0 bg-slate-50 rounded-full animate-pulse" />
                   {el.videoUrl && (
@@ -93,8 +90,7 @@ export function AchievementDrawer({
                   )}
                 </div>
 
-                {/* Описание и отправитель */}
-
+                {/* Описание испытания и отправитель */}
                 <header>
                   <h1
                     id="achievement-title"
@@ -116,19 +112,21 @@ export function AchievementDrawer({
                   id="achievement-description"
                   className="mt-2 mb-8 px-4 text-center text-sm"
                 >
-                  <p className="text-sm text-gray-600">
-                    {" "}
+                  {/* Отображаем имя отправителя для каждого испытания */}
+                  {el.senderId ? (
                     <Link
                       href={`/profile/${el.senderId}`}
                       className="text-sm text-gray-600"
                     >
                       {el.sender}
                     </Link>
-                  </p>
-                  {el.description}
+                  ) : (
+                    <span className="text-sm text-gray-600">{el.sender}</span>
+                  )}
                   <br />
+                  {el.description}
                 </main>
-              </>
+              </div>
             ))}
           />
         ) : (
