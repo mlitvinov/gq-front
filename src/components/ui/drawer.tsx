@@ -1,4 +1,4 @@
-import React, { ReactNode, useEffect } from "react";
+import React, { ReactNode } from "react";
 
 import Box from "@mui/material/Box";
 import Modal from "@mui/material/Modal";
@@ -28,23 +28,11 @@ type DrawerProps = {
   onClose: (event: {}, reason: "backdropClick" | "escapeKeyDown") => void;
 };
 export default function Drawer({
-                                 title = "",
-                                 children,
-                                 open,
-                                 onClose,
-                               }: DrawerProps) {
-  // Effect to handle scrolling when the drawer is open
-  useEffect(() => {
-    if (open) {
-      document.body.style.overflow = "hidden";
-    } else {
-      document.body.style.overflow = "";
-    }
-    return () => {
-      document.body.style.overflow = "";
-    };
-  }, [open]);
-
+  title = "",
+  children,
+  open,
+  onClose,
+}: DrawerProps) {
   return (
     <Modal
       sx={{ zIndex: 10005 }}
