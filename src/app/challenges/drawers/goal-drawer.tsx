@@ -73,12 +73,12 @@ export function GoalDrawer({
           alt={goal.name}
           className="w-full h-40 aspect-square object-contain select-none pointer-events-none rounded-md mb-4"
         />
-        <header>
+        <header className="flex flex-col items-center">
           <h1 id="challenge-title" className="text-xl font-bold">
             {goal.name}
           </h1>
 
-          <p className="text-3xl text-gradient ml-4 font-black">
+          <p className="text-3xl text-gradient mi-2 font-black">
             <span className="mr-1">{goal.rewardPoints}</span>
             <img
               className="inline relative -top-0.5"

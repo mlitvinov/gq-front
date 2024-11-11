@@ -312,7 +312,7 @@ export function ChallengeDrawer({
           alt={achievementTitle}
           className="w-full h-40 aspect-square object-contain select-none pointer-events-none rounded-md mb-4"
         />
-        <header>
+        <header className="flex flex-col items-center">
           <h1 id="challenge-title" className="text-xl font-bold">
             {achievementTitle}
           </h1>
@@ -321,14 +321,14 @@ export function ChallengeDrawer({
               href={taskUrl}
               target="_blank"
               rel="noopener noreferrer"
-              className="text-sm text-blue-500 mb-4"
+              className="text-sm text-blue-500 my-2"
             >
               Выполнить
             </a>
           ) : (
             <Link
               href={`/profile/${userId}`}
-              className="text-sm text-gray-600 mb-4"
+              className="text-sm text-gray-600 my-2"
             >
               {senderName}
             </Link>

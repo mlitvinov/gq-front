@@ -8,18 +8,18 @@ import { fontInter } from "@/lib/fonts";
 
 import "@telegram-apps/telegram-ui/dist/styles.css";
 import "./_assets/globals.css";
-import YandexMetrika from "@/components/YandexMetrika"; // Импорт Яндекс Метрики
+import YandexMetrika from "@/components/YandexMetrika";
 
 export const metadata: Metadata = {
-  title: "Your Application Title Goes Here",
-  description: "Your application description goes here",
+  title: "GetQuest",
+  description: "For challenge lovers"
 };
 
 export const viewport = {
   width: "device-width",
   initialScale: 1,
   maximumScale: 1,
-  userScalable: false,
+  userScalable: false
 };
 
 export default function RootLayout({ children }: PropsWithChildren) {
@@ -31,7 +31,7 @@ export default function RootLayout({ children }: PropsWithChildren) {
         fontInter.className
       )}
     >
-    <YandexMetrika /> {/* Использование Яндекс Метрики */}
+    <YandexMetrika /> {}
     <Root>{children}</Root>
     </body>
     </html>

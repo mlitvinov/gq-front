@@ -117,7 +117,7 @@ export function AchievementDrawer({
                   {el.description}
                   <br />
                   <p className="text-sm text-gray-600">
-                    Отправитель:{" "}
+                    {" "}
                     <Link
                       href={`/profile/${el.senderId}`}
                       className="text-sm text-gray-600"
