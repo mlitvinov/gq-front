@@ -10,15 +10,13 @@ const style = {
   position: "absolute",
   bottom: "0",
   left: "0",
+  right: "0",
   display: "flex",
-  flexFlow: "column nowrap",
-  justifyContent: "flex-end",
-  width: "100vw",
+  flexDirection: "column",
+  width: "100%",
   borderRadius: "8px 8px 0 0",
   bgcolor: "white",
   boxShadow: 24,
-  height: "fit-content",
-  minHeight: "300px",
   maxHeight: "90vh",
   zIndex: 99999999,
 };
@@ -37,7 +35,7 @@ export default function Drawer({
 }: DrawerProps) {
   return (
     <Modal
-      sx={{ zIndex: 10005, left: 0, top: 0, right: 0, bottom: 0 }}
+      sx={{ zIndex: 10005 }}
       open={open}
       onClose={onClose}
       aria-labelledby="modal-modal-title"
@@ -50,10 +48,10 @@ export default function Drawer({
         >
           <XIcon className="size-6 text-[#B1B1B1]" />
         </Button>
-        {/*   <h2 className="p-4" id="modal-modal-title">
+        <h2 className="p-4" id="modal-modal-title">
           {title}
-        </h2> */}
-        <div className="h-full flex flex-col overflow-y-auto overflow-x-hidden pb-12">
+        </h2>
+        <div className="overflow-y-auto overflow-x-hidden pb-12">
           {children}
         </div>
       </Box>
