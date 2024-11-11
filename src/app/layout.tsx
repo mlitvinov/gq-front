@@ -1,42 +1,39 @@
+import React from "react";
 import type { PropsWithChildren } from "react";
 import type { Metadata } from "next";
 
 import { Root } from "@/components/Root/Root";
-
-import "@telegram-apps/telegram-ui/dist/styles.css";
-// import "modern-normalize/modern-normalize.css";
-import "./_assets/globals.css";
 import { cn } from "@/lib/utils";
 import { fontInter } from "@/lib/fonts";
+
+import "@telegram-apps/telegram-ui/dist/styles.css";
+import "./_assets/globals.css";
+import YandexMetrika from "@/components/YandexMetrika"; // Импорт Яндекс Метрики
 
 export const metadata: Metadata = {
   title: "Your Application Title Goes Here",
   description: "Your application description goes here",
 };
 
-import type { Viewport } from 'next'
-
-export const viewport: Viewport = {
-  width: 'device-width',
+export const viewport = {
+  width: "device-width",
   initialScale: 1,
   maximumScale: 1,
   userScalable: false,
-  // Also supported by less commonly used
-  // interactiveWidget: 'resizes-visual',
-}
-
+};
 
 export default function RootLayout({ children }: PropsWithChildren) {
   return (
     <html lang="en">
-      <body
-        className={cn(
-          "bg-background min-h-screen font-inter antialiased",
-          fontInter.className
-        )}
-      >
-        <Root>{children}</Root>
-      </body>
+    <body
+      className={cn(
+        "bg-background min-h-screen font-inter antialiased",
+        fontInter.className
+      )}
+    >
+    <YandexMetrika /> {/* Использование Яндекс Метрики */}
+    <Root>{children}</Root>
+    </body>
     </html>
   );
 }
