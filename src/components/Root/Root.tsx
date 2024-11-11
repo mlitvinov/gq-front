@@ -51,7 +51,7 @@ function App(props: PropsWithChildren) {
       platform={["macos", "ios"].includes(lp.platform) ? "ios" : "base"}
     >
       <main className="h-full overflow-y-auto pb-[--nav-height]">
-        {props.children}
+        <div className="h-[80vh] overflow-hidden">{props.children}</div>
         <Navigation />
       </main>
     </AppRoot>
