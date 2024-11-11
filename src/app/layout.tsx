@@ -27,7 +27,7 @@ export default function RootLayout({ children }: PropsWithChildren) {
     <html lang="en">
     <body
       className={cn(
-        "bg-background min-h-screen font-inter antialiased",
+        "overflow-hidden top-auto bg-background min-h-screen font-inter antialiased",
         fontInter.className
       )}
     >
