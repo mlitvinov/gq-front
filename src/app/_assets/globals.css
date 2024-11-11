@@ -3,17 +3,13 @@
 @tailwind utilities;
 
 body {
+  /* background: var(--tg-theme-secondary-bg-color, white); */
   background: #fff;
-  /* Убираем overflow: hidden; */
-  /* overflow: hidden; */
-  touch-action: manipulation;
-  overscroll-behavior: none;
-  height: 100%;
+  overflow: hidden; /* Отключает горизонтальную прокрутку */
+  touch-action: manipulation; /* Отключает нежелательные жесты */
+  overscroll-behavior: none; /* Отключает прокрутку за пределы страницы */
+  height: 100vh;
   margin: 0;
-}
-
-html {
-  height: 100%;
 }
 
 :root {
@@ -25,22 +21,10 @@ html {
   text-rendering: optimizeSpeed;
 }
 
-/* Класс для блокировки прокрутки заднего фона */
-body.drawer-open {
-  position: fixed;
-  width: 100%;
-  overflow: hidden;
-}
-
 /* Стили для Drawer */
 .drawer {
-  overflow-y: auto;
-  -webkit-overflow-scrolling: touch;
-  position: fixed;
-  top: 0;
-  left: 0;
-  right: 0;
-  bottom: 0;
+  overflow-y: auto; /* Включает вертикальную прокрутку внутри Drawer */
+  -webkit-overflow-scrolling: touch; /* Плавная прокрутка на iOS */
 }
 
 .text-gradient {
@@ -49,8 +33,9 @@ body.drawer-open {
   -webkit-text-fill-color: transparent;
 }
 
+/* Дополнительные стили для мобильных устройств */
 @media (max-width: 768px) {
   html {
-    touch-action: pan-x pan-y;
+    touch-action: pan-x pan-y; /* Ограничивает взаимодействие только прокруткой по вертикали */
   }
 }

@@ -7,7 +7,7 @@ import { XIcon } from "lucide-react";
 import { Button } from "@/components/ui/button";
 
 const style = {
-  position: "fixed", // Изменяем на 'fixed'
+  position: "absolute",
   bottom: "0",
   left: "0",
   right: "0",
@@ -33,14 +33,15 @@ export default function Drawer({
                                  open,
                                  onClose,
                                }: DrawerProps) {
+  // Effect to handle scrolling when the drawer is open
   useEffect(() => {
     if (open) {
-      document.body.classList.add("drawer-open");
+      document.body.style.overflow = "hidden";
     } else {
-      document.body.classList.remove("drawer-open");
+      document.body.style.overflow = "";
     }
     return () => {
-      document.body.classList.remove("drawer-open");
+      document.body.style.overflow = "";
     };
   }, [open]);
 
@@ -49,8 +50,6 @@ export default function Drawer({
       sx={{ zIndex: 10005 }}
       open={open}
       onClose={onClose}
-      disableScrollLock={true}
-      onTouchStart={(e) => e.stopPropagation()}
       aria-labelledby="modal-modal-title"
       aria-describedby="modal-modal-description"
     >
