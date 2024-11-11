@@ -54,13 +54,6 @@ export function AchievementDrawer({
                 {challengeData && (
                   <div className="text-gradient">
                     {challengeData[0].price}{" "}
-                    <img
-                      className="inline relative -top-0.5 -left-1"
-                      src={Rewards.src}
-                      alt="Награды"
-                      height={18}
-                      width={18}
-                    />
                   </div>
                 )}
               </div>
@@ -107,15 +100,22 @@ export function AchievementDrawer({
                     id="achievement-title"
                     className="text-xl text-center font-bold"
                   >
-                    {achievement.name}
+                    <p className="text-3xl text-gradient ml-4 font-black">
+                      <span className="mr-1">{el.price}</span>
+                      <img
+                        className="inline relative -top-0.5"
+                        src={Rewards.src}
+                        alt="Награды"
+                        height={32}
+                        width={32}
+                      />
+                    </p>
                   </h1>
                 </header>
                 <main
                   id="achievement-description"
-                  className="mt-4 mb-8 px-4 text-center text-sm"
+                  className="mt-2 mb-8 px-4 text-center text-sm"
                 >
-                  {el.description}
-                  <br />
                   <p className="text-sm text-gray-600">
                     {" "}
                     <Link
@@ -125,6 +125,8 @@ export function AchievementDrawer({
                       {el.sender}
                     </Link>
                   </p>
+                  {el.description}
+                  <br />
                 </main>
               </>
             ))}
