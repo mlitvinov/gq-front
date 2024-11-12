@@ -109,20 +109,20 @@ export function AchievementDrawer({
                 </header>
                 <main
                   id="achievement-description"
-                  className="mt-2 mb-8 px-4 text-center text-sm"
+                  className="mt-1 px-4 text-center text-sm"
                 >
                   {/* Отображаем имя отправителя для каждого испытания */}
                   {el.senderId ? (
                     <Link
                       href={`/profile/${el.senderId}`}
-                      className="text-sm text-gray-600"
+                      className="text-sm text-black font-semibold"
                     >
                       {el.sender}
                     </Link>
                   ) : (
-                    <span className="text-sm text-gray-600">{el.sender}</span>
+                    <span className="text-black mt-16 font-semibold">{el.sender}</span>
                   )}
-                  <br />
+                  <br/>
                   {el.description}
                 </main>
               </div>
