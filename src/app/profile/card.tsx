@@ -59,7 +59,7 @@ export const ChallengeCard: React.FC<ChallengeCardProps> = ({
     >
       <div className="flex gap-2 items-center">
         <img
-          src={`https://getquest.tech:8443/api/images/${achievementPicsUrl}`}
+          src={`https://walrus-app-gofux.ondigitalocean.app/api/images/${achievementPicsUrl}`}
           alt={achievementTitle}
           className="size-12 bg-[#F6F6F6] rounded-xl"
         />
