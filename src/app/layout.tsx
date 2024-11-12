@@ -12,28 +12,30 @@ import YandexMetrika from "@/components/YandexMetrika";
 
 export const metadata: Metadata = {
   title: "GetQuest",
-  description: "For challenge lovers"
+  description: "For challenge lovers",
 };
 
 export const viewport = {
-  width: "device-width",
+  width: "device-width, shrink-to-fit=no",
   initialScale: 1,
   maximumScale: 1,
-  userScalable: false
+  userScalable: "no",
+  shrinkToFit: "no",
+  viewportFit: "cover",
 };
 
 export default function RootLayout({ children }: PropsWithChildren) {
   return (
     <html lang="en">
-    <body
-      className={cn(
-        "bg-background min-h-screen font-inter antialiased",
-        fontInter.className
-      )}
-    >
-    <YandexMetrika /> {}
-    <Root>{children}</Root>
-    </body>
+      <body
+        className={cn(
+          "bg-background min-h-screen font-inter antialiased",
+          fontInter.className
+        )}
+      >
+        <YandexMetrika /> {}
+        <Root>{children}</Root>
+      </body>
     </html>
   );
 }
