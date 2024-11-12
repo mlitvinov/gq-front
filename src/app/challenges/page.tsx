@@ -186,7 +186,7 @@ export default function ChallengesPage() {
                     <div className="flex items-center gap-4 w-full">
                       <div className="flex gap-2 items-start">
                         <img
-                          src={`https://walrus-app-gofux.ondigitalocean.app/api/images/${goal.picUrl}`}
+                          src={`https://getquest.tech:8443/api/images/${goal.picUrl}`}
                           alt={goal.name}
                           className="size-12 bg-[#F6F6F6] rounded-xl"
                         />
@@ -246,8 +246,8 @@ export default function ChallengesPage() {
                       <img
                         src={
                           isPromo
-                            ? `https://walrus-app-gofux.ondigitalocean.app/api/images/${challenge.promoAchievementPicsUrl}`
-                            : `https://walrus-app-gofux.ondigitalocean.app/api/images/${challenge.achievementPicsUrl}`
+                            ? `https://getquest.tech:8443/api/images/${challenge.promoAchievementPicsUrl}`
+                            : `https://getquest.tech:8443/api/images/${challenge.achievementPicsUrl}`
                         }
                         alt={
                           isPromo
