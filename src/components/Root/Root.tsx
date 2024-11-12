@@ -10,7 +10,6 @@ import {
   bindMiniAppCSSVars,
   bindThemeParamsCSSVars,
   bindViewportCSSVars,
-  initSwipeBehavior,
 } from "@telegram-apps/sdk-react";
 import { TonConnectUIProvider } from "@tonconnect/ui-react";
 import { AppRoot } from "@telegram-apps/telegram-ui";
@@ -28,23 +27,6 @@ function App(props: PropsWithChildren) {
   const miniApp = useMiniApp();
   const themeParams = useThemeParams();
   const viewport = useViewport();
-  const [swipeBehavior] = initSwipeBehavior();
-
-  useEffect(() => {
-    swipeBehavior.disableVerticalSwipe();
-
-    if (window) {
-      if (window.visualViewport) {
-        window.visualViewport.addEventListener("resize", () => {
-          document.body.style.height = window.visualViewport!.height + "px";
-        });
-      }
-      // This will ensure user never overscroll the page
-      window.addEventListener("scroll", () => {
-        if (window.scrollY > 0) window.scrollTo(0, 0);
-      });
-    }
-  }, []);
 
   useEffect(() => {
     if (viewport?.expand) viewport.expand();
