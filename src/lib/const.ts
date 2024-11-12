@@ -1,1 +1,1 @@
-export const BASE_URL = "https://getquest.tech:8443";
+export const BASE_URL = "https://starfish-app-le4cb.ondigitalocean.app";

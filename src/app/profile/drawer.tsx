@@ -43,7 +43,7 @@ export function AchievementDrawer({
           <div className="flex flex-col border rounded-full border-[#fcf4f4] px-6 py-4">
             <div className="flex gap-2 items-center">
               <img
-                src={`https://getquest.tech:8443/api/images/${achievement.imageUrl}`}
+                src={`https://starfish-app-le4cb.ondigitalocean.app/api/images/${achievement.imageUrl}`}
                 alt={achievement.name}
                 className="size-12 bg-[#F6F6F6] rounded-xl"
               />
@@ -70,7 +70,7 @@ export function AchievementDrawer({
                   <div className="absolute z-0 inset-0 bg-slate-50 rounded-full animate-pulse" />
                   {el.videoUrl && (
                     <video
-                      src={`https://getquest.tech:8443/api/videos/download?fileId=${el.videoUrl}`}
+                      src={`https://starfish-app-le4cb.ondigitalocean.app/api/videos/download?fileId=${el.videoUrl}`}
                       className="size-full z-10 absolute inset-0 rounded-full object-cover"
                       controls={false}
                       muted

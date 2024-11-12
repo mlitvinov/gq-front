@@ -88,8 +88,8 @@ export default function ProfilePage({ params }: { params?: { id: number } }) {
         }
 
         const url = !isUserPage
-          ? `https://getquest.tech:8443/api/users/profile/?id=${params?.id}`
-          : "https://getquest.tech:8443/api/users/profile";
+          ? `https://starfish-app-le4cb.ondigitalocean.app/api/users/profile/?id=${params?.id}`
+          : "https://starfish-app-le4cb.ondigitalocean.app/api/users/profile";
 
         const response = await fetch(url, {
           method: "GET",
@@ -100,7 +100,7 @@ export default function ProfilePage({ params }: { params?: { id: number } }) {
         setAchievementImages(
           data.achievementListDTO.map((achievement: Achievement) => ({
             id: achievement.userAchievement.toString(),
-            imageUrl: `https://getquest.tech:8443/api/images/${achievement.imageUrl}`,
+            imageUrl: `https://starfish-app-le4cb.ondigitalocean.app/api/images/${achievement.imageUrl}`,
           }))
         );
       } catch (error) {
@@ -124,7 +124,7 @@ export default function ProfilePage({ params }: { params?: { id: number } }) {
         }
 
         const response = await fetch(
-          `https://getquest.tech:8443/api/challenges/user/video-urls?userId=${userData.id}`,
+          `https://starfish-app-le4cb.ondigitalocean.app/api/challenges/user/video-urls?userId=${userData.id}`,
           {
             method: "GET",
             headers,
@@ -158,7 +158,7 @@ export default function ProfilePage({ params }: { params?: { id: number } }) {
       };
 
       const response = await fetch(
-        `https://getquest.tech:8443/api/challenges/achievement/${achievement.userAchievement}`,
+        `https://starfish-app-le4cb.ondigitalocean.app/api/challenges/achievement/${achievement.userAchievement}`,
         {
           method: "GET",
           headers,
@@ -194,7 +194,7 @@ export default function ProfilePage({ params }: { params?: { id: number } }) {
         headers["initData"] = initDataRaw;
       }
       const response = await fetch(
-        `https://getquest.tech:8443/friends/request?receiverId=${userData.id}`,
+        `https://starfish-app-le4cb.ondigitalocean.app/friends/request?receiverId=${userData.id}`,
         {
           method: "POST",
           headers,
@@ -230,7 +230,7 @@ export default function ProfilePage({ params }: { params?: { id: number } }) {
         headers["initData"] = initDataRaw;
       }
       const response = await fetch(
-        `https://getquest.tech:8443/friends/accept/${userData.id}`,
+        `https://starfish-app-le4cb.ondigitalocean.app/friends/accept/${userData.id}`,
         {
           method: "POST",
           headers,
@@ -454,7 +454,7 @@ export default function ProfilePage({ params }: { params?: { id: number } }) {
                 }}
               >
                 <source
-                  src={`https://getquest.tech:8443/api/videos/download?fileId=${videoUrl}`}
+                  src={`https://starfish-app-le4cb.ondigitalocean.app/api/videos/download?fileId=${videoUrl}`}
                   type="video/mp4"
                 />
                 Ваш браузер не поддерживает видео.
