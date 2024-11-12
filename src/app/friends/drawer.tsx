@@ -38,7 +38,7 @@ export function SubmitQuestDrawer({
       if (!initDataRaw) return;
 
       const response = await fetch(
-        "https://starfish-app-le4cb.ondigitalocean.app/api/achievements",
+        "https://getquest.tech:8443/api/achievements",
         {
           headers: {
             "Content-Type": "application/json",
@@ -53,7 +53,7 @@ export function SubmitQuestDrawer({
       if (data.length > 0) {
         setSelectedAchievement(data[0]);
         setImageUrl(
-          `https://starfish-app-le4cb.ondigitalocean.app/api/images/${data[0].imageUrl}`
+          `https://getquest.tech:8443/api/images/${data[0].imageUrl}`
         );
       }
     };
@@ -78,7 +78,7 @@ export function SubmitQuestDrawer({
       price: parseInt(numericValue, 10),
     };
 
-    const response = await fetch("https://starfish-app-le4cb.ondigitalocean.app/api/challenges", {
+    const response = await fetch("https://getquest.tech:8443/api/challenges", {
       method: "POST",
       headers: {
         accept: "*/*",
@@ -140,7 +140,7 @@ export function SubmitQuestDrawer({
                   if (selected) {
                     setSelectedAchievement(selected);
                     setImageUrl(
-                      `https://starfish-app-le4cb.ondigitalocean.app/api/images/${selected.imageUrl}`
+                      `https://getquest.tech:8443/api/images/${selected.imageUrl}`
                     );
                   }
                 }}

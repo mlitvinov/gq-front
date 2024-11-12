@@ -69,7 +69,7 @@ export function GoalDrawer({
     <Drawer open={isOpen} onClose={onClose}>
       <div className="flex flex-col items-center">
         <img
-          src={`https://starfish-app-le4cb.ondigitalocean.app/api/images/${goal.picUrl}`}
+          src={`https://getquest.tech:8443/api/images/${goal.picUrl}`}
           alt={goal.name}
           className="w-full h-40 aspect-square object-contain select-none pointer-events-none rounded-md mb-4"
         />
