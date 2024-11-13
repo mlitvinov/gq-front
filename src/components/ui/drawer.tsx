@@ -1,3 +1,5 @@
+"use client";
+
 import React, { ReactNode } from "react";
 
 import Box from "@mui/material/Box";
@@ -5,6 +7,7 @@ import Modal from "@mui/material/Modal";
 
 import { XIcon } from "lucide-react";
 import { Button } from "@/components/ui/button";
+import { useTelegramViewportHack } from "@/hooks/useTelegramViewportResize";
 
 const style = {
   position: "absolute",
@@ -37,6 +40,8 @@ export default function Drawer({
   open,
   onClose,
 }: DrawerProps) {
+  const ref = React.useRef(null);
+  useTelegramViewportHack(ref);
   return (
     <Modal
       sx={{ zIndex: 10005 }}
@@ -58,7 +63,9 @@ export default function Drawer({
           {title}
         </h2> */}
         {/*    <div className="overflow-y-auto overflow-x-hidden pb-12"> */}
-        <div className="flex flex-col h-full">{children}</div>
+        <div className="flex flex-col h-full" ref={ref}>
+          {children}
+        </div>
 
         {/*  </div> */}
       </Box>
