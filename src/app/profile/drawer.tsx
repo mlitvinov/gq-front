@@ -66,9 +66,9 @@ export function AchievementDrawer({
             itemClassName="w-full"
             items={challengeData.map((el, index) => (
               <div key={index}>
-                <div className="flex size-64 relative mx-auto rounded-full justify-center my-4">
-                  <div className="absolute z-0 inset-0 bg-slate-50 rounded-full animate-pulse" />
-                  {el.videoUrl && (
+                {el.videoUrl && ( // Проверяем наличие videoUrl
+                  <div className="flex size-64 relative mx-auto rounded-full justify-center my-4">
+                    <div className="absolute z-0 inset-0 bg-slate-50 rounded-full animate-pulse" />
                     <video
                       src={`https://getquest.tech/api/videos/download?fileId=${el.videoUrl}`}
                       className="size-full z-10 absolute inset-0 rounded-full object-cover"
@@ -86,8 +86,8 @@ export function AchievementDrawer({
                         video.play();
                       }}
                     />
-                  )}
-                </div>
+                  </div>
+                )}
 
                 {/* Описание испытания и отправитель */}
                 <header>
