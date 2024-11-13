@@ -37,7 +37,7 @@ export function AchievementDrawer({
                                   }: AchievementDrawerProps) {
   return (
     <Drawer open={isOpen} onClose={onClose}>
-      <div className="flex flex-col items-center w-full min-h-[400px]">
+      <div className="flex flex-col items-center w-full min-h-[100px]">
         {/* Карточка достижения */}
         <div className="mt-6 w-full px-4">
           <div className="flex flex-col border rounded-full border-[#fcf4f4] px-6 py-4">
@@ -51,7 +51,6 @@ export function AchievementDrawer({
                 <div className="text-black font-semibold">
                   {achievement.name}
                 </div>
-                {/* Удаляем отображение отправителя из карточки достижения */}
               </div>
             </div>
           </div>
@@ -111,7 +110,6 @@ export function AchievementDrawer({
                   id="achievement-description"
                   className="mt-1 px-4 text-center text-sm"
                 >
-                  {/* Отображаем имя отправителя для каждого испытания */}
                   {el.senderId ? (
                     <Link
                       href={`/profile/${el.senderId}`}
@@ -122,14 +120,14 @@ export function AchievementDrawer({
                   ) : (
                     <span className="text-black mt-16 font-semibold">{el.sender}</span>
                   )}
-                  <br/>
+                  <br />
                   {el.description}
                 </main>
               </div>
             ))}
           />
         ) : (
-          <div className="h-[400px]" />
+          <div className="h-[100px]" />
         )}
       </div>
     </Drawer>
