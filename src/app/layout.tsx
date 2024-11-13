@@ -20,7 +20,6 @@ export const viewport = {
   initialScale: 1,
   maximumScale: 1,
   userScalable: "no",
-  shrinkToFit: "no",
   viewportFit: "cover",
 };
 
