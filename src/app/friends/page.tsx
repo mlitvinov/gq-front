@@ -51,7 +51,7 @@ export default function FriendsPage() {
       initData: initDataRaw,
     };
 
-    const res = await fetch("https://getquest.tech:8443/api/users/friends", {
+    const res = await fetch("https://getquest.tech/api/users/friends", {
       method: "GET",
       headers,
     });
@@ -74,7 +74,7 @@ export default function FriendsPage() {
     };
 
     const res = await fetch(
-      "https://getquest.tech:8443/friends/requests/incoming",
+      "https://getquest.tech/friends/requests/incoming",
       {
         method: "GET",
         headers,
@@ -110,7 +110,7 @@ export default function FriendsPage() {
 
     try {
       const res = await fetch(
-        `https://getquest.tech:8443/friends/accept?requestId=${requestId}`,
+        `https://getquest.tech/friends/accept?requestId=${requestId}`,
         {
           method: "POST",
           headers,
@@ -142,7 +142,7 @@ export default function FriendsPage() {
 
     try {
       const res = await fetch(
-        `https://getquest.tech:8443/friends/decline?requestId=${requestId}`,
+        `https://getquest.tech/friends/decline?requestId=${requestId}`,
         {
           method: "POST",
           headers,

@@ -73,8 +73,8 @@ export function ChallengeDrawer({
     const xhr = new XMLHttpRequest();
 
     const url = isPromo
-      ? `https://getquest.tech:8443/api/promochallenges/${challengeId}/complete`
-      : `https://getquest.tech:8443/api/challenges/${challengeId}/complete`;
+      ? `https://getquest.tech/api/promochallenges/${challengeId}/complete`
+      : `https://getquest.tech/api/challenges/${challengeId}/complete`;
 
     xhr.open("POST", url, true);
 
@@ -134,8 +134,8 @@ export function ChallengeDrawer({
     setIsLoadingAccept(true);
     try {
       const url = isPromo
-        ? `https://getquest.tech:8443/api/promochallenges/${challengeId}/start`
-        : `https://getquest.tech:8443/api/challenges/${challengeId}/accept`;
+        ? `https://getquest.tech/api/promochallenges/${challengeId}/start`
+        : `https://getquest.tech/api/challenges/${challengeId}/accept`;
 
       const method = isPromo ? "POST" : "PUT";
 
@@ -168,7 +168,7 @@ export function ChallengeDrawer({
     setIsLoadingDecline(true);
     try {
       const response = await fetch(
-        `https://getquest.tech:8443/api/challenges/${challengeId}/decline`,
+        `https://getquest.tech/api/challenges/${challengeId}/decline`,
         {
           method: "PUT",
           headers: {
@@ -199,8 +199,8 @@ export function ChallengeDrawer({
     setIsLoadingApprove(true);
     try {
       const url = isPromo
-        ? `https://getquest.tech:8443/api/promochallenges/${challengeId}/approve`
-        : `https://getquest.tech:8443/api/challenges/${challengeId}/approve`;
+        ? `https://getquest.tech/api/promochallenges/${challengeId}/approve`
+        : `https://getquest.tech/api/challenges/${challengeId}/approve`;
 
       const response = await fetch(url, {
         method: "PUT",
@@ -236,8 +236,8 @@ export function ChallengeDrawer({
     setIsLoadingDispute(true);
     try {
       const url = isPromo
-        ? `https://getquest.tech:8443/api/promochallenges/${challengeId}/dispute`
-        : `https://getquest.tech:8443/api/challenges/${challengeId}/dispute`;
+        ? `https://getquest.tech/api/promochallenges/${challengeId}/dispute`
+        : `https://getquest.tech/api/challenges/${challengeId}/dispute`;
 
       const response = await fetch(url, {
         method: "PUT",
@@ -308,7 +308,7 @@ export function ChallengeDrawer({
     <Drawer open={isOpen} onClose={onClose}>
       <div className="flex flex-col items-center">
         <img
-          src={`https://getquest.tech:8443/api/images/${achievementPicsUrl}`}
+          src={`https://getquest.tech/api/images/${achievementPicsUrl}`}
           alt={achievementTitle}
           className="w-full h-40 aspect-square object-contain select-none pointer-events-none rounded-md mb-4"
         />
@@ -375,7 +375,7 @@ export function ChallengeDrawer({
                 }}
               >
                 <source
-                  src={`https://getquest.tech:8443/api/videos/download?fileId=${fieldId}`}
+                  src={`https://getquest.tech/api/videos/download?fileId=${fieldId}`}
                   type="video/mp4"
                 />
                 Ваш браузер не поддерживает видео.
