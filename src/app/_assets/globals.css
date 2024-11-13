@@ -2,32 +2,33 @@
 @tailwind components;
 @tailwind utilities;
 
-body {
-  /* background: var(--tg-theme-secondary-bg-color, white); */
-  background: #fff;
-  overflow: hidden; /* Отключает горизонтальную прокрутку */
-  touch-action: manipulation; /* Отключает нежелательные жесты */
-  overscroll-behavior: none; /* Отключает прокрутку за пределы страницы */
-  text-rendering: optimizeSpeed;
-  height: 100vh;
-  width: 100vw;
-  margin: 0;
-}
-
-html, body, #root {
-  width: 100%;
-  height: 100%;
-  overflow: hidden;
-  overscroll-behavior: none;
+*,
+* :before,
+* :after {
+  box-sizing: border-box;
+  -webkit-user-select: none;
+  -webkit-user-drag: none;
+  -webkit-app-region: no-drag;
+  -webkit-tap-highlight-color: transparent;
+  tap-highlight-color: transparent;
+  outline: none
 }
 
 :root {
-  --safe-area-inset-bottom: calc(100vh - var(--tg-viewport-stable-height, 100vh))
-  --nav-height: 80px;
+  --safe-area-inset-bottom: calc(100vh - var(--tg-viewport-stable-height, 100vh)) --nav-height: 80px;
 }
 
-#root {
-  overflow-y: auto;
+body {
+  width: 100vw;
+  height: 100vh;
+  overflow: hidden;
+  overscroll-behavior: none;
+  /* background: var(--tg-theme-secondary-bg-color, white); */
+  background: #fff;
+  overflow: hidden; /* Отключает горизонтальную прокрутку */
+  text-rendering: optimizeSpeed;
+  scroll-behavior: smooth;
+  margin: 0;
 }
 
 .text-gradient {
@@ -36,8 +37,7 @@ html, body, #root {
   -webkit-text-fill-color: transparent;
 }
 
-@media (max-width: 768px) {
-  html {
-    touch-action: pan-x pan-y; /* Ограничивает взаимодействие только прокруткой по вертикали */
-  }
+.wrapper {
+  background-color: #00000031;
+  -webkit-overflow-scrolling: touch
 }

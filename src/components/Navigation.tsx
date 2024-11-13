@@ -49,7 +49,7 @@ const Navigation = () => {
   const pathname = usePathname();
 
   return (
-    <nav className="fixed bottom-0 z-[9999] left-0 w-full bg-white h-[--nav-height] pb-[22px]">
+    <nav className="fixed grid bottom-[10px] grid-cols-4 items-center w-full z-[9999] left-0 right-0 bg-white h-[calc(15vh-20px)] max-h-[76px]">
       <ul className="flex gap-4 justify-between items-center h-full px-4">
         {tabs.map((tab) => {
           const isActive =

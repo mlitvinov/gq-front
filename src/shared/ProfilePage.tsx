@@ -275,106 +275,107 @@ export default function ProfilePage({ params }: { params?: { id: number } }) {
   }
 
   return (
-    <main className="relative flex flex-col items-center rounded-t-[2rem] bg-white pt-8 pb-[calc(var(--nav-height)+1rem)] overflow-hidden mb-24">
-      <section className="flex flex-col items-center gap-4 w-full mb-16">
-        <div className="flex flex-col justify-center items-center">
-          <img
-            className="relative left-1"
-            src={Rewards.src}
-            alt="Награды"
-            width={80}
-            height={80}
-          />
-          <h1 className="text-gradient text-center text-3xl font-black">
-            {Number(userData.rating).toLocaleString()}
-          </h1>
-          <p className="text-black">
-            @{userData.username ? userData.username : userData.name}
-          </p>
-        </div>
-
-        {!isUserPage && (
-          <>
-            {userData.friendStatus === "FRIEND" && (
-              <Button variant="destructive">Друзья</Button>
-            )}
-            {userData.friendStatus === "REQUESTED" && (
-              <Button variant="destructive">Запрошено</Button>
-            )}
-            {userData.friendStatus === "WAITING" && (
-              <Button
-                variant="secondary"
-                onClick={handleAcceptFriendRequest}
-                isLoading={isLoadingAcceptFriend}
-              >
-                Принять
-              </Button>
-            )}
-            {userData.friendStatus === "NOT_FRIEND" && (
-              <Button
-                variant="secondary"
-                onClick={handleAddFriend}
-                isLoading={isLoadingAddFriend}
-              >
-                Добавить в друзья
-              </Button>
-            )}
-          </>
-        )}
-      </section>
-
-      <Carousel
-        autoPlay
-        containerClassName="[&>*:nth-child(odd)]:mt-2 select-none"
-        options={{ loop: true, align: "center", dragFree: true }}
-        items={sliders.top.map((el, index) =>
-          el?.imageUrl ? (
-            <div
-              key={index}
-              className="flex-shrink-0 size-16 rounded-xl bg-[#F6F6F6] px-1 mr-8 mb-4"
-              onClick={() => handleAchievementClick(el.id)}
-            >
-              <img
-                src={el.imageUrl}
-                alt={`Логотип ${index + 1}`}
-                className="size-16 object-contain cursor-pointer"
-              />
-            </div>
-          ) : (
-            <div
-              key={index}
-              className="size-16 px-4 mr-8 mb-4 rounded-xl bg-[#F6F6F6] select-none"
+    <main className="relative flex flex-col h-[85svh] rounded-t-[2rem] bg-white pt-8 pb-[calc(var(--nav-height)+1rem)] mb-24">
+      <div className="flex flex-col items-center overflow-auto">
+        <section className="flex flex-col items-center gap-4 w-full mb-16">
+          <div className="flex flex-col justify-center items-center">
+            <img
+              className="relative left-1"
+              src={Rewards.src}
+              alt="Награды"
+              width={80}
+              height={80}
             />
-          )
-        )}
-      />
+            <h1 className="text-gradient text-center text-3xl font-black">
+              {Number(userData.rating).toLocaleString()}
+            </h1>
+            <p className="text-black">
+              @{userData.username ? userData.username : userData.name}
+            </p>
+          </div>
 
-      <Carousel
-        autoPlay
-        containerClassName="[&>*:nth-child(odd)]:mt-2 select-none"
-        options={{ loop: true, align: "center", dragFree: true }}
-        items={sliders.bottom.map((el, index) =>
-          el?.imageUrl ? (
-            <div
-              key={index}
-              className="flex-shrink-0 size-16 rounded-xl bg-[#F6F6F6] px-1 mr-8 mb-4"
-              onClick={() => handleAchievementClick(el.id)}
-            >
-              <img
-                src={el.imageUrl}
-                alt={`Логотип ${index + 1}`}
-                className="size-16 object-contain cursor-pointer"
+          {!isUserPage && (
+            <>
+              {userData.friendStatus === "FRIEND" && (
+                <Button variant="destructive">Друзья</Button>
+              )}
+              {userData.friendStatus === "REQUESTED" && (
+                <Button variant="destructive">Запрошено</Button>
+              )}
+              {userData.friendStatus === "WAITING" && (
+                <Button
+                  variant="secondary"
+                  onClick={handleAcceptFriendRequest}
+                  isLoading={isLoadingAcceptFriend}
+                >
+                  Принять
+                </Button>
+              )}
+              {userData.friendStatus === "NOT_FRIEND" && (
+                <Button
+                  variant="secondary"
+                  onClick={handleAddFriend}
+                  isLoading={isLoadingAddFriend}
+                >
+                  Добавить в друзья
+                </Button>
+              )}
+            </>
+          )}
+        </section>
+
+        <Carousel
+          autoPlay
+          containerClassName="[&>*:nth-child(odd)]:mt-2 select-none"
+          options={{ loop: true, align: "center", dragFree: true }}
+          items={sliders.top.map((el, index) =>
+            el?.imageUrl ? (
+              <div
+                key={index}
+                className="flex-shrink-0 size-16 rounded-xl bg-[#F6F6F6] px-1 mr-8 mb-4"
+                onClick={() => handleAchievementClick(el.id)}
+              >
+                <img
+                  src={el.imageUrl}
+                  alt={`Логотип ${index + 1}`}
+                  className="size-16 object-contain cursor-pointer"
+                />
+              </div>
+            ) : (
+              <div
+                key={index}
+                className="size-16 px-4 mr-8 mb-4 rounded-xl bg-[#F6F6F6] select-none"
               />
-            </div>
-          ) : (
-            <div
-              key={index}
-              className="size-16 px-4 mr-8 mb-4 rounded-xl bg-[#F6F6F6] select-none"
-            />
-          )
-        )}
-      />
-      {/*  <Carousel
+            )
+          )}
+        />
+
+        <Carousel
+          autoPlay
+          containerClassName="[&>*:nth-child(odd)]:mt-2 select-none"
+          options={{ loop: true, align: "center", dragFree: true }}
+          items={sliders.bottom.map((el, index) =>
+            el?.imageUrl ? (
+              <div
+                key={index}
+                className="flex-shrink-0 size-16 rounded-xl bg-[#F6F6F6] px-1 mr-8 mb-4"
+                onClick={() => handleAchievementClick(el.id)}
+              >
+                <img
+                  src={el.imageUrl}
+                  alt={`Логотип ${index + 1}`}
+                  className="size-16 object-contain cursor-pointer"
+                />
+              </div>
+            ) : (
+              <div
+                key={index}
+                className="size-16 px-4 mr-8 mb-4 rounded-xl bg-[#F6F6F6] select-none"
+              />
+            )
+          )}
+        />
+        {/*  <Carousel
         autoPlay
         options={{ loop: true, align: "center", dragFree: true }}
         items={[...achievementImages, ...achievementImages].map(
@@ -396,95 +397,98 @@ export default function ProfilePage({ params }: { params?: { id: number } }) {
           )
         )}
       /> */}
-      {/*  <section className="flex flex-col gap-3 mb-6">
+        {/*  <section className="flex flex-col gap-3 mb-6">
         <Slider
           elements={achievementImages}
           onElementClick={handleAchievementClick}
         />
       </section> */}
-      <section className="mb-6">
-        <h1 className="text-black text-2xl text-left font-medium tracking-[-0.05em] mb-6">
-          Выполнено{" "}
-          <span className="text-gradient font-black">{userData.taskCount}</span>{" "}
-          {getDeclension(userData.taskCount, "задание", "задания", "заданий")}{" "}
-          <img
-            className="inline -left-1 top-0 relative"
-            src={Rewards.src}
-            alt="Награды"
-            width={32}
-            height={32}
-          />
-          <br />
-          <img
-            className="inline -left-1 relative"
-            src={Arrows.src}
-            alt="Стрелки"
-            width={32}
-            height={32}
-          />
-          заработано{" "}
-          <span className="text-gradient">{userData.earnedCount}</span>{" "}
-          репутации
-        </h1>
-      </section>
+        <section className="mb-6">
+          <h1 className="text-black text-2xl text-left font-medium tracking-[-0.05em] mb-6">
+            Выполнено{" "}
+            <span className="text-gradient font-black">
+              {userData.taskCount}
+            </span>{" "}
+            {getDeclension(userData.taskCount, "задание", "задания", "заданий")}{" "}
+            <img
+              className="inline -left-1 top-0 relative"
+              src={Rewards.src}
+              alt="Награды"
+              width={32}
+              height={32}
+            />
+            <br />
+            <img
+              className="inline -left-1 relative"
+              src={Arrows.src}
+              alt="Стрелки"
+              width={32}
+              height={32}
+            />
+            заработано{" "}
+            <span className="text-gradient">{userData.earnedCount}</span>{" "}
+            репутации
+          </h1>
+        </section>
 
-      <Carousel
-        autoPlay
-        containerClassName="[&>*:nth-child(odd)]:mt-2 select-none"
-        options={{ loop: true, align: "center", dragFree: true }}
-        items={videoUrls.map((videoUrl, index) => (
-          <div
-            key={videoUrl}
-            className="flex flex-col justify-center w-full px-4"
-          >
-            <figure className="rounded-full overflow-hidden  size-64 bg-[#F6F6F6] flex items-center justify-center mr-6">
-              <video
-                autoPlay
-                loop
-                muted
-                playsInline
-                controls={false}
-                className="w-full h-full object-cover rounded-full"
-                onClick={(e) => {
-                  const video = e.currentTarget;
-                  if (video.requestFullscreen) {
-                    video.requestFullscreen();
-                  } else if ((video as any).webkitEnterFullscreen) {
-                    (video as any).webkitEnterFullscreen();
-                  }
-                  video.play();
-                }}
-              >
-                <source
-                  src={`${BASE_URL}/api/videos/download?fileId=${videoUrl}`}
-                  type="video/mp4"
-                />
-                Ваш браузер не поддерживает видео.
-              </video>
-            </figure>
-          </div>
-        ))}
-      />
-
-      <nav className="fixed-nav fixed bottom-0 left-0 right-0 bg-white z-1000">
-        <ul className="flex justify-around p-2">
-          <li>Друзья</li>
-          <li>Испытания</li>
-          <li>Профиль</li>
-        </ul>
-      </nav>
-
-      {selectedAchievement && (
-        <AchievementDrawer
-          isOpen={!!selectedAchievement}
-          onClose={() => {
-            setSelectedAchievement(null);
-            setChallengeData(null);
-          }}
-          achievement={selectedAchievement}
-          challengeData={challengeData}
+        <Carousel
+          autoPlay
+          containerClassName="[&>*:nth-child(odd)]:mt-2 select-none"
+          options={{ loop: true, align: "center", dragFree: true }}
+          items={videoUrls.map((videoUrl, index) => (
+            <div
+              key={videoUrl}
+              className="flex flex-col justify-center w-full px-4"
+            >
+              <figure className="rounded-full overflow-hidden  size-64 bg-[#F6F6F6] flex items-center justify-center mr-6">
+                <video
+                  autoPlay
+                  loop
+                  muted
+                  playsInline
+                  controls={false}
+                  className="w-full h-full object-cover rounded-full"
+                  onClick={(e) => {
+                    const video = e.currentTarget;
+                    if (video.requestFullscreen) {
+                      video.requestFullscreen();
+                    } else if ((video as any).webkitEnterFullscreen) {
+                      (video as any).webkitEnterFullscreen();
+                    }
+                    video.play();
+                  }}
+                >
+                  <source
+                    src={`${BASE_URL}/api/videos/download?fileId=${videoUrl}`}
+                    type="video/mp4"
+                  />
+                  Ваш браузер не поддерживает видео.
+                </video>
+              </figure>
+            </div>
+          ))}
         />
-      )}
+
+        <nav className="fixed-nav fixed bottom-0 left-0 right-0 bg-white z-1000">
+          <ul className="flex justify-around p-2">
+            <li>Друзья</li>
+            <li>Испытания</li>
+            <li>Профиль</li>
+          </ul>
+        </nav>
+
+        {selectedAchievement && (
+          <AchievementDrawer
+            isOpen={!!selectedAchievement}
+            onClose={() => {
+              setSelectedAchievement(null);
+              setChallengeData(null);
+            }}
+            achievement={selectedAchievement}
+            challengeData={challengeData}
+          />
+        )}
+      </div>
     </main>
   );
 }

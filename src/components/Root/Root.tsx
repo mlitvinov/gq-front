@@ -12,8 +12,6 @@ import {
   bindViewportCSSVars,
   initSwipeBehavior,
 } from "@telegram-apps/sdk-react";
-import { TonConnectUIProvider } from "@tonconnect/ui-react";
-import { AppRoot } from "@telegram-apps/telegram-ui";
 
 import { ErrorBoundary } from "@/components/ErrorBoundary";
 import { ErrorPage } from "@/components/ErrorPage";
@@ -64,16 +62,12 @@ function App(props: PropsWithChildren) {
   }, [viewport]);
 
   return (
-    <AppRoot
-      className="overflow-x-hidden overflow-y-hidden h-screen select-none p-0"
-      appearance={/* miniApp.isDark ? "dark" : */ "light"}
-      platform={["macos", "ios"].includes(lp.platform) ? "ios" : "base"}
-    >
-      <main className="h-full overflow-y-auto pb-[--nav-height]">
+    <div id="root">
+      <div style={{ height: "85vh", overflow: "visible" }}>
         {props.children}
-        <Navigation />
-      </main>
-    </AppRoot>
+      </div>
+      <Navigation />
+    </div>
   );
 }
 
@@ -85,9 +79,9 @@ function RootInner({ children }: PropsWithChildren) {
   }
 
   const debug = true; //useLaunchParams().startParam === "debug";
-  const manifestUrl = useMemo(() => {
+  /*  const manifestUrl = useMemo(() => {
     return new URL("tonconnect-manifest.json", window.location.href).toString();
-  }, []);
+  }, []); */
 
   // Enable debug mode to see all the methods sent and events received.
   useEffect(() => {
@@ -97,11 +91,9 @@ function RootInner({ children }: PropsWithChildren) {
   }, [debug]);
 
   return (
-    <TonConnectUIProvider manifestUrl={manifestUrl}>
-      <SDKProvider acceptCustomStyles debug={debug}>
-        <App>{children}</App>
-      </SDKProvider>
-    </TonConnectUIProvider>
+    <SDKProvider acceptCustomStyles debug={debug}>
+      <App>{children}</App>
+    </SDKProvider>
   );
 }
 

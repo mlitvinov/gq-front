@@ -27,9 +27,10 @@ export default function RootLayout({ children }: PropsWithChildren) {
     <html lang="en">
       <body
         className={cn(
-          "bg-background min-h-screen font-inter antialiased",
+          "bg-background min-h-screen font-inter antialiased scroll-lock top-auto",
           fontInter.className
         )}
+        style={{ top: "auto" }}
       >
         <Root>{children}</Root>
         {process.env.NODE_ENV === "production" && (
