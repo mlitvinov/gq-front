@@ -3,6 +3,7 @@
 import React from "react";
 import { Button } from "@/components/ui/button";
 import Drawer from "@/components/ui/drawer";
+import { BASE_URL } from "@/lib/const";
 
 type Achievement = {
   userAchievement: number | null;
@@ -37,24 +38,19 @@ export function SubmitQuestDrawer({
     const fetchAchievements = async () => {
       if (!initDataRaw) return;
 
-      const response = await fetch(
-        "https://getquest.tech/api/achievements",
-        {
-          headers: {
-            "Content-Type": "application/json",
-            initData: initDataRaw,
-          },
-        }
-      );
+      const response = await fetch(`${BASE_URL}/api/achievements`, {
+        headers: {
+          "Content-Type": "application/json",
+          initData: initDataRaw,
+        },
+      });
 
       const data: Achievement[] = await response.json();
       setAchievements(data);
 
       if (data.length > 0) {
         setSelectedAchievement(data[0]);
-        setImageUrl(
-          `https://getquest.tech/api/images/${data[0].imageUrl}`
-        );
+        setImageUrl(`${BASE_URL}/api/images/${data[0].imageUrl}`);
       }
     };
 
@@ -78,7 +74,7 @@ export function SubmitQuestDrawer({
       price: parseInt(numericValue, 10),
     };
 
-    const response = await fetch("https://getquest.tech/api/challenges", {
+    const response = await fetch(`${BASE_URL}/api/challenges`, {
       method: "POST",
       headers: {
         accept: "*/*",
@@ -139,9 +135,7 @@ export function SubmitQuestDrawer({
                   );
                   if (selected) {
                     setSelectedAchievement(selected);
-                    setImageUrl(
-                      `https://getquest.tech/api/images/${selected.imageUrl}`
-                    );
+                    setImageUrl(`${BASE_URL}/api/images/${selected.imageUrl}`);
                   }
                 }}
                 className="border-none bg-transparent appearance-none focus:outline-none w-full"

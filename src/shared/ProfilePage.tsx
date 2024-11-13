@@ -2,12 +2,13 @@
 
 import React, { useEffect, useState } from "react";
 // import Slider from "./slider"; // Компонент анимации для движения достижений
-import Arrows from "@/assets/arrows.png";
-import Rewards from "@/assets/rewards.png";
+import Arrows from "@/assets/arrows.avif";
+import Rewards from "@/assets/rewards.avif";
 import { useInitData, useLaunchParams } from "@telegram-apps/sdk-react";
 import { AchievementDrawer } from "@/app/profile/drawer";
 import { Button } from "@/components/ui/button";
 import { Carousel } from "@/components/carousel";
+import { BASE_URL } from "@/lib/const";
 
 interface Achievement {
   userAchievement: number;
@@ -88,8 +89,8 @@ export default function ProfilePage({ params }: { params?: { id: number } }) {
         }
 
         const url = !isUserPage
-          ? `https://getquest.tech/api/users/profile/?id=${params?.id}`
-          : "https://getquest.tech/api/users/profile";
+          ? `${BASE_URL}/api/users/profile/?id=${params?.id}`
+          : `${BASE_URL}/api/users/profile`;
 
         const response = await fetch(url, {
           method: "GET",
@@ -100,7 +101,7 @@ export default function ProfilePage({ params }: { params?: { id: number } }) {
         setAchievementImages(
           data.achievementListDTO.map((achievement: Achievement) => ({
             id: achievement.userAchievement.toString(),
-            imageUrl: `https://getquest.tech/api/images/${achievement.imageUrl}`,
+            imageUrl: `${BASE_URL}/api/images/${achievement.imageUrl}`,
           }))
         );
       } catch (error) {
@@ -109,6 +110,7 @@ export default function ProfilePage({ params }: { params?: { id: number } }) {
     };
 
     fetchProfileData();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [initDataRaw]);
 
   useEffect(() => {
@@ -124,7 +126,7 @@ export default function ProfilePage({ params }: { params?: { id: number } }) {
         }
 
         const response = await fetch(
-          `https://getquest.tech/api/challenges/user/video-urls?userId=${userData.id}`,
+          `${BASE_URL}/api/challenges/user/video-urls?userId=${userData.id}`,
           {
             method: "GET",
             headers,
@@ -158,7 +160,7 @@ export default function ProfilePage({ params }: { params?: { id: number } }) {
       };
 
       const response = await fetch(
-        `https://getquest.tech/api/challenges/achievement/${achievement.userAchievement}`,
+        `${BASE_URL}/api/challenges/achievement/${achievement.userAchievement}`,
         {
           method: "GET",
           headers,
@@ -194,7 +196,7 @@ export default function ProfilePage({ params }: { params?: { id: number } }) {
         headers["initData"] = initDataRaw;
       }
       const response = await fetch(
-        `https://getquest.tech/friends/request?receiverId=${userData.id}`,
+        `${BASE_URL}/friends/request?receiverId=${userData.id}`,
         {
           method: "POST",
           headers,
@@ -230,7 +232,7 @@ export default function ProfilePage({ params }: { params?: { id: number } }) {
         headers["initData"] = initDataRaw;
       }
       const response = await fetch(
-        `https://getquest.tech/friends/accept/${userData.id}`,
+        `${BASE_URL}/friends/accept/${userData.id}`,
         {
           method: "POST",
           headers,
@@ -454,7 +456,7 @@ export default function ProfilePage({ params }: { params?: { id: number } }) {
                 }}
               >
                 <source
-                  src={`https://getquest.tech/api/videos/download?fileId=${videoUrl}`}
+                  src={`${BASE_URL}/api/videos/download?fileId=${videoUrl}`}
                   type="video/mp4"
                 />
                 Ваш браузер не поддерживает видео.

@@ -3,7 +3,7 @@
 import React from "react";
 import { Button } from "@/components/ui/button";
 
-import Rewards from "@/assets/rewards.png";
+import Rewards from "@/assets/rewards.avif";
 import { BASE_URL } from "@/lib/const";
 import { Goal } from "../types";
 import { useLaunchParams } from "@telegram-apps/sdk-react";
@@ -69,7 +69,7 @@ export function GoalDrawer({
     <Drawer open={isOpen} onClose={onClose}>
       <div className="flex flex-col items-center">
         <img
-          src={`https://getquest.tech/api/images/${goal.picUrl}`}
+          src={`${BASE_URL}/api/images/${goal.picUrl}`}
           alt={goal.name}
           className="w-full h-40 aspect-square object-contain select-none pointer-events-none rounded-md mb-4"
         />

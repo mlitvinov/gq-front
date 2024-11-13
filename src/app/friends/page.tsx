@@ -1,9 +1,9 @@
 "use client";
 
 import React, { useEffect, useRef, useState } from "react";
-import Messages from "@/assets/messages.png";
-import Arrows from "@/assets/arrows.png";
-import Rewards from "@/assets/rewards.png";
+import Messages from "@/assets/messages.avif";
+import Arrows from "@/assets/arrows.avif";
+import Rewards from "@/assets/rewards.avif";
 import { useInitData } from "@telegram-apps/sdk-react";
 import { useLaunchParams } from "@telegram-apps/sdk-react";
 import { Link } from "@/components/Link/Link";
@@ -11,6 +11,7 @@ import { cn } from "@/lib/utils";
 import { SubmitQuestDrawer } from "./drawer";
 import { PlusIcon, XMarkIcon } from "@heroicons/react/16/solid";
 import { Button } from "@/components/ui/button";
+import { BASE_URL } from "@/lib/const";
 
 type User = {
   friendId: string;
@@ -51,7 +52,7 @@ export default function FriendsPage() {
       initData: initDataRaw,
     };
 
-    const res = await fetch("https://getquest.tech/api/users/friends", {
+    const res = await fetch(`${BASE_URL}/api/users/friends`, {
       method: "GET",
       headers,
     });
@@ -73,13 +74,10 @@ export default function FriendsPage() {
       initData: initDataRaw,
     };
 
-    const res = await fetch(
-      "https://getquest.tech/friends/requests/incoming",
-      {
-        method: "GET",
-        headers,
-      }
-    );
+    const res = await fetch(`${BASE_URL}/friends/requests/incoming`, {
+      method: "GET",
+      headers,
+    });
 
     if (!res.ok) {
       console.error("Ошибка при загрузке запроса");
@@ -96,6 +94,7 @@ export default function FriendsPage() {
     } else if (activeTab === "requests") {
       getRequests();
     }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [initDataRaw, activeTab]);
 
   const handleAccept = async (requestId: number) => {
@@ -110,7 +109,7 @@ export default function FriendsPage() {
 
     try {
       const res = await fetch(
-        `https://getquest.tech/friends/accept?requestId=${requestId}`,
+        `${BASE_URL}/friends/accept?requestId=${requestId}`,
         {
           method: "POST",
           headers,
@@ -142,7 +141,7 @@ export default function FriendsPage() {
 
     try {
       const res = await fetch(
-        `https://getquest.tech/friends/decline?requestId=${requestId}`,
+        `${BASE_URL}/friends/decline?requestId=${requestId}`,
         {
           method: "POST",
           headers,

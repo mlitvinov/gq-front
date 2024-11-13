@@ -3,7 +3,7 @@
 import { useEffect, useRef, useState } from "react";
 import { useLaunchParams } from "@telegram-apps/sdk-react";
 
-import Rewards from "@/assets/rewards.png";
+import Rewards from "@/assets/rewards.avif";
 import { ChallengeDrawer } from "./drawers/challenge-drawer";
 import { GoalDrawer } from "./drawers/goal-drawer";
 import { cn } from "@/lib/utils";
@@ -108,6 +108,7 @@ export default function ChallengesPage() {
 
   useEffect(() => {
     fetchChallenges();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [initDataRaw, tab]);
 
   return (
@@ -186,7 +187,7 @@ export default function ChallengesPage() {
                     <div className="flex items-center gap-4 w-full">
                       <div className="flex gap-2 items-start">
                         <img
-                          src={`https://getquest.tech/api/images/${goal.picUrl}`}
+                          src={`${BASE_URL}/api/images/${goal.picUrl}`}
                           alt={goal.name}
                           className="size-12 bg-[#F6F6F6] rounded-xl"
                         />
@@ -246,8 +247,8 @@ export default function ChallengesPage() {
                       <img
                         src={
                           isPromo
-                            ? `https://getquest.tech/api/images/${challenge.promoAchievementPicsUrl}`
-                            : `https://getquest.tech/api/images/${challenge.achievementPicsUrl}`
+                            ? `${BASE_URL}/api/images/${challenge.promoAchievementPicsUrl}`
+                            : `${BASE_URL}/api/images/${challenge.achievementPicsUrl}`
                         }
                         alt={
                           isPromo

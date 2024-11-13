@@ -1,14 +1,13 @@
-import React from "react";
-import type { PropsWithChildren } from "react";
+import React, { PropsWithChildren, Suspense } from "react";
 import type { Metadata } from "next";
 
+import YandexMetrika from "@/components/YandexMetrika";
 import { Root } from "@/components/Root/Root";
 import { cn } from "@/lib/utils";
 import { fontInter } from "@/lib/fonts";
 
 import "@telegram-apps/telegram-ui/dist/styles.css";
 import "./_assets/globals.css";
-import YandexMetrika from "@/components/YandexMetrika";
 
 export const metadata: Metadata = {
   title: "GetQuest",
@@ -32,8 +31,12 @@ export default function RootLayout({ children }: PropsWithChildren) {
           fontInter.className
         )}
       >
-        <YandexMetrika /> {}
         <Root>{children}</Root>
+        {process.env.NODE_ENV === "production" && (
+          <Suspense>
+            <YandexMetrika />
+          </Suspense>
+        )}
       </body>
     </html>
   );

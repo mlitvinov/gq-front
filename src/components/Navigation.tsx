@@ -3,14 +3,14 @@
 import { cn } from "@/lib/utils";
 import { buttonVariants } from "./ui/button";
 
-import friends from "@/assets/friends.png";
-import friendsA from "@/assets/friends-a.png";
-import challenges from "@/assets/challenges.png";
-import challengesA from "@/assets/challenges-a.png";
-import profile from "@/assets/profile.png";
-import play from "@/assets/play.png";
-import playA from "@/assets/play-a.png";
-import profileA from "@/assets/profile-a.png";
+import friends from "@/assets/friends.avif";
+import friendsA from "@/assets/friends-a.avif";
+import challenges from "@/assets/challenges.avif";
+import challengesA from "@/assets/challenges-a.avif";
+import profile from "@/assets/profile.avif";
+import play from "@/assets/play.avif";
+import playA from "@/assets/play-a.avif";
+import profileA from "@/assets/profile-a.avif";
 import { usePathname } from "next/navigation";
 import Link from "next/link";
 

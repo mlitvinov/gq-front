@@ -41,6 +41,7 @@ export function Carousel({
       ? autoScroll.stop
       : autoScroll.play;
     playOrStop();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [autoPlay]);
 
   return (

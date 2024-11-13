@@ -2,10 +2,11 @@
 
 import React from "react";
 
-import Rewards from "@/assets/rewards.png";
+import Rewards from "@/assets/rewards.avif";
 import { Link } from "@/components/Link/Link";
 import Drawer from "@/components/ui/drawer";
 import { Carousel } from "@/components/carousel";
+import { BASE_URL } from "@/lib/const";
 
 type Achievement = {
   userAchievement: number;
@@ -30,11 +31,11 @@ type AchievementDrawerProps = {
 };
 
 export function AchievementDrawer({
-                                    isOpen,
-                                    onClose,
-                                    achievement,
-                                    challengeData,
-                                  }: AchievementDrawerProps) {
+  isOpen,
+  onClose,
+  achievement,
+  challengeData,
+}: AchievementDrawerProps) {
   return (
     <Drawer open={isOpen} onClose={onClose}>
       <div className="flex flex-col items-center w-full min-h-[100px]">
@@ -43,7 +44,7 @@ export function AchievementDrawer({
           <div className="flex flex-col border rounded-full border-[#fcf4f4] px-6 py-4">
             <div className="flex gap-2 items-center">
               <img
-                src={`https://getquest.tech/api/images/${achievement.imageUrl}`}
+                src={`${BASE_URL}/api/images/${achievement.imageUrl}`}
                 alt={achievement.name}
                 className="size-12 bg-[#F6F6F6] rounded-xl"
               />
@@ -69,7 +70,7 @@ export function AchievementDrawer({
                   <div className="flex size-64 relative mx-auto rounded-full justify-center my-4">
                     <div className="absolute z-0 inset-0 bg-slate-50 rounded-full animate-pulse" />
                     <video
-                      src={`https://getquest.tech/api/videos/download?fileId=${el.videoUrl}`}
+                      src={`${BASE_URL}/api/videos/download?fileId=${el.videoUrl}`}
                       className="size-full z-10 absolute inset-0 rounded-full object-cover"
                       controls={false}
                       muted
@@ -118,7 +119,9 @@ export function AchievementDrawer({
                       {el.sender}
                     </Link>
                   ) : (
-                    <span className="text-black mt-16 font-semibold">{el.sender}</span>
+                    <span className="text-black mt-16 font-semibold">
+                      {el.sender}
+                    </span>
                   )}
                   <br />
                   {el.description}

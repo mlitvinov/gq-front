@@ -1,6 +1,7 @@
 import React from "react";
-import Rewards from "@/assets/rewards.png";
+import Rewards from "@/assets/rewards.avif";
 import { Button } from "@/components/ui/button";
+import { BASE_URL } from "@/lib/const";
 
 type ChallengeCardProps = {
   achievementPicsUrl: string;
@@ -43,13 +44,13 @@ const getStatusBars = (status: string) => {
 };
 
 export const ChallengeCard: React.FC<ChallengeCardProps> = ({
-                                                              achievementPicsUrl,
-                                                              achievementTitle,
-                                                              price,
-                                                              status = "APPROVE",
-                                                              onClick,
-                                                              hideChallenge,
-                                                            }) => {
+  achievementPicsUrl,
+  achievementTitle,
+  price,
+  status = "APPROVE",
+  onClick,
+  hideChallenge,
+}) => {
   const { bars, color } = getStatusBars(status);
 
   return (
@@ -59,7 +60,7 @@ export const ChallengeCard: React.FC<ChallengeCardProps> = ({
     >
       <div className="flex gap-2 items-center">
         <img
-          src={`https://getquest.tech/api/images/${achievementPicsUrl}`}
+          src={`${BASE_URL}/api/images/${achievementPicsUrl}`}
           alt={achievementTitle}
           className="size-12 bg-[#F6F6F6] rounded-xl"
         />
