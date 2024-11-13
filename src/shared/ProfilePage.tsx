@@ -338,7 +338,12 @@ export default function ProfilePage({ params }: { params?: { id: number } }) {
                 className="size-16 object-contain cursor-pointer"
               />
             </div>
-          ) : null
+          ) : (
+            <div
+              key={index}
+              className="size-16 px-4 mr-8 mb-4 rounded-xl bg-[#F6F6F6] select-none"
+            />
+          )
         )}
       />
 
@@ -359,9 +364,42 @@ export default function ProfilePage({ params }: { params?: { id: number } }) {
                 className="size-16 object-contain cursor-pointer"
               />
             </div>
-          ) : null
+          ) : (
+            <div
+              key={index}
+              className="size-16 px-4 mr-8 mb-4 rounded-xl bg-[#F6F6F6] select-none"
+            />
+          )
         )}
       />
+      {/*  <Carousel
+        autoPlay
+        options={{ loop: true, align: "center", dragFree: true }}
+        items={[...achievementImages, ...achievementImages].map(
+          (imgUrl, index) => (
+            <div
+              key={index}
+              className="flex-shrink-0 size-16 rounded-xl bg-[#F6F6F6] px-4 mr-8"
+              onClick={() =>
+                handleAchievementClick &&
+                handleAchievementClick(index % achievementImages.length)
+              } // Обработчик клика
+            >
+              <img
+                src={imgUrl}
+                alt={`Логотип ${index + 1}`}
+                className="size-16 object-contain cursor-pointer"
+              />
+            </div>
+          )
+        )}
+      /> */}
+      {/*  <section className="flex flex-col gap-3 mb-6">
+        <Slider
+          elements={achievementImages}
+          onElementClick={handleAchievementClick}
+        />
+      </section> */}
       <section className="mb-6">
         <h1 className="text-black text-2xl text-left font-medium tracking-[-0.05em] mb-6">
           Выполнено{" "}
@@ -392,40 +430,38 @@ export default function ProfilePage({ params }: { params?: { id: number } }) {
         autoPlay
         containerClassName="[&>*:nth-child(odd)]:mt-2 select-none"
         options={{ loop: true, align: "center", dragFree: true }}
-        items={videoUrls
-          .filter((videoUrl) => videoUrl !== null)
-          .map((videoUrl, index) => (
-            <div
-              key={videoUrl}
-              className="flex flex-col justify-center w-full px-4"
-            >
-              <figure className="rounded-full overflow-hidden size-64 bg-[#F6F6F6] flex items-center justify-center mr-6">
-                <video
-                  autoPlay
-                  loop
-                  muted
-                  playsInline
-                  controls={false}
-                  className="w-full h-full object-cover rounded-full"
-                  onClick={(e) => {
-                    const video = e.currentTarget;
-                    if (video.requestFullscreen) {
-                      video.requestFullscreen();
-                    } else if ((video as any).webkitEnterFullscreen) {
-                      (video as any).webkitEnterFullscreen();
-                    }
-                    video.play();
-                  }}
-                >
-                  <source
-                    src={`https://getquest.tech/api/videos/download?fileId=${videoUrl}`}
-                    type="video/mp4"
-                  />
-                  Ваш браузер не поддерживает видео.
-                </video>
-              </figure>
-            </div>
-          ))}
+        items={videoUrls.map((videoUrl, index) => (
+          <div
+            key={videoUrl}
+            className="flex flex-col justify-center w-full px-4"
+          >
+            <figure className="rounded-full overflow-hidden  size-64 bg-[#F6F6F6] flex items-center justify-center mr-6">
+              <video
+                autoPlay
+                loop
+                muted
+                playsInline
+                controls={false}
+                className="w-full h-full object-cover rounded-full"
+                onClick={(e) => {
+                  const video = e.currentTarget;
+                  if (video.requestFullscreen) {
+                    video.requestFullscreen();
+                  } else if ((video as any).webkitEnterFullscreen) {
+                    (video as any).webkitEnterFullscreen();
+                  }
+                  video.play();
+                }}
+              >
+                <source
+                  src={`https://getquest.tech/api/videos/download?fileId=${videoUrl}`}
+                  type="video/mp4"
+                />
+                Ваш браузер не поддерживает видео.
+              </video>
+            </figure>
+          </div>
+        ))}
       />
 
       <nav className="fixed-nav fixed bottom-0 left-0 right-0 bg-white z-1000">
