@@ -37,7 +37,7 @@ export function AchievementDrawer({
                                   }: AchievementDrawerProps) {
   return (
     <Drawer open={isOpen} onClose={onClose}>
-      <div className="flex flex-col items-center w-full">
+      <div className="flex flex-col items-center w-full min-h-[400px]">
         {/* Карточка достижения */}
         <div className="mt-6 w-full px-4">
           <div className="flex flex-col border rounded-full border-[#fcf4f4] px-6 py-4">
