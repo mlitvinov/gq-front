@@ -329,7 +329,7 @@ export default function ProfilePage({ params }: { params?: { id: number } }) {
           el?.imageUrl ? (
             <div
               key={index}
-              className="flex-shrink-0 size-16 rounded-xl bg-[#F6F6F6] px-4 mr-8 mb-4"
+              className="flex-shrink-0 size-16 rounded-xl bg-[#F6F6F6] px-1 mr-8 mb-4"
               onClick={() => handleAchievementClick(el.id)}
             >
               <img
@@ -355,7 +355,7 @@ export default function ProfilePage({ params }: { params?: { id: number } }) {
           el?.imageUrl ? (
             <div
               key={index}
-              className="flex-shrink-0 size-16 rounded-xl bg-[#F6F6F6] px-4 mr-8 mb-4"
+              className="flex-shrink-0 size-16 rounded-xl bg-[#F6F6F6] px-1 mr-8 mb-4"
               onClick={() => handleAchievementClick(el.id)}
             >
               <img

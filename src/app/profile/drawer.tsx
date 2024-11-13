@@ -95,7 +95,7 @@ export function AchievementDrawer({
                     id="achievement-title"
                     className="text-xl text-center font-bold"
                   >
-                    <p className="text-3xl text-gradient ml-4 font-black">
+                    <p className="text-3xl mb-2 mt-2 text-gradient ml-4 font-black">
                       <span className="mr-1">{el.price}</span>
                       <img
                         className="inline relative -top-0.5"
