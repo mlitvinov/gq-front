@@ -48,12 +48,12 @@ export default function Drawer({
         >
           <XIcon className="size-6 text-[#B1B1B1]" />
         </Button>
-        <h2 className="p-4" id="modal-modal-title">
+        {/*   <h2 className="p-4" id="modal-modal-title">
           {title}
-        </h2>
-        <div className="overflow-y-auto overflow-x-hidden pb-12">
-          {children}
-        </div>
+        </h2> */}
+        {/*    <div className="overflow-y-auto overflow-x-hidden pb-12"> */}
+        {children}
+        {/*  </div> */}
       </Box>
     </Modal>
   );

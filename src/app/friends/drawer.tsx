@@ -112,8 +112,8 @@ export function SubmitQuestDrawer({
         Квест
       </Button>
       <Drawer open={isOpen} onClose={() => setIsOpen(false)}>
-        <div className="flex flex-col">
-          <header className="px-4">
+        {/*         <div className="flex flex-col"> */}
+        {/* <header className="px-4">
             <label className="block text-sm text-center font-medium text-black mb-2">
               Испытание для {username}
             </label>
@@ -171,24 +171,22 @@ export function SubmitQuestDrawer({
                 className="h-32 object-contain"
               />
             </div>
-          )}
+          )} */}
 
-          <div className="mb-4 px-4">
-            <input
-              type="text"
-              value={numericValue}
-              onChange={(e) =>
-                setNumericValue(e.target.value.replace(/\D/g, ""))
-              }
-              className="w-full text-3xl font-black focus:outline-none text-center text-gradient placeholder:text-black/10 p-2"
-              placeholder="0"
-            />
-          </div>
+        <div className="mb-4 px-4">
+          <input
+            type="text"
+            value={numericValue}
+            onChange={(e) => setNumericValue(e.target.value.replace(/\D/g, ""))}
+            className="w-full text-3xl font-black focus:outline-none text-center text-gradient placeholder:text-black/10 p-2"
+            placeholder="0"
+          />
+        </div>
 
-          {errorMessage && (
-            <div className="text-red-500 mb-4">{errorMessage}</div>
-          )}
-
+        {errorMessage && (
+          <div className="text-red-500 mb-4">{errorMessage}</div>
+        )}
+        {/*
           <footer className="flex flex-col gap-2 px-4">
             <Button
               isLoading={isLoading}
@@ -206,8 +204,8 @@ export function SubmitQuestDrawer({
             >
               Отмена
             </Button>
-          </footer>
-        </div>
+          </footer> */}
+        {/*     </div> */}
       </Drawer>
     </>
   );
