@@ -1,12 +1,13 @@
 "use client";
 
-import { Section, Cell, Image, List } from "@telegram-apps/telegram-ui";
+import { redirect } from "next/navigation";
 
-import { Link } from "@/components/Link/Link";
-
-import tonSvg from "./_assets/ton.svg";
-import ProfilePage from "@/app/profile/page";
+import { useLayoutEffect } from "react";
 
 export default function Home() {
-  return ProfilePage();
+  useLayoutEffect(() => {
+    redirect("/friends");
+  }, []);
+
+  return null;
 }

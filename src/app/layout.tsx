@@ -1,14 +1,16 @@
-import React from "react";
-import type { PropsWithChildren } from "react";
+import { Suspense, type PropsWithChildren } from "react";
 import type { Metadata } from "next";
+import { getLocale } from "next-intl/server";
 
-import { Root } from "@/components/Root/Root";
 import { cn } from "@/lib/utils";
 import { fontInter } from "@/lib/fonts";
+import { Root } from "@/components/Root/Root";
+import YandexMetrika from "@/components/YandexMetrika";
+import { I18nProvider } from "@/core/i18n/provider";
 
 import "@telegram-apps/telegram-ui/dist/styles.css";
+import "normalize.css/normalize.css";
 import "./_assets/globals.css";
-import YandexMetrika from "@/components/YandexMetrika";
 
 export const metadata: Metadata = {
   title: "GetQuest",
@@ -24,17 +26,20 @@ export const viewport = {
   viewportFit: "cover",
 };
 
-export default function RootLayout({ children }: PropsWithChildren) {
+export default async function RootLayout({ children }: PropsWithChildren) {
+  const locale = await getLocale();
+
   return (
-    <html lang="en">
-      <body
-        className={cn(
-          "bg-background min-h-screen font-inter antialiased",
-          fontInter.className
-        )}
-      >
-        <YandexMetrika /> {}
-        <Root>{children}</Root>
+    <html lang={locale}>
+      <body className={cn("bg-background min-h-screen font-inter antialiased", fontInter.className)}>
+        <I18nProvider>
+          <Root>{children}</Root>
+          {process.env.NODE_ENV === "production" && (
+            <Suspense>
+              <YandexMetrika />
+            </Suspense>
+          )}
+        </I18nProvider>
       </body>
     </html>
   );

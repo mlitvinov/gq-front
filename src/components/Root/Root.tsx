@@ -1,38 +1,30 @@
 "use client";
 
-import { type PropsWithChildren, useEffect, useMemo } from "react";
-import {
-  SDKProvider,
-  useLaunchParams,
-  useMiniApp,
-  useThemeParams,
-  useViewport,
-  bindMiniAppCSSVars,
-  bindThemeParamsCSSVars,
-  bindViewportCSSVars,
-  initSwipeBehavior,
-} from "@telegram-apps/sdk-react";
-import { TonConnectUIProvider } from "@tonconnect/ui-react";
+import { type PropsWithChildren, useEffect } from "react";
+import { initData, miniApp, useLaunchParams, useSignal } from "@telegram-apps/sdk-react";
 import { AppRoot } from "@telegram-apps/telegram-ui";
 
 import { ErrorBoundary } from "@/components/ErrorBoundary";
 import { ErrorPage } from "@/components/ErrorPage";
 import { useTelegramMock } from "@/hooks/useTelegramMock";
 import { useDidMount } from "@/hooks/useDidMount";
-
-import "./styles.css";
+import { useClientOnce } from "@/hooks/useClientOnce";
+import { setLocale } from "@/core/i18n/locale";
+import { init } from "@/core/init";
 import Navigation from "../Navigation";
 
-function App(props: PropsWithChildren) {
-  const lp = useLaunchParams();
-  const miniApp = useMiniApp();
-  const themeParams = useThemeParams();
-  const viewport = useViewport();
-  const [swipeBehavior] = initSwipeBehavior();
+// import "./style.css";
 
-  useEffect(() => {
-    swipeBehavior.disableVerticalSwipe();
+function RootInner({ children }: PropsWithChildren) {
+  const isDev = process.env.NODE_ENV === "development";
 
+  // Mock Telegram environment in development mode if needed.
+  if (isDev) {
+    // eslint-disable-next-line react-hooks/rules-of-hooks
+    useTelegramMock();
+  }
+
+  /*  useEffect(() => {
     if (window) {
       if (window.visualViewport) {
         window.visualViewport.addEventListener("resize", () => {
@@ -44,69 +36,81 @@ function App(props: PropsWithChildren) {
         if (window.scrollY > 0) window.scrollTo(0, 0);
       });
     }
-  }, []);
+  }, []); */
 
-  useEffect(() => {
-    if (viewport?.expand) viewport.expand();
-  }, [viewport]);
+  const lp = useLaunchParams();
+  const debug = isDev || lp.startParam === "debug";
 
-  useEffect(() => {
-    return bindMiniAppCSSVars(miniApp, themeParams);
-  }, [miniApp, themeParams]);
+  // Initialize the library.
+  useClientOnce(() => {
+    init(debug);
+  });
 
-  useEffect(() => {
-    return bindThemeParamsCSSVars(themeParams);
-  }, [themeParams]);
+  // const isDark = useSignal(miniApp.isDark);
+  const initDataUser = useSignal(initData.user);
 
+  // Set the user locale.
   useEffect(() => {
-    return viewport && bindViewportCSSVars(viewport);
-  }, [viewport]);
+    initDataUser && setLocale(initDataUser.languageCode);
+  }, [initDataUser]);
+
+  // Enable debug mode to see all the methods sent and events received.
+  useEffect(() => {
+    debug && import("eruda").then((lib) => lib.default.init());
+  }, [debug]);
 
   return (
-    <AppRoot
-      className="overflow-x-hidden overflow-y-hidden h-screen select-none p-0"
-      appearance={/* miniApp.isDark ? "dark" : */ "light"}
-      platform={["macos", "ios"].includes(lp.platform) ? "ios" : "base"}
-    >
+    <AppRoot className="overflow-x-hidden overflow-y-hidden h-screen select-none p-0" appearance={/* isDark ? "dark" :  */ "light"} platform={["macos", "ios"].includes(lp.platform) ? "ios" : "base"}>
       <main className="h-full overflow-y-auto pb-[--nav-height]">
-        {props.children}
-        <Navigation />
+        {children}
+        {/*  <Navigation /> */}
       </main>
     </AppRoot>
   );
 }
 
-function RootInner({ children }: PropsWithChildren) {
-  // Mock Telegram environment in development mode if needed.
-  if (process.env.NODE_ENV === "development") {
-    // eslint-disable-next-line react-hooks/rules-of-hooks
-    useTelegramMock();
-  }
-
-  const debug = true; //useLaunchParams().startParam === "debug";
-  const manifestUrl = useMemo(() => {
-    return new URL("tonconnect-manifest.json", window.location.href).toString();
-  }, []);
-
-  // Enable debug mode to see all the methods sent and events received.
-  useEffect(() => {
-    if (debug) {
-      import("eruda").then((lib) => lib.default.init());
-    }
-  }, [debug]);
+/* const Gradient = () => {
+  // Массив для генерации нескольких квадратов
+  const squares = [
+    {
+      id: 1,
+      position: "transform -translate-x-1/2 -translate-y-1/2",
+      gradient: "bg-gradient-to-tr from-red-400 via-pink-500 to-red-500",
+      animation: "animate-gradient-morph1",
+    },
+    {
+      id: 2,
+      position: "transform -translate-x-1/2 translate-y-1/2",
+      gradient: "bg-gradient-to-tl from-purple-400 via-green-500 to-yellow-500",
+      animation: "animate-gradient-morph2",
+    },
+    {
+      id: 3,
+      position: "transform -translate-x-1/2 -translate-y-1/2",
+      gradient: "bg-gradient-to-br from-indigo-400 via-blue-500 to-purple-500",
+      animation: "animate-gradient-morph1",
+    },
+    {
+      id: 4,
+      position: "transform translate-x-1/2 -translate-y-1/2",
+      gradient: "bg-gradient-to-bl from-green-400 via-teal-500 to-blue-500",
+      animation: "animate-gradient-morph2",
+    },
+  ];
 
   return (
-    <TonConnectUIProvider manifestUrl={manifestUrl}>
-      <SDKProvider acceptCustomStyles debug={debug}>
-        <App>{children}</App>
-      </SDKProvider>
-    </TonConnectUIProvider>
+    <div className="relative w-full h-screen flex items-center justify-center bg-white overflow-hidden">
+      {squares.map((square) => (
+        <div key={square.id} className={`absolute ${square.position} top-1/2 -translate-y-1/2 left-1/2 -translate-x-1/2 w-32 h-32 rounded-md opacity-80 ${square.gradient} ${square.animation} blur-3xl`}></div>
+      ))}
+    </div>
   );
-}
-
+};
+ */
 export function Root(props: PropsWithChildren) {
-  // Unfortunately, Telegram Mini Apps does not allow us to use all features of the Server Side
-  // Rendering. That's why we are showing loader on the server side.
+  // Unfortunately, Telegram Mini Apps does not allow us to use all features of
+  // the Server Side Rendering. That's why we are showing loader on the server
+  // side.
   const didMount = useDidMount();
 
   return didMount ? (
@@ -114,6 +118,6 @@ export function Root(props: PropsWithChildren) {
       <RootInner {...props} />
     </ErrorBoundary>
   ) : (
-    <div className="root__loading" />
+    <div />
   );
 }
