@@ -16,6 +16,7 @@ import { BASE_URL } from "@/lib/const";
 import { api } from "@/lib/api";
 import { useTranslations } from "next-intl";
 import { Friend, User } from "@/types/entities";
+import { LocaleSwitcher } from "@/components/LocaleSwitcher/LocaleSwitcher";
 
 export default function FriendsPage() {
   const t = useTranslations("friends");
@@ -109,6 +110,7 @@ export default function FriendsPage() {
         </Button>
 
         <SubmitQuestDrawer username={"test"} receiverId={""} />
+        <LocaleSwitcher />
 
         <div className="flex mb-6">
           <button onClick={() => setActiveTab("friends")} className={cn("flex-grow text-[#B1B1B1] relative after:content after:bottom-0 after:h-[2px] after:bg-[#F6F6F6] after:inset-x-0 after:rounded-l-full after:absolute font-medium text-center py-2", activeTab === "friends" && "text-black after:bg-[#FEEE9E]")}>

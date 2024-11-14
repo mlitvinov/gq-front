@@ -19,7 +19,10 @@ export function init(debug: boolean): void {
   viewport
     .mount()
     .then(() => {
-      !viewport.isCssVarsBound() && viewport.bindCssVars();
+      console.log("!!!viewport.isCssVarsBound()", viewport.isCssVarsBound());
+      if (!viewport.isCssVarsBound()) {
+        viewport.bindCssVars();
+      }
     })
     .catch((e) => {
       console.error("Something went wrong mounting the viewport", e);

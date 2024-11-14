@@ -18,5 +18,11 @@
     "task": "Задание",
     "submit": "Отправить",
     "cancel": "Отмена"
+  },
+  "navigation": {
+    "recommendations": "Рекомендации",
+    "friends": "Друзья",
+    "challenges": "Испытания",
+    "profile": "Профиль"
   }
 }

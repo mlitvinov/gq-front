@@ -2,50 +2,53 @@
 
 import React from "react";
 import { Slot } from "@radix-ui/react-slot";
+import { cva, type VariantProps } from "class-variance-authority";
 
 import { cn } from "@/lib/utils";
 import { LoaderCircle } from "lucide-react";
 
-export const variantClasses: Record<string, string> = {
-  default: "bg-primary text-primary-foreground hover:bg-primary/90",
-  destructive: "bg-[#F6F6F6] text-black",
-  outline: "border-input hover:bg-accent hover:text-accent-foreground border",
-  secondary: "bg-[#FEEF9E] text-black hover:bg-[#FEEF9E]/60 font-light",
-  ghost: "hover:bg-accent hover:text-accent-foreground",
-  link: "text-primary underline-offset-4 hover:underline",
-};
+const buttonVariants = cva("focus-visible:ring-ring ring-offset-background inline-flex items-center justify-center rounded-lg text-sm font-medium transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50", {
+  variants: {
+    variant: {
+      default: "bg-primary text-primary-foreground hover:bg-primary/90",
+      destructive: "bg-[#F6F6F6] text-black",
+      outline: "border-input hover:bg-accent hover:text-accent-foreground border",
+      secondary: "bg-[#FEEF9E] text-black hover:bg-[#FEEF9E]/60 font-light",
+      ghost: "hover:bg-accent hover:text-accent-foreground",
+      link: "text-primary underline-offset-4 hover:underline",
+    },
+    size: {
+      default: "h-10 px-4 py-2",
+      sm: "h-9 rounded-lg px-3",
+      lg: "h-11 rounded-lg px-8",
+      icon: "size-10",
+    },
+  },
+  defaultVariants: {
+    variant: "default",
+    size: "default",
+  },
+});
 
-const sizeClasses: Record<string, string> = {
-  default: "h-10 px-4 py-2",
-  sm: "h-9 rounded-lg px-3",
-  lg: "h-11 rounded-lg px-8",
-  icon: "size-10",
-};
-
-export interface ButtonProps extends React.ButtonHTMLAttributes<HTMLButtonElement> {
-  variant?: keyof typeof variantClasses;
-  size?: keyof typeof sizeClasses;
+export interface ButtonProps extends React.ButtonHTMLAttributes<HTMLButtonElement>, VariantProps<typeof buttonVariants> {
   isLoading?: boolean;
   asChild?: boolean;
 }
 
-const Button = React.forwardRef<HTMLButtonElement, ButtonProps>(({ className, variant = "default", size = "default", asChild = false, isLoading = false, disabled, children, ...props }, ref) => {
+const Button = React.forwardRef<HTMLButtonElement, ButtonProps>(({ className, variant, size, asChild = false, ...props }, ref) => {
   const Comp = asChild ? Slot : "button";
-  const combinedClasses = cn("focus-visible:ring-ring ring-offset-background inline-flex items-center justify-center rounded-lg text-sm font-medium transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50", variantClasses[variant], sizeClasses[size], className);
-
   return (
-    <Comp className={combinedClasses} ref={ref} disabled={isLoading || disabled} {...props}>
-      {isLoading ? (
+    <Comp className={cn(buttonVariants({ variant, size, className }))} ref={ref} disabled={props.isLoading || props.disabled} {...props}>
+      {props.isLoading ? (
         <div className="animate-spin">
           <LoaderCircle className="size-4 text-black/25" />
         </div>
       ) : (
-        children
+        props.children
       )}
     </Comp>
   );
 });
-
 Button.displayName = "Button";
 
-export { Button };
+export { Button, buttonVariants };

@@ -7,6 +7,8 @@ import { api } from "@/lib/api";
 import { BASE_URL } from "@/lib/const";
 import { useTranslations } from "next-intl";
 import { Achievement } from "@/types/entities";
+import { useLaunchParams } from "@telegram-apps/sdk-react";
+import useViewportHeight from "@/hooks/useViewportHeight";
 
 type SubmitQuestDrawerProps = {
   username: string;
@@ -17,7 +19,8 @@ type SubmitQuestDrawerProps = {
 export function SubmitQuestDrawer({ username, receiverId, onClose }: SubmitQuestDrawerProps) {
   const t = useTranslations("friends");
 
-  const selectRef = useRef<HTMLSelectElement | null>(null);
+  const viewportHeight = useViewportHeight();
+  const { platform } = useLaunchParams();
   const containerRef = useRef<HTMLDivElement | null>(null);
   const sizerRef = useRef<HTMLDivElement | null>(null);
 
@@ -75,27 +78,23 @@ export function SubmitQuestDrawer({ username, receiverId, onClose }: SubmitQuest
   };
 
   // Function to handle focus without default scrolling
-  const handleFocus = (e: any) => {
-    sizerRef.current!.style.height = "642px";
-    e.preventDefault(); // Prevent the default focus behavior
+  const handleFocus = (scrollFromTop?: number) => {
+    if (!sizerRef.current || !containerRef.current) return;
 
-    // Manually focus the select without scrolling
-    if (selectRef.current) {
-      selectRef.current!.focus({ preventScroll: true });
-    }
+    sizerRef.current.style.height = platform === "ios" ? viewportHeight + 200 + "px" : "100%";
+    containerRef.current.style.height = platform === "ios" ? viewportHeight / 2 - 25 + "px" : "100%";
 
     // Manually scroll the inner container as needed
-    if (containerRef.current) {
-      containerRef.current.style.height = "302px";
+    if (scrollFromTop) {
       containerRef.current!.scrollTo({
-        top: 200, // Adjust this value as needed
+        top: scrollFromTop,
         behavior: "instant",
       });
     }
   };
 
   const onBlur = () => {
-    sizerRef.current!.style.height = "0";
+    sizerRef.current!.style.height = "20px";
     containerRef.current!.style.height = "100%";
   };
 
@@ -103,7 +102,7 @@ export function SubmitQuestDrawer({ username, receiverId, onClose }: SubmitQuest
     <>
       <Button
         variant="secondary"
-        style={{ backgroundColor: "#FEEF9E", color: "black" }}
+        className="text-black bg-[#FEEF9E]"
         onClick={(e) => {
           e.preventDefault();
           e.stopPropagation();
@@ -129,6 +128,7 @@ export function SubmitQuestDrawer({ username, receiverId, onClose }: SubmitQuest
                   title=""
                   name="category"
                   value={selectedAchievement?.name || ""}
+                  onBlur={onBlur}
                   onChange={(e) => {
                     const selected = achievements.find((ach) => ach.name === e.target.value);
                     if (selected) {
@@ -150,7 +150,7 @@ export function SubmitQuestDrawer({ username, receiverId, onClose }: SubmitQuest
             <section className="mb-2 px-4">
               <div className="px-5 py-3 border border-[#F6F6F6] rounded-[32px]">
                 <label className="block text-xs font-light text-black/50">{t("task")}</label>
-                <input type="text" value={task} onChange={(e) => setTask(e.target.value)} className="size-full focus:outline-none" />
+                <input type="text" value={task} onChange={(e) => setTask(e.target.value)} onFocus={() => handleFocus()} onBlur={onBlur} className="size-full focus:outline-none" />
               </div>
             </section>
 
@@ -160,10 +160,8 @@ export function SubmitQuestDrawer({ username, receiverId, onClose }: SubmitQuest
               </div>
             )}
 
-            <div className="size-32 bg-gray-200" />
-
             <div className="mb-4 px-4">
-              <input type="text" value={numericValue} ref={selectRef as any} onFocus={handleFocus} onBlur={onBlur} onChange={(e) => setNumericValue(e.target.value.replace(/\D/g, ""))} className="w-full text-3xl font-black focus:outline-none text-center text-gradient placeholder:text-black/10 p-2" placeholder="0" />
+              <input type="text" value={numericValue} onFocus={() => handleFocus(200)} onBlur={onBlur} onChange={(e) => setNumericValue(e.target.value.replace(/\D/g, ""))} className="w-full text-3xl font-black focus:outline-none text-center text-gradient placeholder:text-black/10 p-2" placeholder="0" />
             </div>
 
             {errorMessage && <div className="text-red-500 mb-4">{errorMessage}</div>}
@@ -179,7 +177,7 @@ export function SubmitQuestDrawer({ username, receiverId, onClose }: SubmitQuest
             </footer>
           </div>
         </div>
-        <div ref={sizerRef} />
+        <div className="h-[20px]" ref={sizerRef} />
       </Drawer>
     </>
   );

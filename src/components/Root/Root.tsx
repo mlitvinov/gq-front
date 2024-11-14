@@ -1,7 +1,7 @@
 "use client";
 
 import { type PropsWithChildren, useEffect } from "react";
-import { initData, miniApp, useLaunchParams, useSignal } from "@telegram-apps/sdk-react";
+import { initData, useLaunchParams, useSignal } from "@telegram-apps/sdk-react";
 import { AppRoot } from "@telegram-apps/telegram-ui";
 
 import { ErrorBoundary } from "@/components/ErrorBoundary";
@@ -11,9 +11,8 @@ import { useDidMount } from "@/hooks/useDidMount";
 import { useClientOnce } from "@/hooks/useClientOnce";
 import { setLocale } from "@/core/i18n/locale";
 import { init } from "@/core/init";
-import Navigation from "../Navigation";
 
-// import "./style.css";
+import Navigation from "../Navigation";
 
 function RootInner({ children }: PropsWithChildren) {
   const isDev = process.env.NODE_ENV === "development";
@@ -24,7 +23,7 @@ function RootInner({ children }: PropsWithChildren) {
     useTelegramMock();
   }
 
-  /*  useEffect(() => {
+  /*   useEffect(() => {
     if (window) {
       if (window.visualViewport) {
         window.visualViewport.addEventListener("resize", () => {
@@ -63,7 +62,7 @@ function RootInner({ children }: PropsWithChildren) {
     <AppRoot className="overflow-x-hidden overflow-y-hidden h-screen select-none p-0" appearance={/* isDark ? "dark" :  */ "light"} platform={["macos", "ios"].includes(lp.platform) ? "ios" : "base"}>
       <main className="h-full overflow-y-auto pb-[--nav-height]">
         {children}
-        {/*  <Navigation /> */}
+        <Navigation />
       </main>
     </AppRoot>
   );

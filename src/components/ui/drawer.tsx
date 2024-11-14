@@ -27,25 +27,11 @@ type DrawerProps = {
   children: ReactNode;
   onClose: (event: {}, reason: "backdropClick" | "escapeKeyDown") => void;
 };
-export default function Drawer({
-  title = "",
-  children,
-  open,
-  onClose,
-}: DrawerProps) {
+export default function Drawer({ title = "", children, open, onClose }: DrawerProps) {
   return (
-    <Modal
-      sx={{ zIndex: 10005 }}
-      open={open}
-      onClose={onClose}
-      aria-labelledby="modal-modal-title"
-      aria-describedby="modal-modal-description"
-    >
+    <Modal sx={{ zIndex: 10005 }} open={open} onClose={onClose} aria-labelledby="modal-modal-title" aria-describedby="modal-modal-description">
       <Box sx={style}>
-        <Button
-          className="top-3 right-0 absolute"
-          onClick={() => onClose({}, "backdropClick")}
-        >
+        <Button className="top-3 right-0 absolute" onClick={() => onClose({}, "backdropClick")}>
           <XIcon className="size-6 text-[#B1B1B1]" />
         </Button>
         <h2 className="p-4" id="modal-modal-title">
