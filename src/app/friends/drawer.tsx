@@ -1,6 +1,6 @@
 "use client";
 
-import React from "react";
+import React, { useRef } from "react";
 import { Button } from "@/components/ui/button";
 import Drawer from "@/components/ui/drawer";
 
@@ -23,6 +23,10 @@ export function SubmitQuestDrawer({
   receiverId,
   onClose,
 }: SubmitQuestDrawerProps) {
+  const selectRef = useRef<HTMLSelectElement | null>(null);
+  const containerRef = useRef<HTMLDivElement | null>(null);
+  const sizerRef = useRef<HTMLDivElement | null>(null);
+
   const [achievements, setAchievements] = React.useState<Achievement[]>([]);
   const [selectedAchievement, setSelectedAchievement] =
     React.useState<Achievement | null>(null);
@@ -37,24 +41,19 @@ export function SubmitQuestDrawer({
     const fetchAchievements = async () => {
       if (!initDataRaw) return;
 
-      const response = await fetch(
-        "https://getquest.tech/api/achievements",
-        {
-          headers: {
-            "Content-Type": "application/json",
-            initData: initDataRaw,
-          },
-        }
-      );
+      const response = await fetch("https://getquest.tech/api/achievements", {
+        headers: {
+          "Content-Type": "application/json",
+          initData: initDataRaw,
+        },
+      });
 
       const data: Achievement[] = await response.json();
       setAchievements(data);
 
       if (data.length > 0) {
         setSelectedAchievement(data[0]);
-        setImageUrl(
-          `https://getquest.tech/api/images/${data[0].imageUrl}`
-        );
+        setImageUrl(`https://getquest.tech/api/images/${data[0].imageUrl}`);
       }
     };
 
@@ -102,6 +101,31 @@ export function SubmitQuestDrawer({
     }
   };
 
+  // Function to handle focus without default scrolling
+  const handleFocus = (e: any) => {
+    sizerRef.current!.style.height = "642px";
+    e.preventDefault(); // Prevent the default focus behavior
+
+    // Manually focus the select without scrolling
+    if (selectRef.current) {
+      selectRef.current!.focus({ preventScroll: true });
+    }
+
+    // Manually scroll the inner container as needed
+    if (containerRef.current) {
+      containerRef.current.style.height = "302px";
+      containerRef.current!.scrollTo({
+        top: 200, // Adjust this value as needed
+        behavior: "instant",
+      });
+    }
+  };
+
+  const onBlur = () => {
+    sizerRef.current!.style.height = "0";
+    containerRef.current!.style.height = "100%";
+  };
+
   return (
     <>
       <Button
@@ -116,104 +140,115 @@ export function SubmitQuestDrawer({
         Квест
       </Button>
       <Drawer open={isOpen} onClose={() => setIsOpen(false)}>
-        <div className="flex flex-col">
-          <header className="px-4">
-            <label className="block text-sm text-center font-medium text-black mb-2">
-              Испытание для {username}
-            </label>
-          </header>
-
-          <section className="mb-2 px-4">
-            <div className="px-5 py-3 border border-[#F6F6F6] rounded-[32px]">
-              <label className="block text-xs font-light text-black/50">
-                Категория
+        <div
+          ref={containerRef}
+          className="h-full overflow-x-hidden overflow-y-scroll"
+        >
+          <div className="flex flex-col">
+            <header className="px-4">
+              <label className="block text-sm text-center font-medium text-black mb-2">
+                Испытание для {username}
               </label>
+            </header>
 
-              <select
-                title=""
-                name="category"
-                value={selectedAchievement?.name || ""}
-                onChange={(e) => {
-                  const selected = achievements.find(
-                    (ach) => ach.name === e.target.value
-                  );
-                  if (selected) {
-                    setSelectedAchievement(selected);
-                    setImageUrl(
-                      `https://getquest.tech/api/images/${selected.imageUrl}`
+            <section className="mb-2 px-4">
+              <div className="px-5 py-3 border border-[#F6F6F6] rounded-[32px]">
+                <label className="block text-xs font-light text-black/50">
+                  Категория
+                </label>
+
+                <select
+                  title=""
+                  name="category"
+                  value={selectedAchievement?.name || ""}
+                  onChange={(e) => {
+                    const selected = achievements.find(
+                      (ach) => ach.name === e.target.value
                     );
-                  }
-                }}
-                className="border-none bg-transparent appearance-none focus:outline-none w-full"
-              >
-                {achievements.map((achievement) => (
-                  <option key={achievement.name} value={achievement.name}>
-                    {achievement.name}
-                  </option>
-                ))}
-              </select>
-            </div>
-          </section>
+                    if (selected) {
+                      setSelectedAchievement(selected);
+                      setImageUrl(
+                        `https://getquest.tech/api/images/${selected.imageUrl}`
+                      );
+                    }
+                  }}
+                  className="border-none bg-transparent appearance-none focus:outline-none w-full"
+                >
+                  {achievements.map((achievement) => (
+                    <option key={achievement.name} value={achievement.name}>
+                      {achievement.name}
+                    </option>
+                  ))}
+                </select>
+              </div>
+            </section>
 
-          <section className="mb-2 px-4">
-            <div className="px-5 py-3 border border-[#F6F6F6] rounded-[32px]">
-              <label className="block text-xs font-light text-black/50">
-                Задание
-              </label>
+            <section className="mb-2 px-4">
+              <div className="px-5 py-3 border border-[#F6F6F6] rounded-[32px]">
+                <label className="block text-xs font-light text-black/50">
+                  Задание
+                </label>
+                <input
+                  type="text"
+                  value={task}
+                  onChange={(e) => setTask(e.target.value)}
+                  className="size-full focus:outline-none"
+                />
+              </div>
+            </section>
+
+            {imageUrl && (
+              <div className="flex justify-center my-2 px-4">
+                <img
+                  src={imageUrl}
+                  alt="Achievement"
+                  className="h-32 object-contain"
+                />
+              </div>
+            )}
+
+            <div className="size-32 bg-gray-200" />
+
+            <div className="mb-4 px-4">
               <input
                 type="text"
-                value={task}
-                onChange={(e) => setTask(e.target.value)}
-                className="size-full focus:outline-none"
+                value={numericValue}
+                ref={selectRef as any}
+                onFocus={handleFocus}
+                onBlur={onBlur}
+                onChange={(e) =>
+                  setNumericValue(e.target.value.replace(/\D/g, ""))
+                }
+                className="w-full text-3xl font-black focus:outline-none text-center text-gradient placeholder:text-black/10 p-2"
+                placeholder="0"
               />
             </div>
-          </section>
 
-          {imageUrl && (
-            <div className="flex justify-center my-2 px-4">
-              <img
-                src={imageUrl}
-                alt="Achievement"
-                className="h-32 object-contain"
-              />
-            </div>
-          )}
+            {errorMessage && (
+              <div className="text-red-500 mb-4">{errorMessage}</div>
+            )}
 
-          <div className="mb-4 px-4">
-            <input
-              type="text"
-              value={numericValue}
-              onChange={(e) =>
-                setNumericValue(e.target.value.replace(/\D/g, ""))
-              }
-              className="w-full text-3xl font-black focus:outline-none text-center text-gradient placeholder:text-black/10 p-2"
-              placeholder="0"
-            />
+            <footer className="flex flex-col gap-2 px-4">
+              <Button
+                isLoading={isLoading}
+                onClick={handleSubmit}
+                variant="secondary"
+                className="w-full z-[9999]"
+              >
+                Отправить
+              </Button>
+
+              <Button
+                variant="outline"
+                onClick={() => setIsOpen(false)}
+                className="w-full"
+              >
+                Отмена
+              </Button>
+            </footer>
           </div>
-
-          {errorMessage && (
-            <div className="text-red-500 mb-4">{errorMessage}</div>
-          )}
-
-          <footer className="flex flex-col gap-2 px-4">
-            <Button
-              isLoading={isLoading}
-              onClick={handleSubmit}
-              variant="secondary"
-              className="w-full z-[9999]"
-            >
-              Отправить
-            </Button>
-
-            <Button
-              variant="outline"
-              onClick={() => setIsOpen(false)}
-              className="w-full"
-            >
-              Отмена
-            </Button>
-          </footer>
         </div>
+        <div ref={sizerRef} />
       </Drawer>
     </>
   );

@@ -73,13 +73,10 @@ export default function FriendsPage() {
       initData: initDataRaw,
     };
 
-    const res = await fetch(
-      "https://getquest.tech/friends/requests/incoming",
-      {
-        method: "GET",
-        headers,
-      }
-    );
+    const res = await fetch("https://getquest.tech/friends/requests/incoming", {
+      method: "GET",
+      headers,
+    });
 
     if (!res.ok) {
       console.error("Ошибка при загрузке запроса");
@@ -223,6 +220,8 @@ export default function FriendsPage() {
         >
           Скопировать реферальную ссылку
         </Button>
+
+        <SubmitQuestDrawer username={"test"} initDataRaw={""} receiverId={""} />
 
         <div className="flex mb-6">
           <button
