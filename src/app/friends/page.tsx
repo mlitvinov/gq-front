@@ -49,21 +49,21 @@ export default function FriendsPage() {
 
       setRequests((prev) => prev.filter((req) => req.id !== requestId));
 
-      setLoadingAcceptId(null); // Сброс состояния загрузки для Accept
+      setLoadingAcceptId(null);
     } catch (error) {
-      console.error("Произошла ошибка при принятии запроса:", error);
+      console.error(t("error-acceptance"), error);
     }
   };
 
   const handleDecline = async (requestId: number) => {
-    setLoadingDeclineId(requestId); // Установка состояния загрузки для Decline
+    setLoadingDeclineId(requestId);
 
     try {
       await api.post(`/friends/decline?requestId=${requestId}`);
 
       setRequests((prev) => prev.filter((req) => req.id !== requestId));
     } catch (error) {
-      console.error("Произошла ошибка при отклонении запроса:", error);
+      console.error(t("error-rejection"), error);
     }
   };
 
@@ -85,7 +85,7 @@ export default function FriendsPage() {
           alert(t("link-copy-success"));
         },
         (err) => {
-          console.error("Не удалось скопировать текст: ", err);
+          console.error(t("error-copy-text"), err);
         }
       );
     }
@@ -100,7 +100,7 @@ export default function FriendsPage() {
         <h1 className="text-black text-2xl font-medium tracking-[-0.05em] mb-4">
           {t("invite-friends")} <img className="inline -left-1 -top-1 relative" src={Messages.src} width={32} height={32} />
           <br />
-          <img className="inline -left-1 relative" src={Arrows.src} alt="Стрелки" width={32} height={32} />
+          <img className="inline -left-1 relative" src={Arrows.src}  width={32} height={32} />
           {t("earn")} <span className="text-gradient">{t("reputation")}</span>
         </h1>
 
@@ -124,7 +124,7 @@ export default function FriendsPage() {
                 <div className="grow">
                   <p className="!text-black text-lg leading-tight font-semibold tracking-tight">{user.username}</p>
                   <div className="text-gradient">
-                    {user.rating} <img className="inline relative -top-0.5 -left-1" src={Rewards.src} alt="Награды" width={18} height={18} />
+                    {user.rating} <img className="inline relative -top-0.5 -left-1" src={Rewards.src}width={18} height={18} />
                   </div>
                 </div>
                 <div onClick={(e) => e.stopPropagation()}>

@@ -241,7 +241,7 @@ export function ChallengeDrawer({ isOpen, onClose, achievementPicsUrl, achieveme
           )}
           <p className="text-3xl text-gradient ml-4 font-black">
             <span className="mr-1">{reputation}</span>
-            <img className="inline relative -top-0.5" src={Rewards.src} alt="Награды" height={32} width={32} />
+            <img className="inline relative -top-0.5" src={Rewards.src}height={32} width={32} />
           </p>
         </header>
         <p className="mt-4 mb-4 px-4 text-center font-medium text-sm">{description}</p>

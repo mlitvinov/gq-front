@@ -23,7 +23,6 @@ export function GoalDrawer({ isOpen, onClose, goal, refreshChallenges }: GoalDra
 
   const t = useTranslations("challenges");
 
-  // Функция для обработки получения награды
   const handleClaimReward = async (goalId: number) => {
     setIsLoadingClaim(true);
 
@@ -50,7 +49,7 @@ export function GoalDrawer({ isOpen, onClose, goal, refreshChallenges }: GoalDra
 
           <p className="text-3xl text-gradient mi-2 font-black">
             <span className="mr-1">{goal.rewardPoints}</span>
-            <img className="inline relative -top-0.5" src={Rewards.src} alt="Награды" height={32} width={32} />
+            <img className="inline relative -top-0.5" src={Rewards.src}height={32} width={32} />
           </p>
         </header>
         <p id="challenge-description" className="mt-4 mb-8 px-4 text-center font-medium text-sm">

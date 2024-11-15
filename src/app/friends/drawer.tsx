@@ -67,11 +67,11 @@ export function SubmitQuestDrawer({ username, receiverId, onClose }: SubmitQuest
       await api.post("/api/challenges", body);
 
       setIsLoading(false);
-      setIsOpen(false); // Локальное закрытие окна
-      onClose?.(); // Закрытие окна через родительский компонент
+      setIsOpen(false);
+      onClose?.();
       alert(t("task-success-complete"));
     } catch (error) {
-      const message = (error as any)?.status === 400 ? "У вас недостаточно репутации для создания этого испытания." : "Ошибка на сервере. Попробуйте позже.";
+      const message = (error as any)?.status === 400 ? "У вас недостаточно репутации для создания этого испытания." : t("error-server");
       setErrorMessage(message);
       setIsLoading(false);
     }

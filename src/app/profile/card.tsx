@@ -53,7 +53,7 @@ export const ChallengeCard: React.FC<ChallengeCardProps> = ({ achievementPicsUrl
         <div className="flex-grow">
           <div className="text-black font-semibold">{achievementTitle}</div>
           <div className="text-gradient">
-            {price} <img className="inline relative -top-0.5 -left-1" src={Rewards.src} alt="Награды" height={18} width={18} />
+            {price} <img className="inline relative -top-0.5 -left-1" src={Rewards.src}height={18} width={18} />
           </div>
         </div>
         {hideChallenge && (

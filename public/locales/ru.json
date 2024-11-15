@@ -9,11 +9,15 @@
     "decline": "Отказаться",
     "collect-reward": "Забрать вознаграждение",
     "quest-goals": "Цели",
+    "promo-challenge": "Промо испытание",
     "quest-promo": "От нас",
     "quest-friends": "От друзей",
-    "quest-for-friends": "Для друзей"
+    "quest-for-friends": "Для друзей",
+    "error-data": "Произошла ошибка при получении данных"
   },
   "friends": {
+    "error-acceptance": "Произошла ошибка при принятии запроса",
+    "error-copy-text": "Не удалось скопировать текст: ",
     "quest": "Квест",
     "link-copy": "Скопировать реферальную ссылку",
     "link-copy-success": "Ссылка скопирована в буфер обмена",
@@ -27,6 +31,8 @@
     "category": "Достижение",
     "task": "Задание",
     "submit": "Отправить",
+    "error-server": "Ошибка на сервере",
+    "error-rejection": "Произошла ошибка при отклонении запроса: ",
     "cancel": "Отмена"
   },
   "recommendations": {

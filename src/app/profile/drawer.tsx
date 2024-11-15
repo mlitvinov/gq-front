@@ -40,7 +40,7 @@ export function AchievementDrawer({ isOpen, onClose, achievement, challengeData 
             itemClassName="w-full"
             items={challengeData.map((el, index) => (
               <div key={index}>
-                {el.videoUrl && ( // Проверяем наличие videoUrl
+                {el.videoUrl && (
                   <div className="flex size-64 relative mx-auto rounded-full justify-center my-4">
                     <div className="absolute z-0 inset-0 bg-slate-50 rounded-full animate-pulse" />
                     <video
@@ -67,7 +67,7 @@ export function AchievementDrawer({ isOpen, onClose, achievement, challengeData 
                   <h1 id="achievement-title" className="text-xl text-center font-bold">
                     <p className="text-3xl mb-2 mt-2 text-gradient ml-4 font-black">
                       <span className="mr-1">{el.price}</span>
-                      <img className="inline relative -top-0.5" src={Rewards.src} alt="Награды" height={32} width={32} />
+                      <img className="inline relative -top-0.5" src={Rewards.src}height={32} width={32} />
                     </p>
                   </h1>
                 </header>

@@ -43,9 +43,9 @@ const getStatusBars = (status: string, isPromoOrTarget: boolean) => {
       bars = 1;
       color = "#F44336";
       break;
-    case "REWARDED": // Обработка статуса REWARDED
+    case "REWARDED":
       bars = 4;
-      color = "#C0C0C0"; // Серый цвет для неактивных целей
+      color = "#C0C0C0";
       break;
     case "IN_PROGRESS":
       bars = 0;
@@ -89,7 +89,7 @@ export default function ChallengesPage() {
         setChallenges(data as Challenge[]);
       }
     } catch (error) {
-      console.error("Произошла ошибка при получении данных:", error);
+      console.error(t("error-data"), error);
     }
   };
 
@@ -123,7 +123,6 @@ export default function ChallengesPage() {
         <div className="flex flex-col gap-3 mb-24">
           {tab === "targets"
             ? goals.map((goal) => {
-                // Для целей всегда передаем isPromoOrTarget = true
                 const { bars, color } = getStatusBars(goal.status, true);
 
                 return (
@@ -134,7 +133,7 @@ export default function ChallengesPage() {
                         <div className="flex-grow">
                           <div className="text-black font-semibold">{goal.name}</div>
                           <p className="text-gradient text-start">
-                            {goal.rewardPoints} <img className="inline relative -top-0.5 -left-1" src={Rewards.src} alt="Награды" height={18} width={18} />
+                            {goal.rewardPoints} <img className="inline relative -top-0.5 -left-1" src={Rewards.src}height={18} width={18} />
                           </p>
                         </div>
                       </div>
@@ -144,8 +143,7 @@ export default function ChallengesPage() {
                       </div>
                     </div>
 
-                    {/* Отображение статус-баров */}
-                    {bars > 0 ? (
+                        {bars > 0 ? (
                       <div className="flex gap-[10px] mt-2">
                         {Array.from({ length: 4 }).map((_, index) => (
                           <figure
@@ -163,22 +161,20 @@ export default function ChallengesPage() {
               })
             : challenges.map((challenge) => {
                 const isPromo = tab === "promo";
-                // Передаем флаг isPromo в функцию getStatusBars
                 const { bars, color } = getStatusBars(challenge.status, isPromo);
 
                 return (
                   <div key={challenge.id} className="flex flex-col border rounded-full border-[#fcf4f4] px-6 py-4">
                     <div className="flex gap-2 items-center">
-                      <img src={isPromo ? `${BASE_URL}/api/images/${challenge.promoAchievementPicsUrl}` : `${BASE_URL}/api/images/${challenge.achievementPicsUrl}`} alt={isPromo ? challenge.promoAchievementTitle || "Промо испытание" : challenge.achievementTitle} className="size-12 bg-[#F6F6F6] rounded-xl" />
+                      <img src={isPromo ? `${BASE_URL}/api/images/${challenge.promoAchievementPicsUrl}` : `${BASE_URL}/api/images/${challenge.achievementPicsUrl}`} className="size-12 bg-[#F6F6F6] rounded-xl" />
                       <div className="flex-grow" onClick={() => setSelectedChallenge(challenge)}>
                         <div className="text-black font-semibold">{isPromo ? challenge.promoAchievementTitle : challenge.achievementTitle}</div>
                         <div className="text-gradient">
-                          {challenge.price} <img className="inline relative -top-0.5 -left-1" src={Rewards.src} alt="Награды" height={18} width={18} />
+                          {challenge.price} <img className="inline relative -top-0.5 -left-1" src={Rewards.src}height={18} width={18} />
                         </div>
                       </div>
                     </div>
 
-                    {/* Отображение статус-баров */}
                     {bars > 0 ? (
                       <div className="flex gap-[10px] mt-2">
                         {Array.from({ length: 4 }).map((_, index) => (
@@ -198,7 +194,6 @@ export default function ChallengesPage() {
         </div>
       </div>
 
-      {/* Отображаем ChallengeDrawer только если не выбрана вкладка "targets" */}
       {selectedChallenge && tab !== "targets" && (
         <ChallengeDrawer
           isOpen={!!selectedChallenge}
@@ -208,7 +203,7 @@ export default function ChallengesPage() {
           achievementPicsUrl={tab === "promo" ? selectedChallenge.promoAchievementPicsUrl || "" : selectedChallenge.achievementPicsUrl || ""}
           achievementTitle={tab === "promo" ? selectedChallenge.promoAchievementTitle || "" : selectedChallenge.achievementTitle || ""}
           reputation={selectedChallenge.price}
-          senderName={tab === "assigned" ? `@${selectedChallenge.senderUserName}` : tab === "sent" ? `@${selectedChallenge.receiverUserName}` : "Промо"}
+          senderName={tab === "assigned" ? `@${selectedChallenge.senderUserName}` : tab === "sent" ? `@${selectedChallenge.receiverUserName}` : t("promo-challenge")}
           userId={tab === "assigned" ? selectedChallenge.senderId : tab === "sent" ? selectedChallenge.receiverId : 0}
           description={selectedChallenge.description}
           status={selectedChallenge.status}
