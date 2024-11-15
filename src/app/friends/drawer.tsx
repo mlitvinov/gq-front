@@ -13,7 +13,7 @@ import useViewportHeight from "@/hooks/useViewportHeight";
 type SubmitQuestDrawerProps = {
   username: string;
   receiverId: string;
-  onClose?: () => void; // Пропс для закрытия окна
+  onClose?: () => void;
 };
 
 export function SubmitQuestDrawer({ username, receiverId, onClose }: SubmitQuestDrawerProps) {
@@ -133,7 +133,7 @@ export function SubmitQuestDrawer({ username, receiverId, onClose }: SubmitQuest
                     const selected = achievements.find((ach) => ach.name === e.target.value);
                     if (selected) {
                       setSelectedAchievement(selected);
-                      setImageUrl(`https://getquest.tech/api/images/${selected.imageUrl}`);
+                      setImageUrl(`${BASE_URL}/api/images/${selected.imageUrl}`);
                     }
                   }}
                   className="border-none bg-transparent appearance-none focus:outline-none w-full"

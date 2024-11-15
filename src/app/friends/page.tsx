@@ -31,13 +31,13 @@ export default function FriendsPage() {
   const ref = useRef<HTMLDivElement>(null);
 
   const getFriends = async () => {
-    const data = await api.get<User[]>(`${BASE_URL}/api/users/friends`);
+    const data = await api.get<User[]>(`/api/users/friends`);
 
     setFriends(data);
   };
 
   const getRequests = async () => {
-    const data = await api.get<Friend[]>(`${BASE_URL}/api/friends/requests`);
+    const data = await api.get<Friend[]>(`/api/friends/requests`);
 
     setRequests(data);
   };
@@ -46,7 +46,7 @@ export default function FriendsPage() {
     setLoadingAcceptId(requestId);
 
     try {
-      await api.post(`${BASE_URL}/api/friends/accept?requestId=${requestId}`);
+      await api.post(`/api/friends/accept?requestId=${requestId}`);
 
       setRequests((prev) => prev.filter((req) => req.id !== requestId));
 
@@ -60,7 +60,7 @@ export default function FriendsPage() {
     setLoadingDeclineId(requestId); // Установка состояния загрузки для Decline
 
     try {
-      await api.post(`${BASE_URL}/friends/decline?requestId=${requestId}`);
+      await api.post(`/friends/decline?requestId=${requestId}`);
 
       setRequests((prev) => prev.filter((req) => req.id !== requestId));
     } catch (error) {
