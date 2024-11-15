@@ -19,7 +19,7 @@ type GoalDrawerProps = {
 };
 
 export function GoalDrawer({ isOpen, onClose, goal, refreshChallenges }: GoalDrawerProps) {
-  const [isLoadingClaim, setIsLoadingClaim] = React.useState(false); // Добавлено состояние загрузки
+  const [isLoadingClaim, setIsLoadingClaim] = React.useState(false);
 
   const t = useTranslations("challenges");
 
@@ -28,8 +28,9 @@ export function GoalDrawer({ isOpen, onClose, goal, refreshChallenges }: GoalDra
 
     try {
       await api.post(`/api/goals/${goalId}/claim`);
-
+      console.log("SUCCESS", goalId);
       await refreshChallenges();
+      console.log("refreshChallenges", refreshChallenges);
       onClose();
       setIsLoadingClaim(false);
     } catch (error) {
@@ -49,14 +50,14 @@ export function GoalDrawer({ isOpen, onClose, goal, refreshChallenges }: GoalDra
 
           <p className="text-3xl text-gradient mi-2 font-black">
             <span className="mr-1">{goal.rewardPoints}</span>
-            <img className="inline relative -top-0.5" src={Rewards.src}height={32} width={32} />
+            <img className="inline relative -top-0.5" src={Rewards.src} height={32} width={32} />
           </p>
         </header>
         <p id="challenge-description" className="mt-4 mb-8 px-4 text-center font-medium text-sm">
           {goal.description}
         </p>
 
-        <footer className="flex flex-col gap-2 px-4">
+        <footer className="flex flex-col gap-2 px-4 mb-[--safe-area-inset-bottom]">
           {goal.status === "COMPLETED" && (
             <Button variant="secondary" onClick={() => handleClaimReward(goal.id)} isLoading={isLoadingClaim} disabled={isLoadingClaim}>
               {t("collect-reward")}

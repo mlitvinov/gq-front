@@ -67,7 +67,7 @@ export function AchievementDrawer({ isOpen, onClose, achievement, challengeData 
                   <h1 id="achievement-title" className="text-xl text-center font-bold">
                     <p className="text-3xl mb-2 mt-2 text-gradient ml-4 font-black">
                       <span className="mr-1">{el.price}</span>
-                      <img className="inline relative -top-0.5" src={Rewards.src}height={32} width={32} />
+                      <img className="inline relative -top-0.5" src={Rewards.src} height={32} width={32} />
                     </p>
                   </h1>
                 </header>
@@ -88,6 +88,7 @@ export function AchievementDrawer({ isOpen, onClose, achievement, challengeData 
         ) : (
           <div className="h-[100px]" />
         )}
+        <footer className="h-[--safe-area-inset-bottom]" />
       </div>
     </Drawer>
   );

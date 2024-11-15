@@ -12,7 +12,6 @@ import { cn } from "@/lib/utils";
 import { SubmitQuestDrawer } from "./drawer";
 import { PlusIcon, XMarkIcon } from "@heroicons/react/16/solid";
 import { Button } from "@/components/ui/button";
-import { BASE_URL } from "@/lib/const";
 import { api } from "@/lib/api";
 import { useTranslations } from "next-intl";
 import { Friend, User } from "@/types/entities";
@@ -94,13 +93,16 @@ export default function FriendsPage() {
   return (
     <main className="relative flex flex-col">
       <div ref={ref} className="bg-white h-48 overflow-hidden absolute inset-x-0 top-0 -z-10">
-        <video loop autoPlay muted playsInline controls={false} preload="metadata" src="/gradient.webm" className="size-full pointer-events-none object-cover" />
+        <video loop autoPlay muted playsInline controls={false} preload="metadata" className="size-full pointer-events-none object-cover">
+          <source src="/gradient.webm" type="video/webm" />
+          <source src="/gradient.mp4" type="video/mp4" />
+        </video>
       </div>
       <div className="mt-40 rounded-t-[2rem] bg-white px-5 pt-8 pb-[calc(var(--nav-height)+1rem)]">
         <h1 className="text-black text-2xl font-medium tracking-[-0.05em] mb-4">
           {t("invite-friends")} <img className="inline -left-1 -top-1 relative" src={Messages.src} width={32} height={32} />
           <br />
-          <img className="inline -left-1 relative" src={Arrows.src}  width={32} height={32} />
+          <img className="inline -left-1 relative" src={Arrows.src} width={32} height={32} />
           {t("earn")} <span className="text-gradient">{t("reputation")}</span>
         </h1>
 
@@ -124,7 +126,7 @@ export default function FriendsPage() {
                 <div className="grow">
                   <p className="!text-black text-lg leading-tight font-semibold tracking-tight">{user.username}</p>
                   <div className="text-gradient">
-                    {user.rating} <img className="inline relative -top-0.5 -left-1" src={Rewards.src}width={18} height={18} />
+                    {user.rating} <img className="inline relative -top-0.5 -left-1" src={Rewards.src} width={18} height={18} />
                   </div>
                 </div>
                 <div onClick={(e) => e.stopPropagation()}>

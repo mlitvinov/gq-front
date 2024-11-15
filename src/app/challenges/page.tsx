@@ -94,6 +94,9 @@ export default function ChallengesPage() {
   };
 
   useEffect(() => {
+    setGoals([]);
+    setChallenges([]);
+
     fetchChallenges();
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [tab]);
@@ -101,7 +104,10 @@ export default function ChallengesPage() {
   return (
     <main className="relative flex flex-col">
       <div ref={ref} className="bg-white h-48 overflow-hidden absolute inset-x-0 top-0 -z-10">
-        <video loop autoPlay muted playsInline controls={false} preload="metadata" src="/gradient.webm" className="size-full pointer-events-none object-cover" />
+        <video loop autoPlay muted playsInline controls={false} preload="metadata" className="size-full pointer-events-none object-cover">
+          <source src="/gradient.webm" type="video/webm" />
+          <source src="/gradient.mp4" type="video/mp4" />
+        </video>
       </div>
 
       <div className="mt-40 rounded-t-[2rem] bg-white px-5 pt-8 pb-[calc(var(--nav-height)+1rem)]">
@@ -133,7 +139,7 @@ export default function ChallengesPage() {
                         <div className="flex-grow">
                           <div className="text-black font-semibold">{goal.name}</div>
                           <p className="text-gradient text-start">
-                            {goal.rewardPoints} <img className="inline relative -top-0.5 -left-1" src={Rewards.src}height={18} width={18} />
+                            {goal.rewardPoints} <img className="inline relative -top-0.5 -left-1" src={Rewards.src} height={18} width={18} />
                           </p>
                         </div>
                       </div>
@@ -143,7 +149,7 @@ export default function ChallengesPage() {
                       </div>
                     </div>
 
-                        {bars > 0 ? (
+                    {bars > 0 ? (
                       <div className="flex gap-[10px] mt-2">
                         {Array.from({ length: 4 }).map((_, index) => (
                           <figure
@@ -170,7 +176,7 @@ export default function ChallengesPage() {
                       <div className="flex-grow" onClick={() => setSelectedChallenge(challenge)}>
                         <div className="text-black font-semibold">{isPromo ? challenge.promoAchievementTitle : challenge.achievementTitle}</div>
                         <div className="text-gradient">
-                          {challenge.price} <img className="inline relative -top-0.5 -left-1" src={Rewards.src}height={18} width={18} />
+                          {challenge.price} <img className="inline relative -top-0.5 -left-1" src={Rewards.src} height={18} width={18} />
                         </div>
                       </div>
                     </div>

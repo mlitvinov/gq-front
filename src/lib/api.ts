@@ -5,45 +5,6 @@ interface CustomFetchOptions extends RequestInit {
   headers?: HeadersInit;
   // Добавьте другие кастомные опции, если необходимо
 }
-/*
-export async function api<T = any>(url: string, options: CustomFetchOptions = {}, initDataRaw?: string): Promise<T> {
-  const _initData = initData.raw() ?? initDataRaw;
-
-  if (!_initData) {
-    throw new Error("initData is not defined");
-  }
-  // Определяем стандартные заголовки
-  const defaultHeaders: HeadersInit = {
-    "Content-Type": "application/json",
-    initData: _initData,
-  };
-
-  // Объединяем стандартные заголовки с заголовками из options
-  const mergedHeaders: HeadersInit = {
-    ...defaultHeaders,
-    ...(options.headers || {}),
-  };
-
-  // Создаём новый объект опций, объединяя стандартные и пользовательские опции
-  const mergedOptions: RequestInit = {
-    ...options,
-    headers: mergedHeaders,
-  };
-
-  // Выполняем запрос с использованием fetch
-  const response = await fetch(url, mergedOptions);
-
-  // Проверяем, успешен ли ответ
-  if (!response.ok) {
-    console.error(`HTTP error! status: ${response.status}`);
-    // Можно расширить обработку ошибок по необходимости
-    throw new Error(`HTTP error! status: ${response.status}`);
-  }
-
-  // Предполагаем, что ответ в формате JSON
-  const data: T = await response.json();
-  return data;
-} */
 
 class ApiClient {
   private baseUrl: string;
@@ -54,47 +15,64 @@ class ApiClient {
   }
 
   // Основной метод для выполнения запросов
-  private async api<T = any>(endpoint: string, options: CustomFetchOptions = {}, initDataRaw?: string): Promise<T> {
-    const _initData = initData.raw() ?? initDataRaw;
+  private async api<T = any>(endpoint: string, options: CustomFetchOptions = {}, initDataRaw?: string): Promise<T | void> {
+    const _initData = initDataRaw ? initDataRaw : initData.raw();
 
     if (!_initData) {
       throw new Error("initData is not defined");
     }
 
-    // Определяем стандартные заголовки
     const defaultHeaders: HeadersInit = {
       "Content-Type": "application/json",
       initData: _initData,
     };
 
-    // Объединяем стандартные заголовки с заголовками из options
     const mergedHeaders: HeadersInit = {
       ...defaultHeaders,
       ...(options.headers || {}),
     };
 
-    // Создаём новый объект опций, объединяя стандартные и пользовательские опции
     const mergedOptions: RequestInit = {
       ...options,
       headers: mergedHeaders,
     };
 
-    // Формируем полный URL
     const url = `${this.baseUrl}${endpoint}`;
 
-    // Выполняем запрос с использованием fetch
     const response = await fetch(url, mergedOptions);
 
-    // Проверяем, успешен ли ответ
     if (!response.ok) {
-      // Можно расширить обработку ошибок по необходимости
       console.error(`HTTP error! status: ${response.status}`);
       throw response;
     }
 
-    // Предполагаем, что ответ в формате JSON
-    const data: T = await response.json();
-    return data;
+    const contentType = response.headers.get("Content-Type") || "";
+
+    if (contentType.includes("application/json")) {
+      try {
+        const data: T = await response.json();
+        return data;
+      } catch (error) {
+        console.error("Failed to parse JSON:", error);
+        throw new Error("Invalid JSON response");
+      }
+    } else if (contentType.includes("text/plain")) {
+      const textData = await response.text();
+      try {
+        const data: T = JSON.parse(textData);
+        return data;
+      } catch {
+        return textData as unknown as T;
+      }
+    } else if (contentType.includes("application/octet-stream")) {
+      return (await response.arrayBuffer()) as unknown as T;
+    } else if (contentType.includes("image/") || contentType.includes("video/")) {
+      return (await response.blob()) as unknown as T;
+    } else {
+      console.warn(`Unhandled content type: ${contentType}`);
+      // Возвращаем void для успешных, но нераспознанных ответов
+      return undefined;
+    }
   }
 
   // Метод GET
@@ -110,7 +88,7 @@ class ApiClient {
       endpoint,
       {
         method: "POST",
-        body: JSON.stringify(body),
+        body: body ? JSON.stringify(body) : undefined,
       },
       initDataRaw
     );
@@ -122,7 +100,7 @@ class ApiClient {
       endpoint,
       {
         method: "PUT",
-        body: JSON.stringify(body),
+        body: body ? JSON.stringify(body) : undefined,
       },
       initDataRaw
     );
@@ -138,7 +116,7 @@ class ApiClient {
       endpoint,
       {
         method: "PATCH",
-        body: JSON.stringify(body),
+        body: body ? JSON.stringify(body) : undefined,
       },
       initDataRaw
     );
