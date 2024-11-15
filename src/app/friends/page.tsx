@@ -109,9 +109,6 @@ export default function FriendsPage() {
           {t("link-copy")}
         </Button>
 
-        <SubmitQuestDrawer username={"test"} receiverId={""} />
-        <LocaleSwitcher />
-
         <div className="flex mb-6">
           <button onClick={() => setActiveTab("friends")} className={cn("flex-grow text-[#B1B1B1] relative after:content after:bottom-0 after:h-[2px] after:bg-[#F6F6F6] after:inset-x-0 after:rounded-l-full after:absolute font-medium text-center py-2", activeTab === "friends" && "text-black after:bg-[#FEEE9E]")}>
             {t("my-friends")}
