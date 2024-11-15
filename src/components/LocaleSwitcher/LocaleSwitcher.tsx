@@ -21,7 +21,7 @@ export const LocaleSwitcher: FC = () => {
       <Select
         value={locale}
         onChange={({ target }) => onChange(target.value)}
-        className="text-sm bg-white rounded px-2 py-1 custom-select cursor-pointer"
+        className="text-sm bg-white rounded px-2 py-1 border custom-select cursor-pointer"
       >
         {localesMap.map((locale) => (
           <option key={locale.key} value={locale.key}>
