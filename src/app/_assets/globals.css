@@ -34,6 +34,27 @@ body,
   overflow-y: auto;
 }
 
+.custom-locale-switcher div{
+  background: white;
+  padding: 0;
+}
+
+.custom-select select {
+  padding: 4px;
+}
+
+
+.custom-select svg{
+  display: none;
+}
+
+select {
+  border: none !important;
+  box-shadow: none !important;
+  outline: none !important;
+  color: black !important;
+}
+
 .text-gradient {
   background: -webkit-linear-gradient(35deg, #E9C7CF 0, #ABD6E0 50%, #BDD2DA 100%);
   -webkit-background-clip: text;

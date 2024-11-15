@@ -17,12 +17,18 @@ export const LocaleSwitcher: FC = () => {
   };
 
   return (
-    <Select value={locale} onChange={({ target }) => onChange(target.value)}>
-      {localesMap.map((locale) => (
-        <option key={locale.key} value={locale.key}>
-          {locale.title}
-        </option>
-      ))}
-    </Select>
+    <div className="relative inline-block custom-locale-switcher"> {/* Применяем собственный класс */}
+      <Select
+        value={locale}
+        onChange={({ target }) => onChange(target.value)}
+        className="text-sm bg-white rounded px-2 py-1 custom-select cursor-pointer"
+      >
+        {localesMap.map((locale) => (
+          <option key={locale.key} value={locale.key}>
+            {locale.title}
+          </option>
+        ))}
+      </Select>
+    </div>
   );
 };
