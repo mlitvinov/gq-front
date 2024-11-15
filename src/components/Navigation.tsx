@@ -14,6 +14,7 @@ import profileA from "@/app/_assets/profile-a.png";
 import { usePathname } from "next/navigation";
 import Link from "next/link";
 import { useTranslations } from "next-intl";
+import { hapticFeedback } from "@telegram-apps/sdk-react";
 
 const Navigation = () => {
   const t = useTranslations("navigation");
@@ -51,6 +52,12 @@ const Navigation = () => {
     },
   ];
 
+  const handleMakeImpact = () => {
+    if (hapticFeedback.impactOccurred.isAvailable()) {
+      hapticFeedback.impactOccurred("medium");
+    }
+  };
+
   return (
     <nav className="fixed bottom-0 z-[9999] left-0 w-full bg-white h-[--nav-height] pb-[22px]">
       <ul className="flex gap-4 justify-between items-center h-full px-4">
@@ -59,7 +66,7 @@ const Navigation = () => {
 
           return (
             <li key={tab.label}>
-              <Link className={cn(buttonVariants({ variant: "default" }), "flex-col h-[58px]", isActive && "bg-[#F6F6F6]")} href={tab.link}>
+              <Link className={cn(buttonVariants({ variant: "default" }), "flex-col h-[58px]", isActive && "bg-[#F6F6F6]")} onMouseDown={handleMakeImpact} href={tab.link}>
                 <img src={isActive ? tab.iconA.src : tab.icon.src} height={32} width={32} alt={`${tab.label} section button`} />
                 <span className="text-[0.625rem] text-black font-medium tracking-[-0.075em]">{tab.label}</span>
               </Link>
