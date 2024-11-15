@@ -15,7 +15,7 @@ class ApiClient {
   }
 
   // Основной метод для выполнения запросов
-  private async api<T = any>(endpoint: string, options: CustomFetchOptions = {}, initDataRaw?: string): Promise<T | void> {
+  private async api<T = any>(endpoint: string, options: CustomFetchOptions = {}, initDataRaw?: string): Promise<T> {
     const _initData = initDataRaw ? initDataRaw : initData.raw();
 
     if (!_initData) {
@@ -71,7 +71,7 @@ class ApiClient {
     } else {
       console.warn(`Unhandled content type: ${contentType}`);
       // Возвращаем void для успешных, но нераспознанных ответов
-      return undefined;
+      return undefined as unknown as T;
     }
   }
 
