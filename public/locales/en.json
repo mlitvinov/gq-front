@@ -46,7 +46,7 @@
     "decline": "Decline",
     "add-friend": "Add as friend",
     "friend": "Friends",
-    "tasks": "tasks"
+    "task": "{count, plural, =0 {tasks} =1 {task} one {task} few {tasks} many {tasks} other {tasks}}"
   },
   "navigation": {
     "recommendations": "Recommendations",

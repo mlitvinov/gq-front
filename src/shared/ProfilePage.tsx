@@ -152,17 +152,6 @@ export default function ProfilePage({ params }: { params?: { id: number } }) {
     }
   };
 
-  function getDeclension(n: number, one: string, few: string, many: string): string {
-    n = Math.abs(n) % 100;
-    const n1 = n % 10;
-
-    if (n > 10 && n < 20) return many;
-    if (n1 > 1 && n1 < 5) return few;
-    if (n1 === 1) return one;
-
-    return many;
-  }
-
   const sliders = splitArray(fillArray(achievementImages, 12));
 
   if (!userData) {
@@ -176,7 +165,7 @@ export default function ProfilePage({ params }: { params?: { id: number } }) {
       </div>
       <section className="flex flex-col items-center gap-4 w-full mb-8">
         <div className="flex flex-col justify-center items-center">
-          <img className="relative left-1" src={Rewards.src}width={80} height={80} />
+          <img className="relative left-1" src={Rewards.src} width={80} height={80} />
           <h1 className="text-gradient text-center text-3xl font-black">{Number(userData.rating).toLocaleString()}</h1>
           <p className="text-black">@{userData.username ? userData.username : userData.name}</p>
         </div>
@@ -231,9 +220,9 @@ export default function ProfilePage({ params }: { params?: { id: number } }) {
 
       <section className="mb-6">
         <h1 className="text-black text-2xl text-left font-medium tracking-[-0.05em] mb-2">
-          {t("done")} <span className="text-gradient font-black">{userData.taskCount}</span> {getDeclension(userData.taskCount, "задание", "задания", "заданий")} <img className="inline -left-1 top-0 relative" src={Rewards.src}width={32} height={32} />
+          {t("done")} <span className="text-gradient font-black">{userData.taskCount}</span> {t("task", { count: userData.taskCount })} <img className="inline -left-1 top-0 relative" src={Rewards.src} width={32} height={32} />
           <br />
-          <img className="inline -left-1 relative" src={Arrows.src}  width={32} height={32} />
+          <img className="inline -left-1 relative" src={Arrows.src} width={32} height={32} />
           {t("earned")} <span className="text-gradient">{userData.earnedCount}</span> {t("reputations")}
         </h1>
       </section>
