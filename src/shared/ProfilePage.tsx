@@ -12,6 +12,7 @@ import { Achievement, ChallengeData } from "@/types/entities";
 import { initData, useSignal } from "@telegram-apps/sdk-react";
 import { BASE_URL } from "@/lib/const";
 import { api } from "@/lib/api";
+import { LocaleSwitcher } from "@/components/LocaleSwitcher/LocaleSwitcher";
 
 interface UserData {
   id: number;
@@ -168,6 +169,9 @@ export default function ProfilePage({ params }: { params?: { id: number } }) {
 
   return (
     <main className="relative flex flex-col items-center rounded-t-[2rem] bg-white pt-8 pb-[calc(var(--nav-height)+1rem)] overflow-hidden mb-24">
+      <div className="absolute top-4 right-4">
+        <LocaleSwitcher />
+      </div>
       <section className="flex flex-col items-center gap-4 w-full mb-16">
         <div className="flex flex-col justify-center items-center">
           <img className="relative left-1" src={Rewards.src} alt="Награды" width={80} height={80} />

@@ -16,7 +16,6 @@ import { BASE_URL } from "@/lib/const";
 import { api } from "@/lib/api";
 import { useTranslations } from "next-intl";
 import { Friend, User } from "@/types/entities";
-import { LocaleSwitcher } from "@/components/LocaleSwitcher/LocaleSwitcher";
 
 export default function FriendsPage() {
   const t = useTranslations("friends");
