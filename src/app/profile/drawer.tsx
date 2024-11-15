@@ -20,7 +20,6 @@ export function AchievementDrawer({ isOpen, onClose, achievement, challengeData 
   return (
     <Drawer open={isOpen} onClose={onClose}>
       <div className="flex flex-col items-center w-full min-h-[100px]">
-        {/* Карточка достижения */}
         <div className="mt-6 w-full px-4">
           <div className="flex flex-col border rounded-full border-[#fcf4f4] px-6 py-4">
             <div className="flex gap-2 items-center">
@@ -64,7 +63,6 @@ export function AchievementDrawer({ isOpen, onClose, achievement, challengeData 
                   </div>
                 )}
 
-                {/* Описание испытания и отправитель */}
                 <header>
                   <h1 id="achievement-title" className="text-xl text-center font-bold">
                     <p className="text-3xl mb-2 mt-2 text-gradient ml-4 font-black">

@@ -9,6 +9,7 @@ import { cn } from "@/lib/utils";
 import { BASE_URL } from "@/lib/const";
 import { Challenge, Goal } from "@/types/entities";
 import { api } from "@/lib/api";
+import { useTranslations } from "next-intl";
 
 const getStatusBars = (status: string, isPromoOrTarget: boolean) => {
   let bars = 1;
@@ -56,6 +57,7 @@ const getStatusBars = (status: string, isPromoOrTarget: boolean) => {
 
 export default function ChallengesPage() {
   const ref = useRef<HTMLDivElement>(null);
+  const t = useTranslations("challenges");
 
   const [challenges, setChallenges] = useState<Challenge[]>([]);
   const [goals, setGoals] = useState<Goal[]>([]);
@@ -105,16 +107,16 @@ export default function ChallengesPage() {
       <div className="mt-40 rounded-t-[2rem] bg-white px-5 pt-8 pb-[calc(var(--nav-height)+1rem)]">
         <div className="flex justify-around mb-4">
           <button className={cn("flex-grow text-[#B1B1B1] relative after:content after:bottom-0 after:h-[2px] after:bg-[#F6F6F6] after:inset-x-0 after:rounded-l-full after:absolute font-medium text-center py-2", tab === "targets" && "text-black after:bg-[#FEEE9E]")} onClick={() => setTab("targets")}>
-            Цели
+            {t("quest-goals")}
           </button>
           <button className={cn("flex-grow text-[#B1B1B1] relative after:content after:bottom-0 after:h-[2px] after:bg-[#F6F6F6] after:inset-x-0 after:rounded-l-full after:absolute font-medium text-center py-2", tab === "promo" && "text-black after:bg-[#FEEE9E]")} onClick={() => setTab("promo")}>
-            От нас
+            {t("quest-promo")}
           </button>
           <button className={cn("flex-grow text-[#B1B1B1] relative after:content after:bottom-0 after:h-[2px] after:bg-[#F6F6F6] after:inset-x-0 after:rounded-l-full after:absolute font-medium text-center py-2", tab === "assigned" && "text-black after:bg-[#FEEE9E]")} onClick={() => setTab("assigned")}>
-            От друзей
+            {t("quest-friends")}
           </button>
           <button className={cn("flex-grow text-[#B1B1B1] relative after:content after:bottom-0 after:h-[2px] after:bg-[#F6F6F6] after:inset-x-0 after:rounded-l-full after:absolute font-medium text-center py-2", tab === "sent" && "text-black after:bg-[#FEEE9E]")} onClick={() => setTab("sent")}>
-            Для друзей
+            {t("quest-for-friends")}
           </button>
         </div>
 

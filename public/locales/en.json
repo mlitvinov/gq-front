@@ -1,10 +1,51 @@
 {
   "i18n": {
-    "header": "Application supports i18n",
+    "header": "i18n Support",
     "footer": "You can select a different language from the dropdown menu."
   },
+  "challenges": {
+    "accept": "Accept",
+    "complete": "Complete",
+    "decline": "Decline",
+    "collect-reward": "Collect reward",
+    "quest-goals": "Goals",
+    "quest-promo": "From us",
+    "quest-friends": "From friends",
+    "quest-for-friends": "For friends"
+  },
   "friends": {
-    "title": "Friends",
-    "description": "List of friends"
+    "quest": "Quest",
+    "link-copy": "Copy referral link",
+    "link-copy-success": "Link copied to clipboard",
+    "invite-friends": "Invite friends",
+    "earn": "earn",
+    "reputation": "reputation",
+    "my-friends": "My friends",
+    "requests": "Requests",
+    "task-success-complete": "Task successfully sent!",
+    "challenge-for": "Challenge for",
+    "category": "Achievement",
+    "task": "Task",
+    "submit": "Submit",
+    "cancel": "Cancel"
+  },
+  "recommendations": {
+    "soon": "COMING SOON"
+  },
+  "profile": {
+    "earned": "earned",
+    "reputations": "reputation",
+    "done": "Completed",
+    "accept": "Accept",
+    "friend": "Friend",
+    "decline": "Decline",
+    "add-friend": "Add as friend",
+    "tasks": "tasks"
+  },
+  "navigation": {
+    "recommendations": "Recommendations",
+    "friends": "Friends",
+    "challenges": "Challenges",
+    "profile": "Profile"
   }
 }

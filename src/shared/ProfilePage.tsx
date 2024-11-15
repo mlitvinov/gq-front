@@ -13,6 +13,7 @@ import { initData, useSignal } from "@telegram-apps/sdk-react";
 import { BASE_URL } from "@/lib/const";
 import { api } from "@/lib/api";
 import { LocaleSwitcher } from "@/components/LocaleSwitcher/LocaleSwitcher";
+import { useTranslations } from "next-intl";
 
 interface UserData {
   id: number;
@@ -49,6 +50,7 @@ const fillArray = (array: any[], length: number) => {
 };
 
 export default function ProfilePage({ params }: { params?: { id: number } }) {
+  const t = useTranslations("profile");
   const [userData, setUserData] = useState<UserData | null>(null);
   const [achievementImages, setAchievementImages] = useState<{ imageUrl: string; id: string }[]>([]);
   const [videoUrls, setVideoUrls] = useState<string[]>([]);
@@ -172,7 +174,7 @@ export default function ProfilePage({ params }: { params?: { id: number } }) {
       <div className="absolute top-4 right-4">
         <LocaleSwitcher />
       </div>
-      <section className="flex flex-col items-center gap-4 w-full mb-16">
+      <section className="flex flex-col items-center gap-4 w-full mb-8">
         <div className="flex flex-col justify-center items-center">
           <img className="relative left-1" src={Rewards.src} alt="Награды" width={80} height={80} />
           <h1 className="text-gradient text-center text-3xl font-black">{Number(userData.rating).toLocaleString()}</h1>
@@ -181,16 +183,16 @@ export default function ProfilePage({ params }: { params?: { id: number } }) {
 
         {!isUserPage && (
           <>
-            {userData.friendStatus === "FRIEND" && <Button variant="destructive">Друзья</Button>}
+            {userData.friendStatus === "FRIEND" && <Button variant="destructive">{t("friend")}</Button>}
             {userData.friendStatus === "REQUESTED" && <Button variant="destructive">Запрошено</Button>}
             {userData.friendStatus === "WAITING" && (
               <Button variant="secondary" onClick={handleAcceptFriendRequest} isLoading={isLoadingAcceptFriend}>
-                Принять
+                {t("accept")}
               </Button>
             )}
             {userData.friendStatus === "NOT_FRIEND" && (
               <Button variant="secondary" onClick={handleAddFriend} isLoading={isLoadingAddFriend}>
-                Добавить в друзья
+                {t("add-friend")}
               </Button>
             )}
           </>
@@ -228,11 +230,11 @@ export default function ProfilePage({ params }: { params?: { id: number } }) {
       />
 
       <section className="mb-6">
-        <h1 className="text-black text-2xl text-left font-medium tracking-[-0.05em] mb-6">
-          Выполнено <span className="text-gradient font-black">{userData.taskCount}</span> {getDeclension(userData.taskCount, "задание", "задания", "заданий")} <img className="inline -left-1 top-0 relative" src={Rewards.src} alt="Награды" width={32} height={32} />
+        <h1 className="text-black text-2xl text-left font-medium tracking-[-0.05em] mb-2">
+          {t("done")} <span className="text-gradient font-black">{userData.taskCount}</span> {getDeclension(userData.taskCount, "задание", "задания", "заданий")} <img className="inline -left-1 top-0 relative" src={Rewards.src} alt="Награды" width={32} height={32} />
           <br />
           <img className="inline -left-1 relative" src={Arrows.src} alt="Стрелки" width={32} height={32} />
-          заработано <span className="text-gradient">{userData.earnedCount}</span> репутации
+          {t("earned")} <span className="text-gradient">{userData.earnedCount}</span> {t("reputations")}
         </h1>
       </section>
 

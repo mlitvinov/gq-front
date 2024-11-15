@@ -3,6 +3,16 @@
     "header": "Поддержка i18n",
     "footer": "Вы можете выбрать другой язык в выпадающем меню."
   },
+  "challenges": {
+    "accept": "Принять",
+    "complete": "Выполнить",
+    "decline": "Отказаться",
+    "collect-reward": "Забрать вознаграждение",
+    "quest-goals": "Цели",
+    "quest-promo": "От нас",
+    "quest-friends": "От друзей",
+    "quest-for-friends": "Для друзей"
+  },
   "friends": {
     "quest": "Квест",
     "link-copy": "Скопировать реферальную ссылку",
@@ -14,10 +24,23 @@
     "requests": "Запросы",
     "task-success-complete": "Задание успешно отправлено!",
     "challenge-for": "Испытание для",
-    "category": "Категория",
+    "category": "Достижение",
     "task": "Задание",
     "submit": "Отправить",
     "cancel": "Отмена"
+  },
+  "recommendations": {
+    "soon": "СКОРО"
+  },
+  "profile": {
+    "earned": "заработано",
+    "reputations": "репутации",
+    "done" : "Выполнено",
+    "accept": "Принять",
+    "decline": "Отказаться",
+    "add-friend": "Добавить в друзья",
+    "friend": "Друзья",
+    "tasks" : "заданий"
   },
   "navigation": {
     "recommendations": "Рекомендации",

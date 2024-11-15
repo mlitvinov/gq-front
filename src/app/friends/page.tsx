@@ -98,7 +98,7 @@ export default function FriendsPage() {
       </div>
       <div className="mt-40 rounded-t-[2rem] bg-white px-5 pt-8 pb-[calc(var(--nav-height)+1rem)]">
         <h1 className="text-black text-2xl font-medium tracking-[-0.05em] mb-4">
-          {t("invite-friends")} <img className="inline -left-1 -top-1 relative" src={Messages.src} alt="Сообщения" width={32} height={32} />
+          {t("invite-friends")} <img className="inline -left-1 -top-1 relative" src={Messages.src} width={32} height={32} />
           <br />
           <img className="inline -left-1 relative" src={Arrows.src} alt="Стрелки" width={32} height={32} />
           {t("earn")} <span className="text-gradient">{t("reputation")}</span>

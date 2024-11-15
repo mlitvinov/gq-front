@@ -9,6 +9,7 @@ import { BASE_URL } from "@/lib/const";
 import Drawer from "@/components/ui/drawer";
 import { Goal } from "@/types/entities";
 import { api } from "@/lib/api";
+import { useTranslations } from "next-intl";
 
 type GoalDrawerProps = {
   isOpen: boolean;
@@ -19,6 +20,8 @@ type GoalDrawerProps = {
 
 export function GoalDrawer({ isOpen, onClose, goal, refreshChallenges }: GoalDrawerProps) {
   const [isLoadingClaim, setIsLoadingClaim] = React.useState(false); // Добавлено состояние загрузки
+
+  const t = useTranslations("challenges");
 
   // Функция для обработки получения награды
   const handleClaimReward = async (goalId: number) => {
@@ -57,7 +60,7 @@ export function GoalDrawer({ isOpen, onClose, goal, refreshChallenges }: GoalDra
         <footer className="flex flex-col gap-2 px-4">
           {goal.status === "COMPLETED" && (
             <Button variant="secondary" onClick={() => handleClaimReward(goal.id)} isLoading={isLoadingClaim} disabled={isLoadingClaim}>
-              Забрать вознаграждение
+              {t("collect-reward")}
             </Button>
           )}
         </footer>

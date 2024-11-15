@@ -11,6 +11,8 @@ import Drawer from "@/components/ui/drawer";
 import { initData } from "@telegram-apps/sdk-react";
 import { api } from "@/lib/api";
 
+import { useTranslations } from "next-intl";
+
 type ChallengeDrawerProps = {
   isOpen: boolean;
   onClose: () => void;
@@ -39,6 +41,8 @@ export function ChallengeDrawer({ isOpen, onClose, achievementPicsUrl, achieveme
   const [isLoadingHide, setIsLoadingHide] = React.useState(false);
 
   const fileInputRef = React.useRef<HTMLInputElement>(null);
+
+  const t = useTranslations("challenges");
 
   const handleApproveSubmit = () => {
     setErrorMessage(""); // Очистить сообщение об ошибке при повторной попытке
@@ -228,7 +232,7 @@ export function ChallengeDrawer({ isOpen, onClose, achievementPicsUrl, achieveme
           </h1>
           {isPromo ? (
             <a href={taskUrl} target="_blank" rel="noopener noreferrer" className="text-sm text-blue-500 my-2">
-              Выполнить
+              {t("complete")}
             </a>
           ) : (
             <Link href={`/profile/${userId}`} className="text-sm text-gray-600 my-2">
@@ -279,11 +283,11 @@ export function ChallengeDrawer({ isOpen, onClose, achievementPicsUrl, achieveme
           {shouldShowButtons && (status === "PENDING" || status === "IN_PROGRESS") && (
             <>
               <Button variant="secondary" onClick={handleAccept} isLoading={isLoadingAccept} className="w-full">
-                Принять
+                {t("accept")}
               </Button>
               {!isPromo && (
                 <Button variant="outline" onClick={handleDecline} isLoading={isLoadingDecline} className="w-full">
-                  Отказаться
+                  {t("decline")}
                 </Button>
               )}
             </>
@@ -302,7 +306,7 @@ export function ChallengeDrawer({ isOpen, onClose, achievementPicsUrl, achieveme
                   </Button>
                   {!isPromo && (
                     <Button variant="outline" onClick={handleDecline} isLoading={isLoadingDecline} className="w-full">
-                      Отказаться
+                      {t("decline")}
                     </Button>
                   )}
                 </>
@@ -323,7 +327,7 @@ export function ChallengeDrawer({ isOpen, onClose, achievementPicsUrl, achieveme
 
           {status === "COMPLETED" && !isSent && !isPromo && (
             <Button onClick={handleDecline} isLoading={isLoadingDecline} variant="outline" className="w-full">
-              Отказаться
+              {t("decline")}
             </Button>
           )}
 
