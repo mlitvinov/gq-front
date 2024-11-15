@@ -9,11 +9,15 @@
     "decline": "Decline",
     "collect-reward": "Collect reward",
     "quest-goals": "Goals",
+    "promo-challenge": "Promo challenge",
     "quest-promo": "From us",
     "quest-friends": "From friends",
-    "quest-for-friends": "For friends"
+    "quest-for-friends": "For friends",
+    "error-data": "An error occurred while fetching data"
   },
   "friends": {
+    "error-acceptance": "An error occurred while accepting the request",
+    "error-copy-text": "Failed to copy text: ",
     "quest": "Quest",
     "link-copy": "Copy referral link",
     "link-copy-success": "Link copied to clipboard",
@@ -27,6 +31,8 @@
     "category": "Achievement",
     "task": "Task",
     "submit": "Submit",
+    "error-server": "Server error",
+    "error-rejection": "An error occurred while rejecting the request: ",
     "cancel": "Cancel"
   },
   "recommendations": {
@@ -37,9 +43,9 @@
     "reputations": "reputation",
     "done": "Completed",
     "accept": "Accept",
-    "friend": "Friend",
     "decline": "Decline",
     "add-friend": "Add as friend",
+    "friend": "Friends",
     "tasks": "tasks"
   },
   "navigation": {

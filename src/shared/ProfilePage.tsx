@@ -124,7 +124,7 @@ export default function ProfilePage({ params }: { params?: { id: number } }) {
 
     setIsLoadingAddFriend(true);
     try {
-      await api.post(`/friends/request?receiverId=${userData.id}`);
+      await api.post(`/api/friends/request?receiverId=${userData.id}`);
 
       setUserData((prevData) => (prevData ? { ...prevData, friendStatus: "REQUESTED" } : prevData));
       setIsLoadingAddFriend(false);
@@ -142,7 +142,7 @@ export default function ProfilePage({ params }: { params?: { id: number } }) {
 
     setIsLoadingAcceptFriend(true);
     try {
-      await api.post(`/friends/accept/${userData.id}`);
+      await api.post(`/api/friends/accept/${userData.id}`);
 
       setUserData((prevData) => (prevData ? { ...prevData, friendStatus: "FRIEND" } : prevData));
       setIsLoadingAcceptFriend(false);

@@ -59,7 +59,7 @@ export default function FriendsPage() {
     setLoadingDeclineId(requestId);
 
     try {
-      await api.post(`/friends/decline?requestId=${requestId}`);
+      await api.post(`/api/friends/decline?requestId=${requestId}`);
 
       setRequests((prev) => prev.filter((req) => req.id !== requestId));
     } catch (error) {
