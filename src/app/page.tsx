@@ -6,7 +6,7 @@ import { useLayoutEffect } from "react";
 
 export default function Home() {
   useLayoutEffect(() => {
-    redirect("/friends");
+    redirect("/profile");
   }, []);
 
   return null;
