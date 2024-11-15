@@ -36,7 +36,7 @@ export default function FriendsPage() {
   };
 
   const getRequests = async () => {
-    const data = await api.get<Friend[]>(`/api/friends/requests`);
+    const data = await api.get<Friend[]>(`/api/friends/requests/incoming`);
 
     setRequests(data);
   };
