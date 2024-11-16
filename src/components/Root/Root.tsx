@@ -9,7 +9,7 @@ import { ErrorPage } from "@/components/ErrorPage";
 import { useTelegramMock } from "@/hooks/useTelegramMock";
 import { useDidMount } from "@/hooks/useDidMount";
 import { useClientOnce } from "@/hooks/useClientOnce";
-import { setLocale } from "@/core/i18n/locale";
+import { getLocale, setLocale } from "@/core/i18n/locale";
 import { init } from "@/core/init";
 
 import Navigation from "../Navigation";
@@ -50,7 +50,10 @@ function RootInner({ children }: PropsWithChildren) {
 
   // Set the user locale.
   useEffect(() => {
-    initDataUser && setLocale(initDataUser.languageCode);
+    const currentLocale = getLocale();
+    if (initDataUser && !currentLocale) {
+      setLocale(initDataUser.languageCode);
+    }
   }, [initDataUser]);
 
   // Enable debug mode to see all the methods sent and events received.
