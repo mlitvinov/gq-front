@@ -17,7 +17,7 @@ const WelcomeScreen = ({ onClose }: WelcomeScreenProps) => {
           <img alt="Reward" src={Rewards.src} height={128} width={128} />
         </div>
         <div className="flex flex-col gap-6 px-8 mb-6">
-          <p className="text-3xl text-gradient text-center" dangerouslySetInnerHTML={{ __html: t("title") }} />
+          <h1 className="text-3xl text-gradient text-center">{t("title")}</>
 
           <div className="space-y-2">
             <p className="font-medium text-black">
