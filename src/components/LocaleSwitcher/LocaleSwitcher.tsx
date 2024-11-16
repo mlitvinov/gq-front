@@ -13,6 +13,7 @@ export const LocaleSwitcher: FC = () => {
   const onChange = (value: string) => {
     const locale = value as Locale;
     setLocale(locale);
+    localStorage.setItem("force_locale", locale);
   };
 
   return (

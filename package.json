@@ -14,6 +14,7 @@
     "@emotion/styled": "^11.13.0",
     "@heroicons/react": "^2.1.5",
     "@mui/material": "^6.1.7",
+    "@radix-ui/react-portal": "^1.1.2",
     "@radix-ui/react-progress": "^1.1.0",
     "@radix-ui/react-slot": "^1.1.0",
     "@telegram-apps/sdk-react": "^2.0.11",

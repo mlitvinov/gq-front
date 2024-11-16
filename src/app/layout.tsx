@@ -11,6 +11,7 @@ import { I18nProvider } from "@/core/i18n/provider";
 import "@telegram-apps/telegram-ui/dist/styles.css";
 import "normalize.css/normalize.css";
 import "./_assets/globals.css";
+import { getFirstLaunch } from "@/core/firstLaunch";
 
 export const metadata: Metadata = {
   title: "GetQuest",
@@ -28,12 +29,13 @@ export const viewport = {
 
 export default async function RootLayout({ children }: PropsWithChildren) {
   const locale = await getLocale();
+  const isFirstLaunch = await getFirstLaunch();
 
   return (
     <html lang={locale}>
       <body className={cn("bg-background min-h-screen font-inter antialiased", fontInter.className)}>
         <I18nProvider>
-          <Root>{children}</Root>
+          <Root isFirstLaunch={isFirstLaunch}>{children}</Root>
           {process.env.NODE_ENV === "production" && (
             <Suspense>
               <YandexMetrika />

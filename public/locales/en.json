@@ -53,5 +53,15 @@
     "friends": "Friends",
     "challenges": "Challenges",
     "profile": "Profile"
+  },
+  "welcomeScreen": {
+    "title": "Welcome to <span class='font-bold'>GetQuest!</span>",
+    "features": {
+      "challengeFriends": "Challenge your friends",
+      "completeTasks": "Complete tasks to increase your rating",
+      "joinCommunity": "Join us and become part of a growing community!"
+    },
+    "futureNote": "In the future, you will be able to exchange your earned rating for our cryptocurrency.",
+    "startButton": "Start"
   }
 }

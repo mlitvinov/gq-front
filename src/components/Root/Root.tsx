@@ -1,6 +1,6 @@
 "use client";
 
-import { type PropsWithChildren, useEffect } from "react";
+import { type PropsWithChildren, useEffect, useState } from "react";
 import { initData, useLaunchParams, useSignal } from "@telegram-apps/sdk-react";
 import { AppRoot } from "@telegram-apps/telegram-ui";
 
@@ -9,13 +9,19 @@ import { ErrorPage } from "@/components/ErrorPage";
 import { useTelegramMock } from "@/hooks/useTelegramMock";
 import { useDidMount } from "@/hooks/useDidMount";
 import { useClientOnce } from "@/hooks/useClientOnce";
-import { getLocale, setLocale } from "@/core/i18n/locale";
+import { setLocale } from "@/core/i18n/locale";
 import { init } from "@/core/init";
 
 import Navigation from "../Navigation";
+import { getFirstLaunch, setFirstLaunch } from "@/core/firstLaunch";
+import WelcomeScreen from "@/shared/WelcomeScreen";
 
-function RootInner({ children }: PropsWithChildren) {
+type RootProps = PropsWithChildren & { isFirstLaunch: string | null };
+
+function RootInner({ children, isFirstLaunch }: RootProps) {
   const isDev = process.env.NODE_ENV === "development";
+
+  const [showWelcome, setShowWelcome] = useState(isFirstLaunch === null);
 
   // Mock Telegram environment in development mode if needed.
   if (isDev) {
@@ -50,10 +56,7 @@ function RootInner({ children }: PropsWithChildren) {
 
   // Set the user locale.
   useEffect(() => {
-    const currentLocale = getLocale();
-    if (initDataUser && !currentLocale) {
-      setLocale(initDataUser.languageCode);
-    }
+    if (!localStorage.getItem("force_locale") && initDataUser) setLocale(initDataUser.languageCode);
   }, [initDataUser]);
 
   // Enable debug mode to see all the methods sent and events received.
@@ -67,6 +70,15 @@ function RootInner({ children }: PropsWithChildren) {
         {children}
         <Navigation />
       </main>
+
+      {showWelcome && (
+        <WelcomeScreen
+          onClose={() => {
+            setFirstLaunch("YES");
+            setShowWelcome(false);
+          }}
+        />
+      )}
     </AppRoot>
   );
 }
@@ -109,7 +121,7 @@ function RootInner({ children }: PropsWithChildren) {
   );
 };
  */
-export function Root(props: PropsWithChildren) {
+export function Root(props: RootProps) {
   // Unfortunately, Telegram Mini Apps does not allow us to use all features of
   // the Server Side Rendering. That's why we are showing loader on the server
   // side.
