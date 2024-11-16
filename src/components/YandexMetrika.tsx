@@ -28,6 +28,7 @@ export default function YandexMetrika() {
             clickmap:true,
             trackLinks:true,
             accurateTrackBounce:true
+            webvisor: true
         });
       `}
     </Script>
