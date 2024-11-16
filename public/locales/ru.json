@@ -55,7 +55,7 @@
     "profile": "Профиль"
   },
   "welcomeScreen": {
-    "title": "Добро пожаловать в <span class='font-bold'>GetQuest!</span>",
+    "title": "Добро пожаловать в GetQuest",
     "features": {
       "challengeFriends": "Бросайте вызов своим друзьям",
       "completeTasks": "Выполняйте задания, чтобы повысить свой рейтинг",
