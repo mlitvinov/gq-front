@@ -33,7 +33,7 @@ const WelcomeScreen = ({ onClose }: WelcomeScreenProps) => {
 
           <p className="font-light text-black">{t("futureNote")}</p>
         </div>
-        <footer className="px-8 mb-6">
+        <footer className="px-8 mb-12">
           <Button variant="secondary" className="w-full" onClick={onClose}>
             {t("startButton")}
           </Button>
