@@ -13,6 +13,11 @@
     "quest-promo": "От нас",
     "quest-friends": "От друзей",
     "quest-for-friends": "Для друзей",
+    "video-done": "Видео успешно загружено.",
+    "task-declined": "Вы не приняли задание.",
+    "task-approved": "Задание подтверждено.",
+    "task-decline": "Задание отклонено.",
+    "task-done": "Задание принято.",
     "error-data": "Произошла ошибка при получении данных"
   },
   "friends": {

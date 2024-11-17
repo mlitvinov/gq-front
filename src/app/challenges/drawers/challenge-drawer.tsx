@@ -86,7 +86,7 @@ export function ChallengeDrawer({ isOpen, onClose, achievementPicsUrl, achieveme
 
     xhr.addEventListener("loadend", () => {
       if (xhr.readyState === 4 && xhr.status === 200) {
-        alert("Видео успешно загружено!");
+        alert(t("video-done"));
         onClose();
         refreshChallenges();
       } else {
@@ -131,7 +131,7 @@ export function ChallengeDrawer({ isOpen, onClose, achievementPicsUrl, achieveme
 
       await (isPromo ? api.post(url) : api.put(url));
 
-      alert("Задание принято.");
+      alert(t("task-done"));
       onClose();
       await refreshChallenges();
       setIsLoadingAccept(false);
@@ -148,7 +148,7 @@ export function ChallengeDrawer({ isOpen, onClose, achievementPicsUrl, achieveme
     try {
       await api.put(`/api/challenges/${challengeId}/decline`);
 
-      alert("Задание отклонено.");
+      alert(t("task-decline"));
       onClose();
       await refreshChallenges();
       setIsLoadingDecline(false);
@@ -167,7 +167,7 @@ export function ChallengeDrawer({ isOpen, onClose, achievementPicsUrl, achieveme
 
       await api.put(url);
 
-      alert("Задание подтверждено.");
+      alert(t("task-approved"));
       await refreshChallenges();
 
       onClose();
@@ -189,7 +189,7 @@ export function ChallengeDrawer({ isOpen, onClose, achievementPicsUrl, achieveme
 
       await api.put(url);
 
-      alert("Вы не приняли задание.");
+      alert(t("task-declined"));
       await refreshChallenges();
 
       onClose();

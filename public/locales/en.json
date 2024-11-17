@@ -4,6 +4,11 @@
     "footer": "You can select a different language from the dropdown menu."
   },
   "challenges": {
+    "video-done": "Video successfully uploaded.",
+    "task-declined": "You did not accept the task.",
+    "task-approved": "Task approved.",
+    "task-decline": "Task declined.",
+    "task-done": "Task accepted.",
     "accept": "Accept",
     "complete": "Complete",
     "decline": "Decline",
