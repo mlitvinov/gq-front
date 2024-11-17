@@ -56,7 +56,13 @@ function RootInner({ children }: RootProps) {
 
   // Set the user locale.
   useEffect(() => {
-    if (!localStorage.getItem("force_locale") && initDataUser) setLocale(initDataUser.languageCode);
+    if (!localStorage.getItem("force_locale") && initDataUser) {
+      if (initDataUser.languageCode === "ru") {
+        setLocale(initDataUser.languageCode);
+      } else {
+        setLocale("en");
+      }
+    }
   }, [initDataUser]);
 
   // Enable debug mode to see all the methods sent and events received.
