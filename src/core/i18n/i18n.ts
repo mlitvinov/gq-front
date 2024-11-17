@@ -5,14 +5,11 @@ import { getLocale } from "./locale";
 import type { Locale } from "./types";
 
 const i18nRequestConfig = getRequestConfig(async () => {
-  const locale = await getLocale() as Locale;
+  const locale = getLocale() as Locale;
 
   return {
     locale,
-    messages:
-      locale === defaultLocale || !locales.includes(locale)
-        ? (await import(`@public/locales/${defaultLocale}.json`)).default
-        : (await import(`@public/locales/${locale}.json`)).default,
+    messages: locale === defaultLocale || !locales.includes(locale) ? (await import(`@public/locales/${defaultLocale}.json`)).default : (await import(`@public/locales/${locale}.json`)).default,
   };
 });
 
