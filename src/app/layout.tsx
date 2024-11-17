@@ -1,5 +1,6 @@
 import { Suspense, type PropsWithChildren } from "react";
 import type { Metadata } from "next";
+import { getLocale } from "next-intl/server";
 
 import { cn } from "@/lib/utils";
 import { fontInter } from "@/lib/fonts";
@@ -26,10 +27,10 @@ export const viewport = {
 };
 
 export default async function RootLayout({ children }: PropsWithChildren) {
-  //const locale = getLocale();
+  const locale = await getLocale();
 
   return (
-    <html lang="en">
+    <html lang={locale}>
       <body className={cn("bg-background min-h-screen font-inter antialiased", fontInter.className)}>
         <I18nProvider>
           <Root>{children}</Root>
