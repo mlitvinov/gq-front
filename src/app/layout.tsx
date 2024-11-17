@@ -29,13 +29,12 @@ export const viewport = {
 
 export default async function RootLayout({ children }: PropsWithChildren) {
   const locale = await getLocale();
-  const isFirstLaunch = await getFirstLaunch();
 
   return (
     <html lang={locale}>
       <body className={cn("bg-background min-h-screen font-inter antialiased", fontInter.className)}>
         <I18nProvider>
-          <Root isFirstLaunch={isFirstLaunch}>{children}</Root>
+          <Root>{children}</Root>
           {process.env.NODE_ENV === "production" && (
             <Suspense>
               <YandexMetrika />

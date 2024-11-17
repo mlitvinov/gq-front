@@ -16,12 +16,12 @@ import Navigation from "../Navigation";
 import { getFirstLaunch, setFirstLaunch } from "@/core/firstLaunch";
 import WelcomeScreen from "@/shared/WelcomeScreen";
 
-type RootProps = PropsWithChildren & { isFirstLaunch: string | null };
+type RootProps = PropsWithChildren;
 
-function RootInner({ children, isFirstLaunch }: RootProps) {
+function RootInner({ children }: RootProps) {
   const isDev = process.env.NODE_ENV === "development";
 
-  const [showWelcome, setShowWelcome] = useState(isFirstLaunch === null);
+  const [showWelcome, setShowWelcome] = useState(getFirstLaunch() === null);
 
   // Mock Telegram environment in development mode if needed.
   if (isDev) {
