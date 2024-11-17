@@ -1,1 +1,1 @@
-export const BASE_URL = "https://getquest.tech";
+export const BASE_URL = "https://dev.getquest.tech";
