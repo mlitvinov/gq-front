@@ -4,16 +4,17 @@ import React, { useEffect, useState } from "react";
 
 import Arrows from "@/app/_assets/arrows.png";
 import Rewards from "@/app/_assets/rewards.png";
-
+import NotificationsIcon from "@/app/_assets/rewards.png";
 import { AchievementDrawer } from "@/app/profile/drawer";
 import { Button } from "@/components/ui/button";
 import { Carousel } from "@/components/carousel";
-import { Achievement, ChallengeData } from "@/types/entities";
+import { Achievement, ChallengeData, Notification } from "@/types/entities";
 import { initData, useSignal } from "@telegram-apps/sdk-react";
 import { BASE_URL } from "@/lib/const";
 import { api } from "@/lib/api";
 import { LocaleSwitcher } from "@/components/LocaleSwitcher/LocaleSwitcher";
 import { useTranslations } from "next-intl";
+import { NotificationsDrawer } from "@/notifications/NotificationsDrawer";
 
 interface UserData {
   id: number;
@@ -26,7 +27,7 @@ interface UserData {
   earnedCount: number;
 }
 
-// .reduce, который разделяет каждый второй элемент массива. Один идёт на в top, другой в bottom
+// Функция для разделения массива на верхний и нижний ряды
 const splitArray = (array: any[]): { top: any[]; bottom: any[] } =>
   array.reduce(
     (acc, el, index) => {
@@ -40,7 +41,7 @@ const splitArray = (array: any[]): { top: any[]; bottom: any[] } =>
     { top: [], bottom: [] }
   );
 
-// дополни массив до нужного количества элементов, если их нехватает
+// Функция для дополнения массива до нужной длины
 const fillArray = (array: any[], length: number) => {
   const result = [...array];
   while (result.length < length) {
@@ -58,6 +59,10 @@ export default function ProfilePage({ params }: { params?: { id: number } }) {
   const [challengeData, setChallengeData] = useState<ChallengeData[] | null>(null);
   const [isLoadingAddFriend, setIsLoadingAddFriend] = useState(false);
   const [isLoadingAcceptFriend, setIsLoadingAcceptFriend] = useState(false);
+
+  const [notifications, setNotifications] = useState<Notification[]>([]);
+  const [unreadCount, setUnreadCount] = useState<number>(0);
+  const [isNotificationsOpen, setIsNotificationsOpen] = useState(false);
 
   const initDataUser = useSignal(initData.user);
 
@@ -100,6 +105,22 @@ export default function ProfilePage({ params }: { params?: { id: number } }) {
 
     fetchVideoUrls();
   }, [userData]);
+
+  // Получение уведомлений
+  useEffect(() => {
+    const fetchNotifications = async () => {
+      try {
+        const data = await api.get<{ events: Notification[]; unreadCount: number }>(`/api/notifications`);
+
+        setNotifications(data.events);
+        setUnreadCount(data.unreadCount);
+      } catch (error) {
+        console.error("Ошибка при получении уведомлений:", error);
+      }
+    };
+
+    fetchNotifications();
+  }, []);
 
   const handleAchievementClick = async (id: string) => {
     const achievement = userData?.achievementListDTO.find((el) => el.userAchievement!.toString() === id);
@@ -152,6 +173,15 @@ export default function ProfilePage({ params }: { params?: { id: number } }) {
     }
   };
 
+  const handleNotificationsClick = () => {
+    setIsNotificationsOpen(true);
+    setUnreadCount(0); // Обнуляем количество непрочитанных уведомлений при открытии дровера
+  };
+
+  const handleNotificationsClose = () => {
+    setIsNotificationsOpen(false);
+  };
+
   const sliders = splitArray(fillArray(achievementImages, 12));
 
   if (!userData) {
@@ -163,6 +193,18 @@ export default function ProfilePage({ params }: { params?: { id: number } }) {
       <div className="absolute top-4 right-4">
         <LocaleSwitcher />
       </div>
+      {/* Иконка уведомлений в левом верхнем углу */}
+      <div className="absolute top-4 left-4">
+        <button onClick={handleNotificationsClick} className="relative">
+          <img src={NotificationsIcon.src} alt="Уведомления" width={24} height={24} />
+          {unreadCount > 0 && (
+            <span className="absolute -top-2 -right-2 bg-red-500 text-white rounded-full px-1 text-xs">
+              {unreadCount}
+            </span>
+          )}
+        </button>
+      </div>
+
       <section className="flex flex-col items-center gap-4 w-full mb-8">
         <div className="flex flex-col justify-center items-center">
           <img className="relative left-1" src={Rewards.src} width={80} height={80} />
@@ -188,13 +230,18 @@ export default function ProfilePage({ params }: { params?: { id: number } }) {
         )}
       </section>
 
+      {/* Карусели достижений */}
       <Carousel
         autoPlay
         containerClassName="[&>*:nth-child(odd)]:mt-2 select-none"
         options={{ loop: true, align: "center", dragFree: true }}
         items={sliders.top.map((el, index) =>
           el?.imageUrl ? (
-            <div key={index} className="flex-shrink-0 size-16 rounded-xl bg-[#F6F6F6] px-1 mr-8 mb-4" onClick={() => handleAchievementClick(el.id)}>
+            <div
+              key={index}
+              className="flex-shrink-0 size-16 rounded-xl bg-[#F6F6F6] px-1 mr-8 mb-4"
+              onClick={() => handleAchievementClick(el.id)}
+            >
               <img src={el.imageUrl} alt={`Логотип ${index + 1}`} className="size-16 object-contain cursor-pointer" />
             </div>
           ) : (
@@ -209,7 +256,11 @@ export default function ProfilePage({ params }: { params?: { id: number } }) {
         options={{ loop: true, align: "center", dragFree: true }}
         items={sliders.bottom.map((el, index) =>
           el?.imageUrl ? (
-            <div key={index} className="flex-shrink-0 size-16 rounded-xl bg-[#F6F6F6] px-1 mr-8 mb-4" onClick={() => handleAchievementClick(el.id)}>
+            <div
+              key={index}
+              className="flex-shrink-0 size-16 rounded-xl bg-[#F6F6F6] px-1 mr-8 mb-4"
+              onClick={() => handleAchievementClick(el.id)}
+            >
               <img src={el.imageUrl} alt={`Логотип ${index + 1}`} className="size-16 object-contain cursor-pointer" />
             </div>
           ) : (
@@ -218,15 +269,19 @@ export default function ProfilePage({ params }: { params?: { id: number } }) {
         )}
       />
 
+      {/* Раздел с количеством выполненных заданий и заработанным рейтингом */}
       <section className="mb-6">
         <h1 className="text-black text-2xl text-left font-medium tracking-[-0.05em] mb-2">
-          {t("done")} <span className="text-gradient font-black">{userData.taskCount}</span> {t("task", { count: userData.taskCount })} <img className="inline -left-1 top-0 relative" src={Rewards.src} width={32} height={32} />
+          {t("done")} <span className="text-gradient font-black">{userData.taskCount}</span>{" "}
+          {t("task", { count: userData.taskCount })}{" "}
+          <img className="inline -left-1 top-0 relative" src={Rewards.src} width={32} height={32} />
           <br />
           <img className="inline -left-1 relative" src={Arrows.src} width={32} height={32} />
           {t("earned")} <span className="text-gradient">{userData.earnedCount}</span> {t("reputations")}
         </h1>
       </section>
 
+      {/* Карусель видео */}
       <Carousel
         autoPlay
         containerClassName="[&>*:nth-child(odd)]:mt-2 select-none"
@@ -259,6 +314,7 @@ export default function ProfilePage({ params }: { params?: { id: number } }) {
         ))}
       />
 
+      {/* Фиксированная навигация */}
       <nav className="fixed-nav fixed bottom-0 left-0 right-0 bg-white z-1000">
         <ul className="flex justify-around p-2">
           <li>Друзья</li>
@@ -267,6 +323,17 @@ export default function ProfilePage({ params }: { params?: { id: number } }) {
         </ul>
       </nav>
 
+      {/* Дровер с уведомлениями */}
+      {isNotificationsOpen && (
+        <NotificationsDrawer
+          isOpen={isNotificationsOpen}
+          onClose={handleNotificationsClose}
+          notifications={notifications}
+          unreadCount={unreadCount}
+        />
+      )}
+
+      {/* Дровер с достижением */}
       {selectedAchievement && (
         <AchievementDrawer
           isOpen={!!selectedAchievement}

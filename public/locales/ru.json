@@ -43,6 +43,12 @@
   "recommendations": {
     "soon": "СКОРО"
   },
+  "notifications": {
+    "task": "{count, plural, =0 {заданий} =1 {задание} one {задание} few {задания} many {заданий} other {заданий}}",
+    "you-have": "У вас",
+    "new-notifications": "новых уведомлений",
+    "no-notifications": "У вас нет уведомлений"
+  },
   "profile": {
     "earned": "заработано",
     "reputations": "репутации",

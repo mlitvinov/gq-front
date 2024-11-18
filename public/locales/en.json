@@ -43,6 +43,11 @@
   "recommendations": {
     "soon": "COMING SOON"
   },
+  "notifications": {
+    "you-have": "You have",
+    "new-notifications": "new notifications",
+    "no-notifications": "You have no notifications"
+  },
   "profile": {
     "earned": "earned",
     "reputations": "reputation",

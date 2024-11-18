@@ -60,3 +60,13 @@ export interface ChallengeData {
   sender: string;
   senderId: number;
 }
+
+export interface Notification {
+  id: string;
+  description: string;
+  imageUrl: string;
+  pageUrl: string;
+  title: string;
+  read: boolean;
+}
+
