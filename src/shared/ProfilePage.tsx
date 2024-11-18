@@ -4,7 +4,6 @@ import React, { useEffect, useState } from "react";
 
 import Arrows from "@/app/_assets/arrows.png";
 import Rewards from "@/app/_assets/rewards.png";
-import NotificationsIcon from "@/app/_assets/rewards.png";
 import { AchievementDrawer } from "@/app/profile/drawer";
 import { Button } from "@/components/ui/button";
 import { Carousel } from "@/components/carousel";
@@ -12,6 +11,7 @@ import { Achievement, ChallengeData, Notification } from "@/types/entities";
 import { initData, useSignal } from "@telegram-apps/sdk-react";
 import { BASE_URL } from "@/lib/const";
 import { api } from "@/lib/api";
+import { FiBell } from "react-icons/fi";
 import { LocaleSwitcher } from "@/components/LocaleSwitcher/LocaleSwitcher";
 import { useTranslations } from "next-intl";
 import { NotificationsDrawer } from "@/notifications/NotificationsDrawer";
@@ -194,9 +194,9 @@ export default function ProfilePage({ params }: { params?: { id: number } }) {
         <LocaleSwitcher />
       </div>
       {/* Иконка уведомлений в левом верхнем углу */}
-      <div className="absolute top-4 left-4">
+      <div className="absolute text-gray-500 top-7 left-5">
         <button onClick={handleNotificationsClick} className="relative">
-          <img src={NotificationsIcon.src} alt="Уведомления" width={24} height={24} />
+          <FiBell size={24} />
           {unreadCount > 0 && (
             <span className="absolute -top-2 -right-2 bg-red-500 text-white rounded-full px-1 text-xs">
               {unreadCount}
