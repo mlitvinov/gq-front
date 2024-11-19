@@ -36,6 +36,7 @@ export type Challenge = {
   senderId: number;
   receiverUserName?: string;
   receiverId: number;
+  danger: boolean;
   videoUrl?: string | null;
   taskUrl?: string;
 };

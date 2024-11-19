@@ -217,6 +217,7 @@ export default function ChallengesPage() {
           isPromo={tab === "promo"}
           challengeId={selectedChallenge.id}
           refreshChallenges={fetchChallenges}
+          danger={selectedChallenge.danger}
           fieldId={selectedChallenge.videoUrl}
           taskUrl={selectedChallenge.taskUrl}
         />

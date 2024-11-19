@@ -66,7 +66,7 @@ export function SubmitQuestDrawer({ username, receiverId, onClose }: SubmitQuest
         if (response.legally === false) {
           setWarningMessage(response.reason);
         } else if (response.dangerous === true) {
-          setWarningMessage("Внимание, задание опасно для жизни");
+          setWarningMessage(t("danger-warning"));
         } else {
           setWarningMessage("");
         }
@@ -79,7 +79,7 @@ export function SubmitQuestDrawer({ username, receiverId, onClose }: SubmitQuest
         });
       }
     } catch (error) {
-      setErrorMessage("Ошибка при анализе задания.");
+      setErrorMessage(t("error-server"));
     } finally {
       setIsChecking(false); // Завершаем загрузку
     }

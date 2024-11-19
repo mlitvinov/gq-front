@@ -32,7 +32,7 @@ export function NotificationsDrawer({ isOpen, onClose, notifications, unreadCoun
                 <li
                   key={notification.id}
                   className={`px-4 py-2 border-b border-gray-200 ${
-                    notification.read ? "opacity-50 pointer-events-none select-none" : "opacity-100"
+                    notification.read ? "opacity-50" : "opacity-100"
                   }`}
                 >
                   <Link href={notification.pageUrl}>
@@ -48,7 +48,8 @@ export function NotificationsDrawer({ isOpen, onClose, notifications, unreadCoun
                       )}
                       <div>
 
-                        <p className="text-sm font-semibold">                      {notification.friendId && notification.friendName ? (
+                        <p
+                          className="text-sm font-semibold">                      {notification.friendId && notification.friendName ? (
                           <Link
                             href={`/profile/${notification.friendId}`}
                             className="font-semibold text-black no-underline mr-2"

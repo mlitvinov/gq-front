@@ -4,6 +4,7 @@
     "footer": "You can select a different language from the dropdown menu."
   },
   "challenges": {
+    "danger-warning": "⚠️ This task is dangerous and can cause serious harm. By accepting this challenge, you acknowledge and accept all risks, and you agree that you have no claims against us.",
     "video-done": "Video successfully uploaded.",
     "task-declined": "You did not accept the task.",
     "task-approved": "Task approved.",

@@ -27,11 +27,30 @@ type ChallengeDrawerProps = {
   isPromo: boolean;
   challengeId: number;
   refreshChallenges: () => Promise<void>;
+  danger: boolean;
   fieldId?: string | null;
   taskUrl?: string;
 };
 
-export function ChallengeDrawer({ isOpen, onClose, achievementPicsUrl, achievementTitle, reputation, senderName, userId, description, status, isSent, isPromo, challengeId, refreshChallenges, fieldId, taskUrl }: ChallengeDrawerProps) {
+export function ChallengeDrawer({
+                                  isOpen,
+                                  onClose,
+                                  achievementPicsUrl,
+                                  achievementTitle,
+                                  reputation,
+                                  senderName,
+                                  userId,
+                                  description,
+                                  status,
+                                  isSent,
+                                  isPromo,
+                                  challengeId,
+                                  refreshChallenges,
+                                  danger,
+                                  fieldId,
+                                  taskUrl,
+                                }: ChallengeDrawerProps) {
+  console.log(  "???" +      danger);
   const [progress, setProgress] = React.useState<number>(0);
   const [errorMessage, setErrorMessage] = React.useState<string>("");
   const [isLoadingAccept, setIsLoadingAccept] = React.useState(false);
@@ -66,11 +85,9 @@ export function ChallengeDrawer({ isOpen, onClose, achievementPicsUrl, achieveme
     formData.append("file", selectedFile);
 
     const xhr = new XMLHttpRequest();
-
     const url = isPromo ? `/api/promochallenges/${challengeId}/complete` : `/api/challenges/${challengeId}/complete`;
 
     xhr.open("POST", url, true);
-
     xhr.setRequestHeader("accept", "*/*");
     xhr.setRequestHeader("initData", initDataRaw);
 
@@ -225,7 +242,11 @@ export function ChallengeDrawer({ isOpen, onClose, achievementPicsUrl, achieveme
   return (
     <Drawer open={isOpen} onClose={onClose}>
       <div className="flex flex-col items-center">
-        <img src={`${BASE_URL}/api/images/${achievementPicsUrl}`} alt={achievementTitle} className="w-full h-40 aspect-square object-contain select-none pointer-events-none rounded-md mb-4" />
+        <img
+          src={`${BASE_URL}/api/images/${achievementPicsUrl}`}
+          alt={achievementTitle}
+          className="w-full h-40 aspect-square object-contain select-none pointer-events-none rounded-md mb-4"
+        />
         <header className="flex flex-col items-center">
           <h1 id="challenge-title" className="text-xl font-bold">
             {achievementTitle}
@@ -245,6 +266,11 @@ export function ChallengeDrawer({ isOpen, onClose, achievementPicsUrl, achieveme
           </p>
         </header>
         <p className="mt-4 mb-4 px-4 text-center font-medium text-sm">{description}</p>
+        {danger && (
+          <div className="mb-4 px-4 text-red-600 text-sm text-center">
+            {t("danger-warning")}
+          </div>
+        )}
 
         {errorMessage && (
           <div className="mb-4 px-4 text-center">
