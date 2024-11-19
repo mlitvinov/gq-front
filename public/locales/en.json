@@ -45,6 +45,7 @@
   },
   "notifications": {
     "you-have": "You have",
+    "from": "From",
     "new-notifications": "new notifications",
     "no-notifications": "You have no notifications"
   },

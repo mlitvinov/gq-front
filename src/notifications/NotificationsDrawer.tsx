@@ -52,7 +52,7 @@ export function NotificationsDrawer({ isOpen, onClose, notifications, unreadCoun
                           <Link
                             href={`/profile/${notification.friendId}`}
                             className="font-semibold text-black no-underline mr-2"
-                          > От {notification.friendName}: </Link>
+                          >{t("from")} {notification.friendName}: </Link>
                         ) : null}{notification.title}</p>
                         <p className="text-sm">{notification.description}</p>
                       </div>
