@@ -217,12 +217,6 @@ export function SubmitQuestDrawer({ username, receiverId, onClose }: SubmitQuest
               </div>
             )}
 
-            {analysisResult?.dangerous && (
-              <div className="mb-2 px-4 text-red-500 text-xs">
-                {t("danger-warning")}
-              </div>
-            )}
-
             {selectedAchievement.imageUrl && (
               <div className="flex justify-center my-2 px-4">
                 <img
