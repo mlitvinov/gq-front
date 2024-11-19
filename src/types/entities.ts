@@ -67,6 +67,8 @@ export interface Notification {
   imageUrl: string;
   pageUrl: string;
   title: string;
+  friendId: string;
+  friendName : string;
   read: boolean;
 }
 
