@@ -44,6 +44,7 @@ export function SubmitQuestDrawer({ username, receiverId, onClose }: SubmitQuest
   const [numericValue, setNumericValue] = React.useState("");
   const [errorMessage, setErrorMessage] = React.useState("");
   const [isOpen, setIsOpen] = React.useState(false);
+  const [lastAnalyzedTask, setLastAnalyzedTask] = React.useState<string | null>(null);
 
   // Используем интерфейс TaskAnalysisResult
   const [analysisResult, setAnalysisResult] = React.useState<TaskAnalysisResult | null>(null);
@@ -62,6 +63,7 @@ export function SubmitQuestDrawer({ username, receiverId, onClose }: SubmitQuest
 
       if (response) {
         setAnalysisResult(response);
+        setLastAnalyzedTask(task); // Сохраняем проанализированное задание
 
         if (response.legally === false) {
           setWarningMessage(response.reason);
@@ -81,7 +83,19 @@ export function SubmitQuestDrawer({ username, receiverId, onClose }: SubmitQuest
     } catch (error) {
       setErrorMessage(t("error-server"));
     } finally {
-      setIsChecking(false); // Завершаем загрузку
+      setIsChecking(false);
+    }
+  };
+
+  const handleTaskChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const newTask = e.target.value;
+    setTask(newTask);
+
+    if (lastAnalyzedTask !== null && newTask !== lastAnalyzedTask) {
+      // Задание было изменено после анализа
+      setAnalysisResult(null);
+      setSelectedAchievement({ id: null, name: null, imageUrl: null });
+      setLastAnalyzedTask(null);
     }
   };
 
@@ -93,6 +107,11 @@ export function SubmitQuestDrawer({ username, receiverId, onClose }: SubmitQuest
 
     if (analysisResult && analysisResult.legally === false) {
       setErrorMessage(analysisResult.reason);
+      return;
+    }
+
+    if (lastAnalyzedTask !== task) {
+      setErrorMessage("Задание было изменено после последнего анализа. Пожалуйста, выполните проверку снова.");
       return;
     }
 
@@ -175,7 +194,7 @@ export function SubmitQuestDrawer({ username, receiverId, onClose }: SubmitQuest
                   <input
                     type="text"
                     value={task}
-                    onChange={(e) => setTask(e.target.value)}
+                    onChange={handleTaskChange}
                     onFocus={() => handleFocus()}
                     onBlur={onBlur}
                     className="size-full focus:outline-none flex-grow"
@@ -184,7 +203,7 @@ export function SubmitQuestDrawer({ username, receiverId, onClose }: SubmitQuest
                     variant="secondary"
                     onClick={handleCheckTask}
                     className="ml-2"
-                    isLoading={isChecking} // Добавляем индикатор загрузки
+                    isLoading={isChecking}
                   >
                     {t("check")}
                   </Button>
@@ -195,6 +214,12 @@ export function SubmitQuestDrawer({ username, receiverId, onClose }: SubmitQuest
             {warningMessage && (
               <div className="mb-2 px-4 text-red-500">
                 {warningMessage}
+              </div>
+            )}
+
+            {analysisResult?.dangerous && (
+              <div className="mb-2 px-4 text-red-500 text-xs">
+                {t("danger-warning")}
               </div>
             )}
 
@@ -228,7 +253,11 @@ export function SubmitQuestDrawer({ username, receiverId, onClose }: SubmitQuest
                 onClick={handleSubmit}
                 variant="secondary"
                 className="w-full z-[9999]"
-                disabled={!selectedAchievement.id} // Делаем кнопку недоступной, пока нет achievementId
+                disabled={
+                  !selectedAchievement.id ||
+                  !analysisResult ||
+                  lastAnalyzedTask !== task
+                }
               >
                 {t("submit")}
               </Button>
