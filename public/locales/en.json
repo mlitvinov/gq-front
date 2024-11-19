@@ -22,6 +22,7 @@
     "error-data": "An error occurred while fetching data"
   },
   "friends": {
+    "danger-warning": "⚠️ This task is dangerous and can cause serious harm. By sending this challenge, you acknowledge and accept all risks, and you agree that you have no claims against us.",
     "error-acceptance": "An error occurred while accepting the request",
     "error-copy-text": "Failed to copy text: ",
     "quest": "Quest",
