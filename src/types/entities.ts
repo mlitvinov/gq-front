@@ -17,9 +17,10 @@ export type Friend = {
 };
 
 export type Achievement = {
-  userAchievement: number | null;
+  id: string;
   name: string;
   imageUrl: string;
+  userAchievement?: number;
 };
 
 export type Challenge = {

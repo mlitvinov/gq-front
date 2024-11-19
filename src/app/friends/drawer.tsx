@@ -6,9 +6,18 @@ import Drawer from "@/components/ui/drawer";
 import { api } from "@/lib/api";
 import { BASE_URL } from "@/lib/const";
 import { useTranslations } from "next-intl";
-import { Achievement } from "@/types/entities";
 import { useLaunchParams } from "@telegram-apps/sdk-react";
 import useViewportHeight from "@/hooks/useViewportHeight";
+
+// Интерфейс для результата анализа
+interface TaskAnalysisResult {
+  legally: boolean;
+  dangerous: boolean;
+  reason: string;
+  achievementId: string | null;
+  achievementName: string | null;
+  achievementImageUrl: string | null;
+}
 
 type SubmitQuestDrawerProps = {
   username: string;
@@ -24,40 +33,73 @@ export function SubmitQuestDrawer({ username, receiverId, onClose }: SubmitQuest
   const containerRef = useRef<HTMLDivElement | null>(null);
   const sizerRef = useRef<HTMLDivElement | null>(null);
 
-  const [achievements, setAchievements] = React.useState<Achievement[]>([]);
-  const [selectedAchievement, setSelectedAchievement] = React.useState<Achievement | null>(null);
+  const [selectedAchievement, setSelectedAchievement] = React.useState<{
+    id: string | null;
+    name: string | null;
+    imageUrl: string | null;
+  }>({ id: null, name: null, imageUrl: null });
   const [isLoading, setIsLoading] = React.useState(false);
+  const [isChecking, setIsChecking] = React.useState(false); // Состояние для индикатора загрузки
   const [task, setTask] = React.useState("");
-  const [imageUrl, setImageUrl] = React.useState("");
   const [numericValue, setNumericValue] = React.useState("");
   const [errorMessage, setErrorMessage] = React.useState("");
   const [isOpen, setIsOpen] = React.useState(false);
 
-  React.useEffect(() => {
-    const fetchAchievements = async () => {
-      const data = await api.get<Achievement[]>("/api/achievements");
+  // Используем интерфейс TaskAnalysisResult
+  const [analysisResult, setAnalysisResult] = React.useState<TaskAnalysisResult | null>(null);
+  const [warningMessage, setWarningMessage] = React.useState("");
 
-      setAchievements(data);
+  const handleCheckTask = async () => {
+    if (!task) {
+      setErrorMessage("Пожалуйста, введите задание.");
+      return;
+    }
 
-      if (data.length > 0) {
-        setSelectedAchievement(data[0]);
-        setImageUrl(`${BASE_URL}/api/images/${data[0].imageUrl}`);
+    setIsChecking(true); // Начинаем загрузку
+
+    try {
+      const response = await api.post<TaskAnalysisResult>("/api/task/analyze", { task });
+
+      if (response) {
+        setAnalysisResult(response);
+
+        if (response.legally === false) {
+          setWarningMessage(response.reason);
+        } else if (response.dangerous === true) {
+          setWarningMessage("Внимание, задание опасно для жизни");
+        } else {
+          setWarningMessage("");
+        }
+
+        // Устанавливаем выбранное достижение на основе ответа
+        setSelectedAchievement({
+          id: response.achievementId,
+          name: response.achievementName,
+          imageUrl: response.achievementImageUrl,
+        });
       }
-    };
-
-    fetchAchievements();
-  }, []);
+    } catch (error) {
+      setErrorMessage("Ошибка при анализе задания.");
+    } finally {
+      setIsChecking(false); // Завершаем загрузку
+    }
+  };
 
   const handleSubmit = async () => {
-    if (!selectedAchievement || !task || !numericValue) {
+    if (!selectedAchievement.id || !task || !numericValue) {
       setErrorMessage("Пожалуйста, заполните все поля.");
+      return;
+    }
+
+    if (analysisResult && analysisResult.legally === false) {
+      setErrorMessage(analysisResult.reason);
       return;
     }
 
     setIsLoading(true);
 
     const body = {
-      achievementId: selectedAchievement.userAchievement || 0,
+      achievementId: selectedAchievement.id,
       description: task,
       receiverId,
       price: parseInt(numericValue, 10),
@@ -71,20 +113,21 @@ export function SubmitQuestDrawer({ username, receiverId, onClose }: SubmitQuest
       onClose?.();
       alert(t("task-success-complete"));
     } catch (error) {
-      const message = (error as any)?.status === 400 ? "У вас недостаточно репутации для создания этого испытания." : t("error-server");
+      const message =
+        (error as any)?.status === 400
+          ? "У вас недостаточно репутации для создания этого испытания."
+          : t("error-server");
       setErrorMessage(message);
       setIsLoading(false);
     }
   };
 
-  // Function to handle focus without default scrolling
   const handleFocus = (scrollFromTop?: number) => {
     if (!sizerRef.current || !containerRef.current) return;
 
     sizerRef.current.style.height = platform === "ios" ? viewportHeight + 200 + "px" : "100%";
     containerRef.current.style.height = platform === "ios" ? viewportHeight / 2 - 25 + "px" : "100%";
 
-    // Manually scroll the inner container as needed
     if (scrollFromTop) {
       containerRef.current!.scrollTo({
         top: scrollFromTop,
@@ -122,52 +165,66 @@ export function SubmitQuestDrawer({ username, receiverId, onClose }: SubmitQuest
 
             <section className="mb-2 px-4">
               <div className="px-5 py-3 border border-[#F6F6F6] rounded-[32px]">
-                <label className="block text-xs font-light text-black/50">{t("category")}</label>
-
-                <select
-                  title=""
-                  name="category"
-                  value={selectedAchievement?.name || ""}
-                  onBlur={onBlur}
-                  onChange={(e) => {
-                    const selected = achievements.find((ach) => ach.name === e.target.value);
-                    if (selected) {
-                      setSelectedAchievement(selected);
-                      setImageUrl(`${BASE_URL}/api/images/${selected.imageUrl}`);
-                    }
-                  }}
-                  className="border-none bg-transparent appearance-none focus:outline-none w-full"
-                >
-                  {achievements.map((achievement) => (
-                    <option key={achievement.name} value={achievement.name}>
-                      {achievement.name}
-                    </option>
-                  ))}
-                </select>
-              </div>
-            </section>
-
-            <section className="mb-2 px-4">
-              <div className="px-5 py-3 border border-[#F6F6F6] rounded-[32px]">
                 <label className="block text-xs font-light text-black/50">{t("task")}</label>
-                <input type="text" value={task} onChange={(e) => setTask(e.target.value)} onFocus={() => handleFocus()} onBlur={onBlur} className="size-full focus:outline-none" />
+                <div className="flex">
+                  <input
+                    type="text"
+                    value={task}
+                    onChange={(e) => setTask(e.target.value)}
+                    onFocus={() => handleFocus()}
+                    onBlur={onBlur}
+                    className="size-full focus:outline-none flex-grow"
+                  />
+                  <Button
+                    variant="secondary"
+                    onClick={handleCheckTask}
+                    className="ml-2"
+                    isLoading={isChecking} // Добавляем индикатор загрузки
+                  >
+                    {t("check")}
+                  </Button>
+                </div>
               </div>
             </section>
 
-            {imageUrl && (
+            {warningMessage && (
+              <div className="mb-2 px-4 text-red-500">
+                {warningMessage}
+              </div>
+            )}
+
+            {selectedAchievement.imageUrl && (
               <div className="flex justify-center my-2 px-4">
-                <img src={imageUrl} alt="Achievement" className="h-32 object-contain" />
+                <img
+                  src={`${BASE_URL}/api/images/${selectedAchievement.imageUrl}`}
+                  alt={selectedAchievement.name || "Achievement"}
+                  className="h-32 object-contain"
+                />
               </div>
             )}
 
             <div className="mb-4 px-4">
-              <input type="text" value={numericValue} onFocus={() => handleFocus(200)} onBlur={onBlur} onChange={(e) => setNumericValue(e.target.value.replace(/\D/g, ""))} className="w-full text-3xl font-black focus:outline-none text-center text-gradient placeholder:text-black/10 p-2" placeholder="0" />
+              <input
+                type="text"
+                value={numericValue}
+                onFocus={() => handleFocus(200)}
+                onBlur={onBlur}
+                onChange={(e) => setNumericValue(e.target.value.replace(/\D/g, ""))}
+                className="w-full text-3xl font-black focus:outline-none text-center text-gradient placeholder:text-black/10 p-2"
+                placeholder="0"
+              />
             </div>
 
             {errorMessage && <div className="text-red-500 mb-4">{errorMessage}</div>}
 
             <footer className="flex flex-col gap-2 px-4">
-              <Button isLoading={isLoading} onClick={handleSubmit} variant="secondary" className="w-full z-[9999]">
+              <Button
+                isLoading={isLoading}
+                onClick={handleSubmit}
+                variant="secondary"
+                className="w-full z-[9999]"
+                disabled={!selectedAchievement.id} // Делаем кнопку недоступной, пока нет achievementId
+              >
                 {t("submit")}
               </Button>
 

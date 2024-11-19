@@ -24,6 +24,7 @@
     "error-acceptance": "An error occurred while accepting the request",
     "error-copy-text": "Failed to copy text: ",
     "quest": "Quest",
+    "check": "Check",
     "link-copy": "Copy referral link",
     "link-copy-success": "Link copied to clipboard",
     "invite-friends": "Invite friends",
