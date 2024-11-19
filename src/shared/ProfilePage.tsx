@@ -1,7 +1,6 @@
 "use client";
 
 import React, { useEffect, useState } from "react";
-
 import Arrows from "@/app/_assets/arrows.png";
 import Rewards from "@/app/_assets/rewards.png";
 import { AchievementDrawer } from "@/app/profile/drawer";
@@ -68,6 +67,7 @@ export default function ProfilePage({ params }: { params?: { id: number } }) {
 
   const isUserPage = !params?.id || initDataUser?.username === userData?.username;
 
+  // Получение количества непрочитанных уведомлений при загрузке страницы
   useEffect(() => {
     const fetchUnreadCount = async () => {
       try {
@@ -130,6 +130,17 @@ export default function ProfilePage({ params }: { params?: { id: number } }) {
     }
   };
 
+  // Обновление счётчика непрочитанных уведомлений после закрытия дровера
+  const handleNotificationsClose = async () => {
+    setIsNotificationsOpen(false);
+    try {
+      const data = await api.get<{ unreadCount: number }>(`/api/notifications/count`);
+      setUnreadCount(data.unreadCount);
+    } catch (error) {
+      console.error("Ошибка при обновлении счётчика непрочитанных уведомлений:", error);
+    }
+  };
+
   const handleAchievementClick = async (id: string) => {
     const achievement = userData?.achievementListDTO.find((el) => el.userAchievement!.toString() === id);
 
@@ -181,10 +192,6 @@ export default function ProfilePage({ params }: { params?: { id: number } }) {
     }
   };
 
-  const handleNotificationsClose = () => {
-    setIsNotificationsOpen(false);
-  };
-
   const sliders = splitArray(fillArray(achievementImages, 12));
 
   if (!userData) {
@@ -199,7 +206,7 @@ export default function ProfilePage({ params }: { params?: { id: number } }) {
       {/* Иконка уведомлений в левом верхнем углу */}
       <div className="absolute text-gray-500 top-7 left-5">
         <button onClick={handleNotificationsClick} className="relative">
-          <FiBell className = "text-gray-500" size={24} />
+          <FiBell className="text-gray-500" size={24} />
           {unreadCount > 0 && (
             <span className="absolute -top-2 -right-2 bg-red-500 text-white rounded-full px-1 text-xs">
               {unreadCount}

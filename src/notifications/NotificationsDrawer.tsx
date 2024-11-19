@@ -29,11 +29,18 @@ export function NotificationsDrawer({ isOpen, onClose, notifications, unreadCoun
           {notifications.length > 0 ? (
             <ul>
               {notifications.map((notification) => (
-                <li key={notification.id} className="px-4 py-2 border-b border-gray-200">
+                <li
+                  key={notification.id}
+                  className={`px-4 py-2 border-b border-gray-200 ${
+                    notification.read ? "opacity-50 pointer-events-none select-none" : "opacity-100"
+                  }`}
+                >
                   <Link href={notification.pageUrl}>
                     <div className="flex items-center">
                       {notification.imageUrl && (
-                        <img width={50} height={50}
+                        <img
+                          width={50}
+                          height={50}
                           src={`${BASE_URL}/api/images/${notification.imageUrl}`}
                           alt=""
                           className="w-8 h-8 mr-2 rounded-full"
