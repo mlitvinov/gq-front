@@ -5,6 +5,7 @@ import Drawer from "@/components/ui/drawer";
 import { Notification } from "@/types/entities";
 import { useTranslations } from "next-intl";
 import { Link } from "@/components/Link/Link";
+import { BASE_URL } from "@/lib/const";
 
 type NotificationsDrawerProps = {
   isOpen: boolean;
@@ -32,7 +33,11 @@ export function NotificationsDrawer({ isOpen, onClose, notifications, unreadCoun
                   <Link href={notification.pageUrl}>
                     <div className="flex items-center">
                       {notification.imageUrl && (
-                        <img src={notification.imageUrl} alt="" className="w-8 h-8 mr-2 rounded-full" />
+                        <img width={50} height={50}
+                          src={`${BASE_URL}/api/images/${notification.imageUrl}`}
+                          alt=""
+                          className="w-8 h-8 mr-2 rounded-full"
+                        />
                       )}
                       <div>
                         <p className="text-sm font-semibold">{notification.title}</p>

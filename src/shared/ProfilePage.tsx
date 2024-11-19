@@ -69,6 +69,19 @@ export default function ProfilePage({ params }: { params?: { id: number } }) {
   const isUserPage = !params?.id || initDataUser?.username === userData?.username;
 
   useEffect(() => {
+    const fetchUnreadCount = async () => {
+      try {
+        const data = await api.get<{ unreadCount: number }>(`/api/notifications/count`);
+        setUnreadCount(data.unreadCount);
+      } catch (error) {
+        console.error("Ошибка при получении количества непрочитанных уведомлений:", error);
+      }
+    };
+
+    fetchUnreadCount();
+  }, []);
+
+  useEffect(() => {
     const fetchProfileData = async () => {
       try {
         const url = !isUserPage ? `/api/users/profile/?id=${params?.id}` : `/api/users/profile`;
@@ -106,21 +119,16 @@ export default function ProfilePage({ params }: { params?: { id: number } }) {
     fetchVideoUrls();
   }, [userData]);
 
-  // Получение уведомлений
-  useEffect(() => {
-    const fetchNotifications = async () => {
-      try {
-        const data = await api.get<{ events: Notification[]; unreadCount: number }>(`/api/notifications`);
-
-        setNotifications(data.events);
-        setUnreadCount(data.unreadCount);
-      } catch (error) {
-        console.error("Ошибка при получении уведомлений:", error);
-      }
-    };
-
-    fetchNotifications();
-  }, []);
+  // Загрузка полного списка уведомлений при открытии дровера
+  const handleNotificationsClick = async () => {
+    setIsNotificationsOpen(true);
+    try {
+      const data = await api.get<{ events: Notification[] }>(`/api/notifications`);
+      setNotifications(data.events);
+    } catch (error) {
+      console.error("Ошибка при получении уведомлений:", error);
+    }
+  };
 
   const handleAchievementClick = async (id: string) => {
     const achievement = userData?.achievementListDTO.find((el) => el.userAchievement!.toString() === id);
@@ -173,11 +181,6 @@ export default function ProfilePage({ params }: { params?: { id: number } }) {
     }
   };
 
-  const handleNotificationsClick = () => {
-    setIsNotificationsOpen(true);
-    setUnreadCount(0); // Обнуляем количество непрочитанных уведомлений при открытии дровера
-  };
-
   const handleNotificationsClose = () => {
     setIsNotificationsOpen(false);
   };
@@ -196,7 +199,7 @@ export default function ProfilePage({ params }: { params?: { id: number } }) {
       {/* Иконка уведомлений в левом верхнем углу */}
       <div className="absolute text-gray-500 top-7 left-5">
         <button onClick={handleNotificationsClick} className="relative">
-          <FiBell size={24} />
+          <FiBell className = "text-gray-500" size={24} />
           {unreadCount > 0 && (
             <span className="absolute -top-2 -right-2 bg-red-500 text-white rounded-full px-1 text-xs">
               {unreadCount}
