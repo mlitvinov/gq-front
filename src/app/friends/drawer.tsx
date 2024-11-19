@@ -103,6 +103,7 @@ export function SubmitQuestDrawer({ username, receiverId, onClose }: SubmitQuest
       description: task,
       receiverId,
       price: parseInt(numericValue, 10),
+      danger: analysisResult?.dangerous || false,
     };
 
     try {
@@ -125,20 +126,24 @@ export function SubmitQuestDrawer({ username, receiverId, onClose }: SubmitQuest
   const handleFocus = (scrollFromTop?: number) => {
     if (!sizerRef.current || !containerRef.current) return;
 
-    sizerRef.current.style.height = platform === "ios" ? viewportHeight + 200 + "px" : "100%";
-    containerRef.current.style.height = platform === "ios" ? viewportHeight / 2 - 25 + "px" : "100%";
+    if (sizerRef.current && containerRef.current) {
+      sizerRef.current.style.height = platform === "ios" ? viewportHeight + 200 + "px" : "100%";
+      containerRef.current.style.height = platform === "ios" ? viewportHeight / 2 - 25 + "px" : "100%";
 
-    if (scrollFromTop) {
-      containerRef.current!.scrollTo({
-        top: scrollFromTop,
-        behavior: "instant",
-      });
+      if (scrollFromTop) {
+        containerRef.current.scrollTo({
+          top: scrollFromTop,
+          behavior: "instant",
+        });
+      }
     }
   };
 
   const onBlur = () => {
-    sizerRef.current!.style.height = "20px";
-    containerRef.current!.style.height = "100%";
+    if (sizerRef.current && containerRef.current) {
+      sizerRef.current.style.height = "20px";
+      containerRef.current.style.height = "100%";
+    }
   };
 
   return (
