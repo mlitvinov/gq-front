@@ -200,9 +200,9 @@ export function SubmitQuestDrawer({ username, receiverId, onClose }: SubmitQuest
                     className="size-full focus:outline-none flex-grow"
                   />
                   <Button
-                    variant="secondary"
+                    variant="outline"
                     onClick={handleCheckTask}
-                    className="ml-2"
+                    className="mb-4"
                     isLoading={isChecking}
                   >
                     {t("check")}
@@ -224,6 +224,14 @@ export function SubmitQuestDrawer({ username, receiverId, onClose }: SubmitQuest
                   alt={selectedAchievement.name || "Achievement"}
                   className="h-32 object-contain"
                 />
+              </div>
+            )}
+
+            {selectedAchievement.name && (
+              <div className="text-center my-1 px-4">
+                <p className="text-black text-2xl font-semibold">
+                 {selectedAchievement.name}
+                </p>
               </div>
             )}
 
