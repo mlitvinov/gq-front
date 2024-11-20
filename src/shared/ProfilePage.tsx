@@ -317,7 +317,7 @@ export default function ProfilePage({ params }: { params?: { id: number } }) {
                 }}
               >
                 <source src={`${BASE_URL}/api/videos/download?fileId=${videoUrl}`} type="video/mp4" />
-                Ваш браузер не поддерживает видео.
+                ERROR
               </video>
             </figure>
           </div>

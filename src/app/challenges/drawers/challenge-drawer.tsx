@@ -50,7 +50,6 @@ export function ChallengeDrawer({
                                   fieldId,
                                   taskUrl,
                                 }: ChallengeDrawerProps) {
-  console.log(  "???" +      danger);
   const [progress, setProgress] = React.useState<number>(0);
   const [errorMessage, setErrorMessage] = React.useState<string>("");
   const [isLoadingAccept, setIsLoadingAccept] = React.useState(false);
@@ -64,7 +63,7 @@ export function ChallengeDrawer({
   const t = useTranslations("challenges");
 
   const handleApproveSubmit = () => {
-    setErrorMessage(""); // Очистить сообщение об ошибке при повторной попытке
+    setErrorMessage("");
     fileInputRef.current?.click();
   };
 
@@ -72,12 +71,12 @@ export function ChallengeDrawer({
     const initDataRaw = initData.raw();
 
     if (!initDataRaw) {
-      setErrorMessage("Произошла ошибка. Пожалуйста, перезагрузите страницу.");
+      setErrorMessage(t("error_reload"));
       return;
     }
 
     if (!selectedFile) {
-      setErrorMessage("Пожалуйста, выберите видеофайл.");
+      setErrorMessage(t("select_video"));
       return;
     }
 
@@ -103,19 +102,18 @@ export function ChallengeDrawer({
 
     xhr.addEventListener("loadend", () => {
       if (xhr.readyState === 4 && xhr.status === 200) {
-        alert(t("video-done"));
+        alert(t("video_done"));
         onClose();
         refreshChallenges();
       } else {
-        console.error("Ошибка при загрузке видео");
-        setErrorMessage("Не удалось загрузить видео.");
+        console.error("Video upload error");
+        setErrorMessage(t("upload_failed"));
       }
     });
 
     xhr.onerror = () => {
-      console.log("xhr.onerror", xhr);
-      console.error("Ошибка при загрузке видео");
-      setErrorMessage("Не удалось загрузить видео.");
+      console.error("Video upload error");
+      setErrorMessage(t("upload_failed"));
     };
 
     xhr.send(formData);
@@ -126,13 +124,13 @@ export function ChallengeDrawer({
       const selectedFile = event.target.files[0];
 
       if (!selectedFile.type.startsWith("video/")) {
-        setErrorMessage("Пожалуйста, загрузите видеофайл.");
+        setErrorMessage(t("upload_video"));
         return;
       }
 
       const maxSizeInBytes = 20 * 1024 * 1024;
       if (selectedFile.size > maxSizeInBytes) {
-        setErrorMessage("Размер видео не должен превышать 20 МБ.");
+        setErrorMessage(t("video_size_limit"));
         return;
       }
 
@@ -148,13 +146,13 @@ export function ChallengeDrawer({
 
       await (isPromo ? api.post(url) : api.put(url));
 
-      alert(t("task-done"));
+      alert(t("task_done"));
       onClose();
       await refreshChallenges();
       setIsLoadingAccept(false);
     } catch (error) {
-      console.error("Произошла ошибка при принятии задания:", error);
-      setErrorMessage("Произошла ошибка при принятии задания.");
+      console.error("Error accepting challenge:", error);
+      setErrorMessage(t("accept_error"));
       setIsLoadingAccept(false);
     }
   };
@@ -165,13 +163,13 @@ export function ChallengeDrawer({
     try {
       await api.put(`/api/challenges/${challengeId}/decline`);
 
-      alert(t("task-decline"));
+      alert(t("task_decline"));
       onClose();
       await refreshChallenges();
       setIsLoadingDecline(false);
     } catch (error) {
-      console.error("Произошла ошибка при отклонении задания:", error);
-      setErrorMessage("Произошла ошибка при отклонении задания.");
+      console.error("Error declining challenge:", error);
+      setErrorMessage(t("decline_error"));
       setIsLoadingDecline(false);
     }
   };
@@ -184,20 +182,20 @@ export function ChallengeDrawer({
 
       await api.put(url);
 
-      alert(t("task-approved"));
+      alert(t("task_approved"));
       await refreshChallenges();
 
       onClose();
       setIsLoadingApprove(false);
     } catch (error) {
-      console.error("Произошла ошибка при подтверждении задания:", error);
-      setErrorMessage("Произошла ошибка при подтверждении задания.");
+      console.error("Error approving challenge:", error);
+      setErrorMessage(t("approve_error"));
       setIsLoadingApprove(false);
     }
   };
 
   const handleDispute = async () => {
-    const confirmed = window.confirm("Вы уверены, что не хотите принимать задание? В случае спора никто из участников не получит свои средства назад.");
+    const confirmed = window.confirm(t("dispute_confirm"));
     if (!confirmed) return;
 
     setIsLoadingDispute(true);
@@ -206,14 +204,14 @@ export function ChallengeDrawer({
 
       await api.put(url);
 
-      alert(t("task-declined"));
+      alert(t("task_declined"));
       await refreshChallenges();
 
       onClose();
       setIsLoadingDispute(false);
     } catch (error) {
-      console.error("Произошла ошибка при начале спора:", error);
-      setErrorMessage("Произошла ошибка при начале спора.");
+      console.error("Error starting dispute:", error);
+      setErrorMessage(t("dispute_error"));
       setIsLoadingDispute(false);
     }
   };
@@ -221,7 +219,7 @@ export function ChallengeDrawer({
   const hideChallenge = async (id: number) => {
     setIsLoadingHide(true);
 
-    const confirmed = window.confirm("Вы уверены, что хотите удалить это задание у себя из истории?");
+    const confirmed = window.confirm(t("hide_confirm"));
     if (!confirmed) return;
 
     try {
@@ -231,8 +229,8 @@ export function ChallengeDrawer({
       onClose();
       setIsLoadingHide(false);
     } catch (error) {
-      console.error("Произошла ошибка при удалении задания:", error);
-      setErrorMessage("Произошла ошибка при удалении задания.");
+      console.error("Error hiding challenge:", error);
+      setErrorMessage(t("hide_error"));
       setIsLoadingHide(false);
     }
   };
@@ -299,7 +297,7 @@ export function ChallengeDrawer({
                 }}
               >
                 <source src={`${BASE_URL}/api/videos/download?fileId=${fieldId}`} type="video/mp4" />
-                Ваш браузер не поддерживает видео.
+                ERROR
               </video>
             </figure>
           </div>
@@ -328,7 +326,7 @@ export function ChallengeDrawer({
               ) : (
                 <>
                   <Button variant="secondary" onClick={handleApproveSubmit} className="w-full">
-                    Загрузить подтверждение
+                    {t("upload_confirmation")}
                   </Button>
                   {!isPromo && (
                     <Button variant="outline" onClick={handleDecline} isLoading={isLoadingDecline} className="w-full">
@@ -343,10 +341,10 @@ export function ChallengeDrawer({
           {isSent && status === "COMPLETED" && (
             <>
               <Button variant="secondary" onClick={handleApprove} isLoading={isLoadingApprove} className="w-full">
-                Подтвердить
+                {t("approve")}
               </Button>
               <Button variant="outline" onClick={handleDispute} isLoading={isLoadingDispute} className="w-full">
-                Не принимаю
+                {t("reject")}
               </Button>
             </>
           )}
@@ -359,7 +357,7 @@ export function ChallengeDrawer({
 
           {((!isPromo && status === "DISPUTED") || status === "DECLINED" || status === "APPROVE") && (
             <Button variant="ghost" className="text-red-700 bg-red-100/50" onClick={() => hideChallenge(challengeId)} isLoading={isLoadingHide}>
-              Удалить запись из истории
+              {t("delete_entry")}
             </Button>
           )}
         </footer>

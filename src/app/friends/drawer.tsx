@@ -101,7 +101,7 @@ export function SubmitQuestDrawer({ username, receiverId, onClose }: SubmitQuest
 
   const handleSubmit = async () => {
     if (!selectedAchievement.id || !task || !numericValue) {
-      setErrorMessage("Пожалуйста, заполните все поля.");
+      setErrorMessage(t("fill_all_fields"));
       return;
     }
 
@@ -111,7 +111,7 @@ export function SubmitQuestDrawer({ username, receiverId, onClose }: SubmitQuest
     }
 
     if (lastAnalyzedTask !== task) {
-      setErrorMessage("Задание было изменено после последнего анализа. Пожалуйста, выполните проверку снова.");
+      setErrorMessage(t("recheck_task"));
       return;
     }
 
@@ -135,8 +135,8 @@ export function SubmitQuestDrawer({ username, receiverId, onClose }: SubmitQuest
     } catch (error) {
       const message =
         (error as any)?.status === 400
-          ? "У вас недостаточно репутации для создания этого испытания."
-          : t("error-server");
+          ? t("not_enough_reputation")
+          : t("server_error");
       setErrorMessage(message);
       setIsLoading(false);
     }
