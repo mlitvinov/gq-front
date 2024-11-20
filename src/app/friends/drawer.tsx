@@ -188,26 +188,24 @@ export function SubmitQuestDrawer({ username, receiverId, onClose }: SubmitQuest
             </header>
 
             <section className="mb-2 px-4">
-              <div className="px-5 py-3 border border-[#F6F6F6] rounded-[32px]">
-                <label className="block text-xs font-light text-black/50">{t("task")}</label>
-                <div className="flex">
-                  <input
-                    type="text"
-                    value={task}
-                    onChange={handleTaskChange}
-                    onFocus={() => handleFocus()}
-                    onBlur={onBlur}
-                    className="size-full focus:outline-none flex-grow"
-                  />
-                  <Button
-                    variant="outline"
-                    onClick={handleCheckTask}
-                    className="mb-4"
-                    isLoading={isChecking}
-                  >
-                    {t("check")}
-                  </Button>
-                </div>
+              <div className="flex items-center border border-[#F6F6F6] rounded-[32px] px-4 py-2 gap-2">
+                <input
+                  type="text"
+                  value={task}
+                  onChange={handleTaskChange}
+                  onFocus={() => handleFocus()}
+                  onBlur={onBlur}
+                  className="flex-grow focus:outline-none text-black text-sm placeholder:text-black/30 p-2 rounded-md"
+                  placeholder={t("enter_task")}
+                />
+                <Button
+                  variant="outline"
+                  onClick={handleCheckTask}
+                  isLoading={isChecking}
+                  className="ml-2"
+                >
+                  {t("check")}
+                </Button>
               </div>
             </section>
 
@@ -230,20 +228,27 @@ export function SubmitQuestDrawer({ username, receiverId, onClose }: SubmitQuest
             {selectedAchievement.name && (
               <div className="text-center my-1 px-4">
                 <p className="text-black text-2xl font-semibold">
-                 {selectedAchievement.name}
+                  {selectedAchievement.name}
                 </p>
               </div>
             )}
 
-            <div className="mb-4 px-4">
+            <div className="mb-4 px-4 flex justify-center">
               <input
-                type="text"
+                type="tel"
                 value={numericValue}
                 onFocus={() => handleFocus(200)}
                 onBlur={onBlur}
                 onChange={(e) => setNumericValue(e.target.value.replace(/\D/g, ""))}
-                className="w-full text-3xl font-black focus:outline-none text-center text-gradient placeholder:text-black/10 p-2"
+                className="text-3xl font-black focus:outline-none text-center text-gradient placeholder:text-black/10 p-2"
                 placeholder="0"
+                style={{
+                  width: `${Math.max(numericValue.length, 1)}ch`, // Динамическая ширина
+                  height: "auto", // Убираем жесткие ограничения высоты
+                  lineHeight: "normal", // Исправляем выравнивание текста по высоте
+                  padding: "0", // Убираем внутренние отступы для точного выравнивания
+                  margin: "0", // Убираем лишние отступы, если они есть
+                }}
               />
             </div>
 

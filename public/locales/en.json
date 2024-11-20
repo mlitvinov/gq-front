@@ -43,7 +43,7 @@
     "hide_error": "An error occurred while hiding the challenge."
   },
   "friends": {
-    "enter_task": "Please enter a task.",
+    "enter_task": "Enter a task",
     "fill_all_fields": "Please fill in all fields.",
     "recheck_task": "The task has changed since the last analysis. Please check again.",
     "not_enough_reputation": "You don't have enough reputation to create this challenge.",
