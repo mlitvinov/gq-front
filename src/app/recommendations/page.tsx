@@ -1,19 +1,227 @@
 "use client";
 
-import React from "react";
-import Cat from "@/app/_assets/worker-cat.png";
-import { useTranslations } from "next-intl";
+import React, { useEffect, useState, useRef } from "react";
+import { FiMaximize, FiRefreshCw, FiThumbsDown, FiThumbsUp } from "react-icons/fi";
+import { initData, useSignal } from "@telegram-apps/sdk-react";
 
 const RecommendationsPage = () => {
-  const t = useTranslations("recommendations");
+  const [videoSrc, setVideoSrc] = useState<string | null>(null);
+  const [videoId, setVideoId] = useState<string | null>(null);
+  const [loading, setLoading] = useState<boolean>(false);
+  const videoRef = useRef<HTMLVideoElement>(null);
+
+  // Получаем initData из контекста
+  const initDataRaw = useSignal(initData.raw);
+
+  const fetchVideo = async () => {
+    setLoading(true);
+    try {
+      const headers: HeadersInit = {
+        accept: "application/json",
+      };
+
+      if (initDataRaw) {
+        headers.initData = initDataRaw;
+      }
+
+      // Запрашиваем текущее видео
+      const response = await fetch("https://getquest.tech/api/feed/current", {
+        method: "GET",
+        headers,
+      });
+
+      if (response.ok) {
+        const videoData = await response.json();
+        if (videoData && videoData.videoUrl) {
+          setVideoId(videoData.id);
+
+          // Получаем URL для скачивания видео
+          const videoUrl = `https://getquest.tech/api/videos/download?fileId=${videoData.videoUrl}`;
+
+          // Загружаем видео
+          const videoResponse = await fetch(videoUrl, {
+            method: "GET",
+            headers,
+          });
+
+          if (videoResponse.ok) {
+            const blob = await videoResponse.blob();
+            const objectUrl = window.URL.createObjectURL(blob);
+            setVideoSrc(objectUrl);
+          } else {
+            console.error("Ошибка при загрузке видео:", videoResponse.status);
+            setVideoSrc(null);
+          }
+        } else {
+          console.error("Видео не найдено в ответе сервера.");
+          setVideoSrc(null);
+          setVideoId(null);
+        }
+      } else if (response.status === 204) {
+        console.log("Видео больше нет.");
+        setVideoSrc(null);
+        setVideoId(null);
+      } else {
+        console.error("Ошибка при загрузке видео:", response.status);
+        setVideoSrc(null);
+        setVideoId(null);
+      }
+    } catch (error) {
+      console.error("Ошибка при загрузке видео:", error);
+      setVideoSrc(null);
+      setVideoId(null);
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  useEffect(() => {
+    fetchVideo();
+
+    return () => {
+      if (videoSrc) {
+        window.URL.revokeObjectURL(videoSrc);
+      }
+    };
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
+
+  const likeVideo = async () => {
+    if (!videoId) return;
+
+    try {
+      const headers: HeadersInit = {
+        accept: "application/json",
+      };
+
+      if (initDataRaw) {
+        headers.initData = initDataRaw;
+      }
+
+      const response = await fetch(`https://getquest.tech/api/feed/like?videoId=${videoId}`, {
+        method: "POST",
+        headers,
+      });
+
+      if (response.ok) {
+        // Загружаем следующее видео
+        fetchVideo();
+      } else {
+        console.error("Ошибка при лайке видео:", response.status);
+      }
+    } catch (error) {
+      console.error("Ошибка при лайке видео:", error);
+    }
+  };
+
+  const dislikeVideo = async () => {
+    if (!videoId) return;
+
+    try {
+      const headers: HeadersInit = {
+        accept: "application/json",
+      };
+
+      if (initDataRaw) {
+        headers.initData = initDataRaw;
+      }
+
+      const response = await fetch(`https://getquest.tech/api/feed/dislike?videoId=${videoId}`, {
+        method: "POST",
+        headers,
+      });
+
+      if (response.ok) {
+        // Загружаем следующее видео
+        fetchVideo();
+      } else {
+        console.error("Ошибка при дизлайке видео:", response.status);
+      }
+    } catch (error) {
+      console.error("Ошибка при дизлайке видео:", error);
+    }
+  };
+
+  const handleFullscreen = () => {
+    const video = videoRef.current;
+    if (video) {
+      const videoElement = video as HTMLVideoElement & {
+        webkitEnterFullscreen?: () => void;
+      };
+      if (videoElement.requestFullscreen) {
+        videoElement.requestFullscreen();
+      } else if (videoElement.webkitEnterFullscreen) {
+        videoElement.webkitEnterFullscreen();
+      }
+    }
+  };
+
   return (
-    <main className="flex flex-col items-center justify-center min-h-screen bg-white px-4">
-      <div className="text-center">
-        <img alt="Cat emoji" src={Cat.src} className="w-32 h-32 object-contain mb-6 mx-auto" />
-        <h1 className="text-2xl font-black text-black">{t("soon")}</h1>
-        <h1 className="text-2xl text-gradient ml-auto font-semibold text-black">15/12/2024</h1>
-      </div>
-    </main>
+    <div className="min-h-screen">
+      <main className="flex flex-col items-center justify-center px-4">
+        <div className="w-72 h-72 rounded-full overflow-hidden mt-8 bg-gray-700 flex items-center justify-center relative">
+          {loading && <p className="text-white">Загрузка...</p>}
+          {videoSrc && !loading && (
+            <>
+              <video
+                ref={videoRef}
+                src={videoSrc}
+                className="w-full h-full object-cover"
+                controls={false}
+                loop
+                playsInline
+                autoPlay
+                onClick={(e) => {
+                  const video = e.currentTarget as HTMLVideoElement;
+                  if (video.paused) {
+                    video.play();
+                  } else {
+                    video.pause();
+                  }
+                }}
+              />
+            </>
+          )}
+        </div>
+        <button
+          onClick={handleFullscreen}
+          className="absolute py-2 top-2 right-2 text-black rounded p-1"
+        >
+          <FiMaximize size={24} />
+        </button>
+
+        {/* Текстовые элементы */}
+        <h1 className="text-xl text-black font-bold mt-4">USERNAME</h1>
+        <h2 className="text-lg text-black font-semibold">Гурман</h2>
+        <p className="text-base text-black">Съешь лимон</p>
+
+        {/* Кнопки */}
+        <div className="flex justify-between mt-6 w-full max-w-sm mx-auto px-4">
+          <button
+            onClick={dislikeVideo}
+            disabled={!videoId || loading}
+            className="bg-gray-300 text-black rounded px-6 py-2"
+          >
+            <FiThumbsDown size={24} />
+          </button>
+          <button
+            disabled={true} // Отключаем кнопку "Пропустить"
+            className="bg-blue-500 text-white rounded px-4 py-2"
+            style={{ backgroundColor: "#FEEF9E", color: "black" }}
+          >
+            <FiRefreshCw size={24} />
+          </button>
+          <button
+            onClick={likeVideo}
+            disabled={!videoId || loading}
+            className="bg-blue-500 text-white rounded px-6 py-2"
+            style={{ backgroundColor: "#ABD6E0", color: "black" }}
+          >
+            <FiThumbsUp size={24} />
+          </button>
+        </div>
+      </main>
+    </div>
   );
 };
 
