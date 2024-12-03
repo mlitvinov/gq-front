@@ -7,6 +7,9 @@ import { initData, useSignal } from "@telegram-apps/sdk-react";
 const RecommendationsPage = () => {
   const [videoSrc, setVideoSrc] = useState<string | null>(null);
   const [videoId, setVideoId] = useState<string | null>(null);
+  const [username, setUsername] = useState<string>("");
+  const [achievementTitle, setAchievementTitle] = useState<string>("");
+  const [description, setDescription] = useState<string>("");
   const [loading, setLoading] = useState<boolean>(false);
   const videoRef = useRef<HTMLVideoElement>(null);
 
@@ -35,6 +38,11 @@ const RecommendationsPage = () => {
         if (videoData && videoData.videoUrl) {
           setVideoId(videoData.id);
 
+          // Устанавливаем данные из DTO
+          setUsername(videoData.username);
+          setAchievementTitle(videoData.achievementTitle);
+          setDescription(videoData.description);
+
           // Получаем URL для скачивания видео
           const videoUrl = `https://getquest.tech/api/videos/download?fileId=${videoData.videoUrl}`;
 
@@ -56,20 +64,32 @@ const RecommendationsPage = () => {
           console.error("Видео не найдено в ответе сервера.");
           setVideoSrc(null);
           setVideoId(null);
+          setUsername("");
+          setAchievementTitle("");
+          setDescription("");
         }
       } else if (response.status === 204) {
         console.log("Видео больше нет.");
         setVideoSrc(null);
         setVideoId(null);
+        setUsername("");
+        setAchievementTitle("");
+        setDescription("");
       } else {
         console.error("Ошибка при загрузке видео:", response.status);
         setVideoSrc(null);
         setVideoId(null);
+        setUsername("");
+        setAchievementTitle("");
+        setDescription("");
       }
     } catch (error) {
       console.error("Ошибка при загрузке видео:", error);
       setVideoSrc(null);
       setVideoId(null);
+      setUsername("");
+      setAchievementTitle("");
+      setDescription("");
     } finally {
       setLoading(false);
     }
@@ -191,9 +211,15 @@ const RecommendationsPage = () => {
         </button>
 
         {/* Текстовые элементы */}
-        <h1 className="text-xl text-black font-bold mt-4">USERNAME</h1>
-        <h2 className="text-lg text-black font-semibold">Гурман</h2>
-        <p className="text-base text-black">Съешь лимон</p>
+        {username && (
+          <h1 className="text-xl text-black font-bold mt-4">@{username}</h1>
+        )}
+        {achievementTitle && (
+          <h2 className="text-lg text-black font-semibold">{achievementTitle}</h2>
+        )}
+        {description && (
+          <p className="text-base text-black">{description}</p>
+        )}
 
         {/* Кнопки */}
         <div className="flex justify-between mt-6 w-full max-w-sm mx-auto px-4">
