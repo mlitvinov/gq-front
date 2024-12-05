@@ -3,11 +3,13 @@
 import React, { useEffect, useState, useRef } from "react";
 import { FiMaximize, FiRefreshCw, FiThumbsDown, FiThumbsUp } from "react-icons/fi";
 import { initData, useSignal } from "@telegram-apps/sdk-react";
+import { Link } from "@/components/Link/Link";
 
 const RecommendationsPage = () => {
   const [videoSrc, setVideoSrc] = useState<string | null>(null);
   const [videoId, setVideoId] = useState<string | null>(null);
   const [username, setUsername] = useState<string>("");
+  const [userId, setUserId] = useState<number | null>(null);
   const [achievementTitle, setAchievementTitle] = useState<string>("");
   const [description, setDescription] = useState<string>("");
   const [loading, setLoading] = useState<boolean>(false);
@@ -40,6 +42,7 @@ const RecommendationsPage = () => {
 
           // Устанавливаем данные из DTO
           setUsername(videoData.username);
+          setUserId(videoData.userId);
           setAchievementTitle(videoData.achievementTitle);
           setDescription(videoData.description);
 
@@ -65,6 +68,7 @@ const RecommendationsPage = () => {
           setVideoSrc(null);
           setVideoId(null);
           setUsername("");
+          setUserId(null);
           setAchievementTitle("");
           setDescription("");
         }
@@ -73,6 +77,7 @@ const RecommendationsPage = () => {
         setVideoSrc(null);
         setVideoId(null);
         setUsername("");
+        setUserId(null);
         setAchievementTitle("");
         setDescription("");
       } else {
@@ -80,6 +85,7 @@ const RecommendationsPage = () => {
         setVideoSrc(null);
         setVideoId(null);
         setUsername("");
+        setUserId(null);
         setAchievementTitle("");
         setDescription("");
       }
@@ -88,6 +94,7 @@ const RecommendationsPage = () => {
       setVideoSrc(null);
       setVideoId(null);
       setUsername("");
+      setUserId(null);
       setAchievementTitle("");
       setDescription("");
     } finally {
@@ -211,8 +218,10 @@ const RecommendationsPage = () => {
         </button>
 
         {/* Текстовые элементы */}
-        {username && (
-          <h1 className="text-xl text-black font-bold mt-4">@{username}</h1>
+        {username && userId && (
+          <h1 className="text-xl text-blue-500 font-bold mt-4">
+            <Link href={`/profile/${userId}`}>@{username}</Link>
+          </h1>
         )}
         {achievementTitle && (
           <h2 className="text-lg text-black font-semibold">{achievementTitle}</h2>
@@ -230,13 +239,13 @@ const RecommendationsPage = () => {
           >
             <FiThumbsDown size={24} />
           </button>
-          <button
-            disabled={true} // Отключаем кнопку "Пропустить"
-            className="bg-blue-500 text-white rounded px-4 py-2"
-            style={{ backgroundColor: "#FEEF9E", color: "black" }}
-          >
-            <FiRefreshCw size={24} />
-          </button>
+          {/*<button*/}
+          {/*  disabled={true}*/}
+          {/*  className="bg-blue-500 text-white rounded px-4 py-2"*/}
+          {/*  style={{ backgroundColor: "#FEEF9E", color: "black" }}*/}
+          {/*>*/}
+          {/*  <FiRefreshCw size={24} />*/}
+          {/*</button>*/}
           <button
             onClick={likeVideo}
             disabled={!videoId || loading}
