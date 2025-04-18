@@ -224,7 +224,7 @@ const RecommendationsPage = () => {
               }}
               style={{ position: "absolute", top: 0, left: 0 }}
             >
-              {loading && <p className="text-white">Загрузка...</p>}
+              {loading && <p className="text-white">Loading...</p>}
               {videoSrc && !loading && (
                 <video
                   ref={videoRef}

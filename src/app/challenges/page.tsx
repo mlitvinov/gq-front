@@ -67,7 +67,7 @@ export default function ChallengesPage() {
 
   const fetchChallenges = async () => {
     try {
-      let endpoint = null;
+      let endpoint: string | null = null;
 
       if (tab === "assigned") {
         endpoint = `/api/challenges/assigned`;
@@ -104,7 +104,15 @@ export default function ChallengesPage() {
   return (
     <main className="relative flex flex-col">
       <div ref={ref} className="bg-white h-48 overflow-hidden absolute inset-x-0 top-0 -z-10">
-        <video loop autoPlay muted playsInline controls={false} preload="metadata" className="size-full pointer-events-none object-cover">
+        <video
+          loop
+          autoPlay
+          muted
+          playsInline
+          controls={false}
+          preload="metadata"
+          className="size-full pointer-events-none object-cover"
+        >
           <source src="/gradient.webm" type="video/webm" />
           <source src="/gradient.mp4" type="video/mp4" />
         </video>
@@ -112,34 +120,78 @@ export default function ChallengesPage() {
 
       <div className="mt-40 rounded-t-[2rem] bg-white px-5 pt-8 pb-[calc(var(--nav-height)+1rem)]">
         <div className="flex justify-around mb-4">
-          <button className={cn("flex-grow text-[#B1B1B1] relative after:content after:bottom-0 after:h-[2px] after:bg-[#F6F6F6] after:inset-x-0 after:rounded-l-full after:absolute font-medium text-center py-2", tab === "targets" && "text-black after:bg-[#FEEE9E]")} onClick={() => setTab("targets")}>
+          <button
+            className={cn(
+              "flex-grow text-[#B1B1B1] relative after:content after:bottom-0 after:h-[2px] after:bg-[#F6F6F6] after:inset-x-0 after:rounded-l-full after:absolute font-medium text-center py-2",
+              tab === "targets" && "text-black after:bg-[#FEEE9E]"
+            )}
+            onClick={() => setTab("targets")}
+          >
             {t("quest-goals")}
           </button>
-          <button className={cn("flex-grow text-[#B1B1B1] relative after:content after:bottom-0 after:h-[2px] after:bg-[#F6F6F6] after:inset-x-0 after:rounded-l-full after:absolute font-medium text-center py-2", tab === "promo" && "text-black after:bg-[#FEEE9E]")} onClick={() => setTab("promo")}>
+          <button
+            className={cn(
+              "flex-grow text-[#B1B1B1] relative after:content after:bottom-0 after:h-[2px] after:bg-[#F6F6F6] after:inset-x-0 after:rounded-l-full after:absolute font-medium text-center py-2",
+              tab === "promo" && "text-black after:bg-[#FEEE9E]"
+            )}
+            onClick={() => setTab("promo")}
+          >
             {t("quest-promo")}
           </button>
-          <button className={cn("flex-grow text-[#B1B1B1] relative after:content after:bottom-0 after:h-[2px] after:bg-[#F6F6F6] after:inset-x-0 after:rounded-l-full after:absolute font-medium text-center py-2", tab === "assigned" && "text-black after:bg-[#FEEE9E]")} onClick={() => setTab("assigned")}>
+          <button
+            className={cn(
+              "flex-grow text-[#B1B1B1] relative after:content after:bottom-0 after:h-[2px] after:bg-[#F6F6F6] after:inset-x-0 after:rounded-l-full after:absolute font-medium text-center py-2",
+              tab === "assigned" && "text-black after:bg-[#FEEE9E]"
+            )}
+            onClick={() => setTab("assigned")}
+          >
             {t("quest-friends")}
           </button>
-          <button className={cn("flex-grow text-[#B1B1B1] relative after:content after:bottom-0 after:h-[2px] after:bg-[#F6F6F6] after:inset-x-0 after:rounded-l-full after:absolute font-medium text-center py-2", tab === "sent" && "text-black after:bg-[#FEEE9E]")} onClick={() => setTab("sent")}>
+          <button
+            className={cn(
+              "flex-grow text-[#B1B1B1] relative after:content after:bottom-0 after:h-[2px] after:bg-[#F6F6F6] after:inset-x-0 after:rounded-l-full after:absolute font-medium text-center py-2",
+              tab === "sent" && "text-black after:bg-[#FEEE9E]"
+            )}
+            onClick={() => setTab("sent")}
+          >
             {t("quest-for-friends")}
           </button>
         </div>
 
         <div className="flex flex-col gap-3 mb-24">
-          {tab === "targets"
-            ? goals.map((goal) => {
+          {tab === "targets" ? (
+            goals.length === 0 ? (
+              <div className="text-center text-gray-500 py-8">{t("empty_challenges")}</div>
+            ) : (
+              goals.map((goal) => {
                 const { bars, color } = getStatusBars(goal.status, true);
 
                 return (
-                  <button key={goal.id} type="button" className={`flex flex-col  border rounded-full border-[#fcf4f4] px-6 py-4 ${goal.status === "REWARDED" ? "opacity-50" : ""}`} onClick={() => setSelectedGoal(goal)}>
+                  <button
+                    key={goal.id}
+                    type="button"
+                    className={`flex flex-col border rounded-full border-[#fcf4f4] px-6 py-4 ${
+                      goal.status === "REWARDED" ? "opacity-50" : ""
+                    }`}
+                    onClick={() => setSelectedGoal(goal)}
+                  >
                     <div className="flex items-center gap-4 w-full">
                       <div className="flex gap-2 items-start">
-                        <img src={`${BASE_URL}/api/images/${goal.picUrl}`} alt={goal.name} className="size-12 bg-[#F6F6F6] rounded-xl" />
+                        <img
+                          src={`${BASE_URL}/api/images/${goal.picUrl}`}
+                          alt={goal.name}
+                          className="size-12 bg-[#F6F6F6] rounded-xl"
+                        />
                         <div className="flex-grow">
                           <div className="text-black font-semibold">{goal.name}</div>
                           <p className="text-gradient text-start">
-                            {goal.rewardPoints} <img className="inline relative -top-0.5 -left-1" src={Rewards.src} height={18} width={18} />
+                            {goal.rewardPoints}{" "}
+                            <img
+                              className="inline relative -top-0.5 -left-1"
+                              src={Rewards.src}
+                              height={18}
+                              width={18}
+                            />
                           </p>
                         </div>
                       </div>
@@ -149,7 +201,7 @@ export default function ChallengesPage() {
                       </div>
                     </div>
 
-                    {bars > 0 ? (
+                    {bars > 0 && (
                       <div className="flex gap-[10px] mt-2">
                         {Array.from({ length: 4 }).map((_, index) => (
                           <figure
@@ -161,42 +213,68 @@ export default function ChallengesPage() {
                           />
                         ))}
                       </div>
-                    ) : null}
+                    )}
                   </button>
                 );
               })
-            : challenges.map((challenge) => {
-                const isPromo = tab === "promo";
-                const { bars, color } = getStatusBars(challenge.status, isPromo);
-
-                return (
-                  <div key={challenge.id} className="flex flex-col border rounded-full border-[#fcf4f4] px-6 py-4">
-                    <div className="flex gap-2 items-center">
-                      <img src={isPromo ? `${BASE_URL}/api/images/${challenge.promoAchievementPicsUrl}` : `${BASE_URL}/api/images/${challenge.achievementPicsUrl}`} className="size-12 bg-[#F6F6F6] rounded-xl" />
-                      <div className="flex-grow" onClick={() => setSelectedChallenge(challenge)}>
-                        <div className="text-black font-semibold">{isPromo ? challenge.promoAchievementTitle : challenge.achievementTitle}</div>
-                        <div className="text-gradient">
-                          {challenge.price} <img className="inline relative -top-0.5 -left-1" src={Rewards.src} height={18} width={18} />
-                        </div>
+            )
+          ) : challenges.length === 0 ? (
+            <div className="text-center text-gray-500 py-8">{t("empty_challenges")}</div>
+          ) : (
+            challenges.map((challenge) => {
+              const isPromo = tab === "promo";
+              const { bars, color } = getStatusBars(challenge.status, isPromo);
+              return (
+                <div
+                  key={challenge.id}
+                  className="flex flex-col border rounded-full border-[#fcf4f4] px-6 py-4"
+                >
+                  <div className="flex gap-2 items-center">
+                    <img
+                      src={
+                        isPromo
+                          ? `${BASE_URL}/api/images/${challenge.promoAchievementPicsUrl}`
+                          : `${BASE_URL}/api/images/${challenge.achievementPicsUrl}`
+                      }
+                      className="size-12 bg-[#F6F6F6] rounded-xl"
+                    />
+                    <div
+                      className="flex-grow"
+                      onClick={() => setSelectedChallenge(challenge)}
+                    >
+                      <div className="text-black font-semibold">
+                        {isPromo
+                          ? challenge.promoAchievementTitle
+                          : challenge.achievementTitle}
+                      </div>
+                      <div className="text-gradient">
+                        {challenge.price}{" "}
+                        <img
+                          className="inline relative -top-0.5 -left-1"
+                          src={Rewards.src}
+                          height={18}
+                          width={18}
+                        />
                       </div>
                     </div>
-
-                    {bars > 0 ? (
-                      <div className="flex gap-[10px] mt-2">
-                        {Array.from({ length: 4 }).map((_, index) => (
-                          <figure
-                            key={index}
-                            className="h-[5px] grow rounded-full"
-                            style={{
-                              backgroundColor: index < bars ? color : "#F6F6F6",
-                            }}
-                          />
-                        ))}
-                      </div>
-                    ) : null}
                   </div>
-                );
-              })}
+                  {bars > 0 && (
+                    <div className="flex gap-[10px] mt-2">
+                      {Array.from({ length: 4 }).map((_, index) => (
+                        <figure
+                          key={index}
+                          className="h-[5px] grow rounded-full"
+                          style={{
+                            backgroundColor: index < bars ? color : "#F6F6F6",
+                          }}
+                        />
+                      ))}
+                    </div>
+                  )}
+                </div>
+              );
+            })
+          )}
         </div>
       </div>
 
@@ -206,11 +284,31 @@ export default function ChallengesPage() {
           onClose={() => {
             setSelectedChallenge(null);
           }}
-          achievementPicsUrl={tab === "promo" ? selectedChallenge.promoAchievementPicsUrl || "" : selectedChallenge.achievementPicsUrl || ""}
-          achievementTitle={tab === "promo" ? selectedChallenge.promoAchievementTitle || "" : selectedChallenge.achievementTitle || ""}
+          achievementPicsUrl={
+            tab === "promo"
+              ? selectedChallenge.promoAchievementPicsUrl || ""
+              : selectedChallenge.achievementPicsUrl || ""
+          }
+          achievementTitle={
+            tab === "promo"
+              ? selectedChallenge.promoAchievementTitle || ""
+              : selectedChallenge.achievementTitle || ""
+          }
           reputation={selectedChallenge.price}
-          senderName={tab === "assigned" ? `@${selectedChallenge.senderUserName}` : tab === "sent" ? `@${selectedChallenge.receiverUserName}` : t("promo-challenge")}
-          userId={tab === "assigned" ? selectedChallenge.senderId : tab === "sent" ? selectedChallenge.receiverId : 0}
+          senderName={
+            tab === "assigned"
+              ? `@${selectedChallenge.senderUserName}`
+              : tab === "sent"
+                ? `@${selectedChallenge.receiverUserName}`
+                : t("promo-challenge")
+          }
+          userId={
+            tab === "assigned"
+              ? selectedChallenge.senderId
+              : tab === "sent"
+                ? selectedChallenge.receiverId
+                : 0
+          }
           description={selectedChallenge.description}
           status={selectedChallenge.status}
           isSent={tab === "sent"}

@@ -6,6 +6,7 @@
   "challenges": {
     "approve": "Approve",
     "reject": "Reject",
+    "empty_challenges": "There are no challenges",
     "upload_confirmation": "Upload Confirmation",
     "delete_entry": "Delete entry from history",
     "danger-warning": "⚠️ This task is dangerous and can cause serious harm. By accepting this challenge, you acknowledge and accept all risks, and you agree that you have no claims against us.",
