@@ -3,6 +3,7 @@
 import React, { useEffect, useState } from "react";
 import Arrows from "@/app/_assets/arrows.png";
 import Rewards from "@/app/_assets/rewards.png";
+import Question from "@/app/_assets/box.png";
 import { AchievementDrawer } from "@/app/profile/drawer";
 import { Button } from "@/components/ui/button";
 import { Carousel } from "@/components/carousel";
@@ -26,8 +27,7 @@ interface UserData {
   earnedCount: number;
 }
 
-// Функция для разделения массива на верхний и нижний ряды
-const splitArray = (array: any[]): { top: any[]; bottom: any[] } =>
+const splitArray = <T,>(array: T[]): { top: T[]; bottom: T[] } =>
   array.reduce(
     (acc, el, index) => {
       if (index % 2 === 0) {
@@ -37,14 +37,15 @@ const splitArray = (array: any[]): { top: any[]; bottom: any[] } =>
       }
       return acc;
     },
-    { top: [], bottom: [] }
+    { top: [] as T[], bottom: [] as T[] }
   );
 
-// Функция для дополнения массива до нужной длины
-const fillArray = (array: any[], length: number) => {
+// Дополняем массив нулями (null) до нужной длины, чтобы ячеек в карусели
+// всегда было одинаковое количество
+const fillArray = <T,>(array: T[], length: number) => {
   const result = [...array];
   while (result.length < length) {
-    result.push(null);
+    result.push(null as T);
   }
   return result;
 };
@@ -52,7 +53,7 @@ const fillArray = (array: any[], length: number) => {
 export default function ProfilePage({ params }: { params?: { id: number } }) {
   const t = useTranslations("profile");
   const [userData, setUserData] = useState<UserData | null>(null);
-  const [achievementImages, setAchievementImages] = useState<{ imageUrl: string; id: string }[]>([]);
+  const [achievementImages, setAchievementImages] = useState<{ imageUrl: string | null; id: string | null }[]>([]);
   const [videoUrls, setVideoUrls] = useState<string[]>([]);
   const [selectedAchievement, setSelectedAchievement] = useState<Achievement | null>(null);
   const [challengeData, setChallengeData] = useState<ChallengeData[] | null>(null);
@@ -69,64 +70,55 @@ export default function ProfilePage({ params }: { params?: { id: number } }) {
 
   // Получение количества непрочитанных уведомлений при загрузке страницы
   useEffect(() => {
-    const fetchUnreadCount = async () => {
+    (async () => {
       try {
-        const data = await api.get<{ unreadCount: number }>(`/api/notifications/count`);
-        setUnreadCount(data.unreadCount);
-      } catch (error) {
-        console.error("Ошибка при получении количества непрочитанных уведомлений:", error);
+        const { unreadCount } = await api.get<{ unreadCount: number }>("/api/notifications/count");
+        setUnreadCount(unreadCount);
+      } catch (err) {
+        console.error("Ошибка при получении количества непрочитанных уведомлений:", err);
       }
-    };
-
-    fetchUnreadCount();
+    })();
   }, []);
 
   useEffect(() => {
-    const fetchProfileData = async () => {
+    (async () => {
       try {
-        const url = !isUserPage ? `/api/users/profile/?id=${params?.id}` : `/api/users/profile`;
-
+        const url = !isUserPage ? `/api/users/profile/?id=${params?.id}` : "/api/users/profile";
         const data = await api.get<UserData>(url);
 
         setUserData(data);
         setAchievementImages(
-          data.achievementListDTO.map((achievement: Achievement) => ({
-            id: achievement.userAchievement!.toString(),
-            imageUrl: `${BASE_URL}/api/images/${achievement.imageUrl}`,
+          data.achievementListDTO.map((a) => ({
+            id: a.userAchievement?.toString() ?? null,
+            imageUrl: a.imageUrl ? `${BASE_URL}/api/images/${a.imageUrl}` : null,
           }))
         );
-      } catch (error) {
-        console.error("Ошибка при загрузке данных профиля:", error);
+      } catch (err) {
+        console.error("Ошибка при загрузке данных профиля:", err);
       }
-    };
-
-    fetchProfileData();
+    })();
   }, []);
 
   useEffect(() => {
-    const fetchVideoUrls = async () => {
-      if (!userData) return;
-
+    if (!userData) return;
+    (async () => {
       try {
-        const data = await api.get<string[]>(`/api/challenges/user/video-urls?userId=${userData.id}`);
-
-        setVideoUrls(data);
-      } catch (error) {
-        console.error("Ошибка при получении видео URL:", error);
+        const urls = await api.get<string[]>(`/api/challenges/user/video-urls?userId=${userData.id}`);
+        setVideoUrls(urls);
+      } catch (err) {
+        console.error("Ошибка при получении видео URL:", err);
       }
-    };
-
-    fetchVideoUrls();
+    })();
   }, [userData]);
 
   // Загрузка полного списка уведомлений при открытии дровера
   const handleNotificationsClick = async () => {
     setIsNotificationsOpen(true);
     try {
-      const data = await api.get<{ events: Notification[] }>(`/api/notifications`);
-      setNotifications(data.events);
-    } catch (error) {
-      console.error("Ошибка при получении уведомлений:", error);
+      const { events } = await api.get<{ events: Notification[] }>("/api/notifications");
+      setNotifications(events);
+    } catch (err) {
+      console.error("Ошибка при получении уведомлений:", err);
     }
   };
 
@@ -134,28 +126,25 @@ export default function ProfilePage({ params }: { params?: { id: number } }) {
   const handleNotificationsClose = async () => {
     setIsNotificationsOpen(false);
     try {
-      const data = await api.get<{ unreadCount: number }>(`/api/notifications/count`);
-      setUnreadCount(data.unreadCount);
-    } catch (error) {
-      console.error("Ошибка при обновлении счётчика непрочитанных уведомлений:", error);
+      const { unreadCount } = await api.get<{ unreadCount: number }>("/api/notifications/count");
+      setUnreadCount(unreadCount);
+    } catch (err) {
+      console.error("Ошибка при обновлении счётчика непрочитанных уведомлений:", err);
     }
   };
 
-  const handleAchievementClick = async (id: string) => {
-    const achievement = userData?.achievementListDTO.find((el) => el.userAchievement!.toString() === id);
-
+   const handleAchievementClick = async (id: string | null) => {
+    if (!id || !userData) return;
+    const achievement = userData.achievementListDTO.find((el) => el.userAchievement?.toString() === id);
     if (!achievement) return;
 
     setSelectedAchievement(achievement);
 
     try {
       const data = await api.get<ChallengeData[]>(`/api/challenges/achievement/${achievement.userAchievement}`);
-
-      if (data.length > 0) {
-        setChallengeData(data);
-      }
-    } catch (error) {
-      console.error("Ошибка при получении данных задания:", error);
+      if (data.length > 0) setChallengeData(data);
+    } catch (err) {
+      console.error("Ошибка при получении данных задания:", err);
     }
   };
 
@@ -166,10 +155,10 @@ export default function ProfilePage({ params }: { params?: { id: number } }) {
     try {
       await api.post(`/api/friends/request?receiverId=${userData.id}`);
 
-      setUserData((prevData) => (prevData ? { ...prevData, friendStatus: "REQUESTED" } : prevData));
-      setIsLoadingAddFriend(false);
-    } catch (error) {
-      console.error("Ошибка при отправке запроса в друзья:", error);
+      setUserData((prev) => (prev ? { ...prev, friendStatus: "REQUESTED" } : prev));
+    } catch (err) {
+      console.error("Ошибка при отправке запроса в друзья:", err);
+    } finally {
       setIsLoadingAddFriend(false);
     }
   };
@@ -184,10 +173,10 @@ export default function ProfilePage({ params }: { params?: { id: number } }) {
     try {
       await api.post(`/api/friends/accept/${userData.id}`);
 
-      setUserData((prevData) => (prevData ? { ...prevData, friendStatus: "FRIEND" } : prevData));
-      setIsLoadingAcceptFriend(false);
-    } catch (error) {
-      console.error("Ошибка при принятии запроса в друзья:", error);
+      setUserData((prev) => (prev ? { ...prev, friendStatus: "FRIEND" } : prev));
+    } catch (err) {
+      console.error("Ошибка при принятии запроса в друзья:", err);
+    } finally {
       setIsLoadingAcceptFriend(false);
     }
   };
@@ -206,20 +195,18 @@ export default function ProfilePage({ params }: { params?: { id: number } }) {
       {/* Иконка уведомлений в левом верхнем углу */}
       <div className="absolute text-gray-500 top-7 left-5">
         <button onClick={handleNotificationsClick} className="relative">
-          <FiBell className="text-gray-500" size={24} />
+          <FiBell size={24} />
           {unreadCount > 0 && (
-            <span className="absolute -top-2 -right-2 bg-red-500 text-white rounded-full px-1 text-xs">
-              {unreadCount}
-            </span>
+            <span className="absolute -top-2 -right-2 bg-red-500 text-white rounded-full px-1 text-xs">{unreadCount}</span>
           )}
         </button>
       </div>
 
       <section className="flex flex-col items-center gap-4 w-full mb-8">
         <div className="flex flex-col justify-center items-center">
-          <img className="relative left-1" src={Rewards.src} width={80} height={80} />
+          <img src={Rewards.src} width={80} height={80} className="relative left-1" alt="rewards" />
           <h1 className="text-gradient text-center text-3xl font-black">{Number(userData.rating).toLocaleString()}</h1>
-          <p className="text-black">@{userData.username ? userData.username : userData.name}</p>
+          <p className="text-black">@{userData.username || userData.name}</p>
         </div>
 
         {!isUserPage && (
@@ -245,48 +232,49 @@ export default function ProfilePage({ params }: { params?: { id: number } }) {
         autoPlay
         containerClassName="[&>*:nth-child(odd)]:mt-2 select-none"
         options={{ loop: true, align: "center", dragFree: true }}
-        items={sliders.top.map((el, index) =>
-          el?.imageUrl ? (
-            <div
-              key={index}
-              className="flex-shrink-0 size-16 rounded-xl bg-[#F6F6F6] px-1 mr-8 mb-4"
-              onClick={() => handleAchievementClick(el.id)}
-            >
-              <img src={el.imageUrl} alt={`Логотип ${index + 1}`} className="size-16 object-contain cursor-pointer" />
-            </div>
-          ) : (
-            <div key={index} className="size-16 px-4 mr-8 mb-4 rounded-xl bg-[#F6F6F6] select-none" />
-          )
-        )}
+        items={sliders.top.map((el, idx) => (
+          <div
+            key={`a-top-${idx}`}
+            className="flex-shrink-0 size-16 rounded-xl bg-[#F6F6F6] px-1 mr-8 mb-4 flex items-center justify-center"
+            onClick={() => handleAchievementClick(el?.id ?? null)}
+          >
+            <img
+              src={el?.imageUrl ?? Question.src}
+              alt={el?.imageUrl ? `Достижение ${idx + 1}` : "Достижение скрыто"}
+              className="size-16 object-contain cursor-pointer"
+            />
+          </div>
+        ))}
       />
 
       <Carousel
         autoPlay
         containerClassName="[&>*:nth-child(odd)]:mt-2 select-none"
         options={{ loop: true, align: "center", dragFree: true }}
-        items={sliders.bottom.map((el, index) =>
-          el?.imageUrl ? (
-            <div
-              key={index}
-              className="flex-shrink-0 size-16 rounded-xl bg-[#F6F6F6] px-1 mr-8 mb-4"
-              onClick={() => handleAchievementClick(el.id)}
-            >
-              <img src={el.imageUrl} alt={`Логотип ${index + 1}`} className="size-16 object-contain cursor-pointer" />
-            </div>
-          ) : (
-            <div key={index} className="size-16 px-4 mr-8 mb-4 rounded-xl bg-[#F6F6F6] select-none" />
-          )
-        )}
+        items={sliders.bottom.map((el, idx) => (
+          <div
+            key={`a-bot-${idx}`}
+            className="flex-shrink-0 size-16 rounded-xl bg-[#F6F6F6] px-1 mr-8 mb-4 flex items-center justify-center"
+            onClick={() => handleAchievementClick(el?.id ?? null)}
+          >
+            <img
+              src={el?.imageUrl ?? Question.src}
+              alt={el?.imageUrl ? `Достижение ${idx + 7}` : "hidden"}
+              className="size-16 object-contain cursor-pointer"
+            />
+          </div>
+        ))}
       />
 
       {/* Раздел с количеством выполненных заданий и заработанным рейтингом */}
       <section className="mb-6">
-        <h1 className="text-black text-2xl text-left font-medium tracking-[-0.05em] mb-2">
-          {t("done")} <span className="text-gradient font-black">{userData.taskCount}</span>{" "}
+        <h1 className="text-black text-2xl font-medium tracking-[-0.05em] mb-2">
+          {t("done")}{" "}
+          <span className="text-gradient font-black">{userData.taskCount}</span>{" "}
           {t("task", { count: userData.taskCount })}{" "}
-          <img className="inline -left-1 top-0 relative" src={Rewards.src} width={32} height={32} />
+          <img src={Rewards.src} width={32} height={32} alt="rewards" className="inline relative -left-1 top-0" />
           <br />
-          <img className="inline -left-1 relative" src={Arrows.src} width={32} height={32} />
+          <img src={Arrows.src} width={32} height={32} alt="arrows" className="inline relative -left-1" />
           {t("earned")} <span className="text-gradient">{userData.earnedCount}</span> {t("reputations")}
         </h1>
       </section>
@@ -296,9 +284,9 @@ export default function ProfilePage({ params }: { params?: { id: number } }) {
         autoPlay
         containerClassName="[&>*:nth-child(odd)]:mt-2 select-none"
         options={{ loop: true, align: "center", dragFree: true }}
-        items={videoUrls.map((videoUrl) => (
-          <div key={videoUrl} className="flex flex-col justify-center w-full px-4">
-            <figure className="rounded-full overflow-hidden  size-64 bg-[#F6F6F6] flex items-center justify-center mr-6">
+        items={videoUrls.map((url) => (
+          <div key={url} className="flex flex-col justify-center w-full px-4">
+            <figure className="rounded-full overflow-hidden size-64 bg-[#F6F6F6] flex items-center justify-center mr-6">
               <video
                 autoPlay
                 loop
@@ -307,17 +295,13 @@ export default function ProfilePage({ params }: { params?: { id: number } }) {
                 controls={false}
                 className="w-full h-full object-cover rounded-full"
                 onClick={(e) => {
-                  const video = e.currentTarget;
-                  if (video.requestFullscreen) {
-                    video.requestFullscreen();
-                  } else if ((video as any).webkitEnterFullscreen) {
-                    (video as any).webkitEnterFullscreen();
-                  }
-                  video.play();
+                  const v = e.currentTarget;
+                  if (v.requestFullscreen) v.requestFullscreen();
+                  else if ((v as any).webkitEnterFullscreen) (v as any).webkitEnterFullscreen();
+                  v.play();
                 }}
               >
-                <source src={`${BASE_URL}/api/videos/download?fileId=${videoUrl}`} type="video/mp4" />
-                ERROR
+                <source src={`${BASE_URL}/api/videos/download?fileId=${url}`} type="video/mp4" />
               </video>
             </figure>
           </div>
@@ -325,7 +309,7 @@ export default function ProfilePage({ params }: { params?: { id: number } }) {
       />
 
       {/* Фиксированная навигация */}
-      <nav className="fixed-nav fixed bottom-0 left-0 right-0 bg-white z-1000">
+      <nav className="fixed bottom-0 left-0 right-0 bg-white z-1000">
         <ul className="flex justify-around p-2">
           <li>Друзья</li>
           <li>Испытания</li>
@@ -346,7 +330,7 @@ export default function ProfilePage({ params }: { params?: { id: number } }) {
       {/* Дровер с достижением */}
       {selectedAchievement && (
         <AchievementDrawer
-          isOpen={!!selectedAchievement}
+          isOpen={Boolean(selectedAchievement)}
           onClose={() => {
             setSelectedAchievement(null);
             setChallengeData(null);
