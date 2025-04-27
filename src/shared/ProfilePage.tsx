@@ -141,7 +141,7 @@ export default function ProfilePage({ params }: { params?: { id: number } }) {
     setSelectedAchievement(achievement);
 
     try {
-      const data = await api.get<ChallengeData[]>(`/api/challenges/achievement/${achievement.userAchievement}`);
+      const data = await api.get<ChallengeData[]>(`/api/challenges/achievement/${achievement.userAchievement}?userId=${userData.id}`);
       if (data.length > 0) setChallengeData(data);
     } catch (err) {
       console.error("Ошибка при получении данных задания:", err);
