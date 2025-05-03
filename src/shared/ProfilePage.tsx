@@ -279,34 +279,34 @@ export default function ProfilePage({ params }: { params?: { id: number } }) {
         </h1>
       </section>
 
-      {/* Карусель видео */}
-      <Carousel
-        autoPlay
-        containerClassName="[&>*:nth-child(odd)]:mt-2 select-none"
-        options={{ loop: true, align: "center", dragFree: true }}
-        items={videoUrls.map((url) => (
-          <div key={url} className="flex flex-col justify-center w-full px-4">
-            <figure className="rounded-full overflow-hidden size-64 bg-[#F6F6F6] flex items-center justify-center mr-6">
-              <video
-                autoPlay
-                loop
-                muted
-                playsInline
-                controls={false}
-                className="w-full h-full object-cover rounded-full"
-                onClick={(e) => {
-                  const v = e.currentTarget;
-                  if (v.requestFullscreen) v.requestFullscreen();
-                  else if ((v as any).webkitEnterFullscreen) (v as any).webkitEnterFullscreen();
-                  v.play();
-                }}
-              >
-                <source src={`${BASE_URL}/api/videos/download?fileId=${url}`} type="video/mp4" />
-              </video>
-            </figure>
-          </div>
-        ))}
-      />
+      {/*/!* Карусель видео *!/*/}
+      {/*<Carousel*/}
+      {/*  autoPlay*/}
+      {/*  containerClassName="[&>*:nth-child(odd)]:mt-2 select-none"*/}
+      {/*  options={{ loop: true, align: "center", dragFree: true }}*/}
+      {/*  items={videoUrls.map((url) => (*/}
+      {/*    <div key={url} className="flex flex-col justify-center w-full px-4">*/}
+      {/*      <figure className="rounded-full overflow-hidden size-64 bg-[#F6F6F6] flex items-center justify-center mr-6">*/}
+      {/*        <video*/}
+      {/*          autoPlay*/}
+      {/*          loop*/}
+      {/*          muted*/}
+      {/*          playsInline*/}
+      {/*          controls={false}*/}
+      {/*          className="w-full h-full object-cover rounded-full"*/}
+      {/*          onClick={(e) => {*/}
+      {/*            const v = e.currentTarget;*/}
+      {/*            if (v.requestFullscreen) v.requestFullscreen();*/}
+      {/*            else if ((v as any).webkitEnterFullscreen) (v as any).webkitEnterFullscreen();*/}
+      {/*            v.play();*/}
+      {/*          }}*/}
+      {/*        >*/}
+      {/*          <source src={`${BASE_URL}/api/videos/download?fileId=${url}`} type="video/mp4" />*/}
+      {/*        </video>*/}
+      {/*      </figure>*/}
+      {/*    </div>*/}
+      {/*  ))}*/}
+      {/*/>*/}
 
       {/* Фиксированная навигация */}
       <nav className="fixed bottom-0 left-0 right-0 bg-white z-1000">
