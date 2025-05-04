@@ -72,9 +72,7 @@ const RecommendationsPage = () => {
           const videoResponse = await fetch(videoUrl, { method: "GET" });
 
           if (videoResponse.ok) {
-            const blob = await videoResponse.blob();
-            const objectUrl = window.URL.createObjectURL(blob);
-            setVideoSrc(objectUrl);
+            setVideoSrc(`/tg-files/${videoData.filePath}`);
             setPage((prevPage) => prevPage + 1); // Увеличиваем page для анимации
           } else {
             console.error("Ошибка при загрузке видео:", videoResponse.status);
