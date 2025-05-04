@@ -214,22 +214,21 @@ const RecommendationsPage = () => {
             >
               {loading && <p className="text-white">Loading...</p>}
               {videoSrc && !loading && (
-               <video
-                 ref={videoRef}
-                 className="w-full h-full object-cover"
-                 controls={false}
-                 loop
-                 muted
-                 playsInline
-                 autoPlay
-                 onClick={(e) => {
-                   const v = e.currentTarget as HTMLVideoElement;
-                   v.paused ? v.play() : v.pause();
-                 }}
-               >
-                 <source src={videoSrc} type="video/mp4" />
-           </video>
-          )}
+                <video
+                  ref={videoRef}
+                  className="w-full h-full object-cover"
+                  controls={false}
+                  loop
+                  playsInline
+                  autoPlay
+                  onClick={(e) => {
+                    const v = e.currentTarget as HTMLVideoElement;
+                    v.paused ? v.play() : v.pause();
+                  }}
+                >
+                  <source src={videoSrc} type="video/mp4" />
+                </video>
+              )}
             </motion.div>
           </AnimatePresence>
           <button

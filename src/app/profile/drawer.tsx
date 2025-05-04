@@ -44,22 +44,23 @@ export function AchievementDrawer({ isOpen, onClose, achievement, challengeData 
                   <div className="flex size-64 relative mx-auto rounded-full justify-center my-4">
                     <div className="absolute z-0 inset-0 bg-slate-50 rounded-full animate-pulse" />
                     <video
-                      src={`${BASE_URL}/api/videos/download?fileId=${el.videoUrl}`}
                       className="size-full z-10 absolute inset-0 rounded-full object-cover"
                       controls={false}
                       muted
                       playsInline
                       autoPlay
                       onClick={(e) => {
-                        const video = e.currentTarget;
-                        if (video.requestFullscreen) {
-                          video.requestFullscreen();
-                        } else if ((video as any).webkitEnterFullscreen) {
-                          (video as any).webkitEnterFullscreen();
-                        }
-                        video.play();
+                        const v = e.currentTarget;
+                        if (v.requestFullscreen) v.requestFullscreen();
+                        else if ((v as any).webkitEnterFullscreen) (v as any).webkitEnterFullscreen();
+                        v.play();
                       }}
-                    />
+                    >
+                      <source
+                        src={`${BASE_URL}/api/videos/download?fileId=${el.videoUrl}`}
+                        type="video/mp4"
+                      />
+                    </video>
                   </div>
                 )}
 
