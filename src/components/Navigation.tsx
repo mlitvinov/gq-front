@@ -54,7 +54,7 @@ const Navigation = () => {
 
   const handleMakeImpact = () => {
     if (hapticFeedback.impactOccurred.isAvailable()) {
-      hapticFeedback.impactOccurred("medium");
+      hapticFeedback.impactOccurred("heavy");
     }
   };
 
