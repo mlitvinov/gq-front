@@ -69,10 +69,7 @@ const RecommendationsPage = () => {
           const videoUrl = `https://getquest.tech/api/videos/download?fileId=${videoData.videoUrl}`;
 
           // Загружаем видео
-          const videoResponse = await fetch(videoUrl, {
-            method: "GET",
-            headers,
-          });
+          const videoResponse = await fetch(videoUrl, { method: "GET" });
 
           if (videoResponse.ok) {
             const blob = await videoResponse.blob();
