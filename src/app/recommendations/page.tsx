@@ -68,18 +68,9 @@ const RecommendationsPage = () => {
           // Получаем URL для скачивания видео
           const videoUrl = `https://getquest.tech/api/videos/download?fileId=${videoData.videoUrl}`;
 
-          // Загружаем видео
-          const videoResponse = await fetch(videoUrl, { method: "GET" });
+          setVideoSrc(videoUrl);
+          setPage((p) => p + 1);
 
-          if (videoResponse.ok) {
-            const blob = await videoResponse.blob();
-            const objectUrl = window.URL.createObjectURL(blob);
-            setVideoSrc(objectUrl);
-            setPage((prevPage) => prevPage + 1); // Увеличиваем page для анимации
-          } else {
-            console.error("Ошибка при загрузке видео:", videoResponse.status);
-            setVideoSrc(null);
-          }
         } else {
           console.error("Видео не найдено в ответе сервера.");
           setVideoSrc(null);
