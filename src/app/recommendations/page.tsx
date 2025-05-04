@@ -220,6 +220,7 @@ const RecommendationsPage = () => {
                   className="w-full h-full object-cover"
                   controls={false}
                   loop
+                  muted
                   playsInline
                   autoPlay
                   onClick={(e) => {
