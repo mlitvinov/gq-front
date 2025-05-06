@@ -239,12 +239,12 @@ export default function ChallengesPage() {
                       className="size-12 bg-[#F6F6F6] rounded-xl"
                     />
                     <div
-                      className="flex-grow"
+                      className="flex-grow overflow-hidden"
                       onClick={() => setSelectedChallenge(challenge)}
                     >
-                      <div className="text-black font-semibold">
+                      <div className="text-black font-semibold whitespace-nowrap overflow-hidden text-ellipsis">
                         {isPromo
-                          ? challenge.promoAchievementTitle
+                          ? challenge.description
                           : challenge.achievementTitle}
                       </div>
                       <div className="text-gradient">
@@ -265,7 +265,7 @@ export default function ChallengesPage() {
                           key={index}
                           className="h-[5px] grow rounded-full"
                           style={{
-                            backgroundColor: index < bars ? color : "#F6F6F6",
+                            backgroundColor: index < bars ? color : "#F6F6F6"
                           }}
                         />
                       ))}

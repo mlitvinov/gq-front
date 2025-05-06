@@ -249,15 +249,20 @@ export function ChallengeDrawer({
           <h1 id="challenge-title" className="text-xl font-bold">
             {achievementTitle}
           </h1>
-          {isPromo ? (
-            <a href={taskUrl} target="_blank" rel="noopener noreferrer" className="text-sm text-blue-500 my-2">
+          {isPromo && taskUrl ? (
+            <a
+              href={taskUrl}
+              target="_blank"
+              rel="noopener noreferrer"
+              className="text-sm text-blue-500 my-2"
+            >
               {t("complete")}
             </a>
-          ) : (
+          ) : !isPromo ? (
             <Link href={`/profile/${userId}`} className="text-sm text-gray-600 my-2">
               {senderName}
             </Link>
-          )}
+          ) : null}
           <p className="text-3xl text-gradient ml-4 font-black">
             <span className="mr-1">{reputation}</span>
             <img className="inline relative -top-0.5" src={Rewards.src} height={32} width={32} />
