@@ -99,7 +99,7 @@
     "profile": "Profile"
   },
   "welcomeScreen": {
-    "title": "Welcome to <span class='font-bold'>GetQuest!</span>",
+    "title": "Welcome to GetQuest!",
     "features": {
       "challengeFriends": "Challenge your friends",
       "completeTasks": "Complete tasks to increase your rating",
