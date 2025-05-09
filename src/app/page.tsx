@@ -1,10 +1,34 @@
-import Achievements from "./components/Achievements";
-import CTA from "./components/CTA";
-import Features from "./components/Features";
-import Hero from "./components/Hero";
-import HowItWorks from "./components/HowItWorks";
+/* app/Home.tsx  (Next 13+ app-router) */
+'use client';
+
+import { useEffect } from 'react';
+import { useRouter } from 'next/navigation';
+import { isTMA } from '@telegram-apps/sdk-react';
+
+import Hero            from './components/Hero';
+import Features        from './components/Features';
+import HowItWorks      from './components/HowItWorks';
+import Achievements    from './components/Achievements';
+import CTA             from './components/CTA';
 
 export default function Home() {
+  const router = useRouter();
+
+  useEffect(() => {
+    // внутри useEffect нельзя делать сам хук async,
+    // поэтому оборачиваем в самовызывающуюся функцию…
+    (async () => {
+      try {
+        if (await isTMA()) {           // ☑️ дождались boolean-ответа
+          router.replace('/profile');
+        }
+      } catch {
+        /* вне Telegram isTMA отклоняется — игнорируем */
+      }
+    })();
+  }, [router]);
+
+  /* Отрисовываем лендинг только вне Telegram */
   return (
     <div className="flex flex-col overflow-hidden h-full">
       <div className="overflow-y-auto flex flex-col">
