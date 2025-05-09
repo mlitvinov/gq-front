@@ -9,7 +9,7 @@
 }
 
 body {
-  /* background: var(--tg-theme-secondary-bg-color, white); */
+  /* background: var(--quest-tg-theme-secondary-bg-color, white); */
   background: #fff;
   overflow: hidden;
   /* Отключает горизонтальную прокрутку */
@@ -30,7 +30,7 @@ body,
 }
 
 :root {
-  --safe-area-inset-bottom: calc(100vh - var(--tg-viewport-stable-height, 100vh));
+  --quest-safe-area-inset-bottom: calc(100vh - var(--quest-tg-viewport-stable-height, 100vh));
 }
 
 #root {
@@ -41,4 +41,18 @@ body,
   background: -webkit-linear-gradient(35deg, #e9c7cf 0, #abd6e0 50%, #bdd2da 100%);
   -webkit-background-clip: text;
   -webkit-text-fill-color: transparent;
+}
+
+@layer components {
+  .gradient-text {
+    @apply bg-gradient-to-r from-quest-primary to-quest-tertiary bg-clip-text text-transparent;
+  }
+
+  .emoji-container {
+    @apply bg-white rounded-full p-4 shadow-lg flex items-center justify-center w-16 h-16 md:w-20 md:h-20;
+  }
+
+  .quest-card {
+    @apply bg-white/90 backdrop-blur-sm border border-quest-primary/20 rounded-xl p-6 shadow-lg transition-all duration-300 hover:shadow-xl hover:border-quest-primary/40;
+  }
 }
