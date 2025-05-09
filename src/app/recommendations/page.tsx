@@ -70,6 +70,7 @@ const RecommendationsPage = () => {
 
           setVideoSrc(videoUrl);
           setPage((p) => p + 1);
+
         } else {
           console.error("Видео не найдено в ответе сервера.");
           setVideoSrc(null);
@@ -230,7 +231,10 @@ const RecommendationsPage = () => {
               )}
             </motion.div>
           </AnimatePresence>
-          <button type="button" onClick={handleFullscreen} className="absolute py-2 top-2 right-2 text-black rounded p-1 z-10">
+          <button
+            onClick={handleFullscreen}
+            className="absolute py-2 top-2 right-2 text-black rounded p-1 z-10"
+          >
             <FiMaximize size={24} />
           </button>
         </div>
@@ -241,15 +245,30 @@ const RecommendationsPage = () => {
             <Link href={`/profile/${userId}`}>@{username}</Link>
           </h1>
         )}
-        {achievementTitle && <h2 className="text-lg text-black font-semibold">{achievementTitle}</h2>}
-        {description && <p className="text-base text-black">{description}</p>}
+        {achievementTitle && (
+          <h2 className="text-lg text-black font-semibold">{achievementTitle}</h2>
+        )}
+        {description && (
+          <p className="text-base text-black">{description}</p>
+        )}
 
         {/* Кнопки */}
         <div className="flex justify-between mt-6 w-full max-w-sm mx-auto px-4">
-          <motion.button onClick={dislikeVideo} disabled={!videoId || loading} className="bg-gray-300 text-black rounded px-6 py-2" whileTap={{ scale: 0.9 }}>
+          <motion.button
+            onClick={dislikeVideo}
+            disabled={!videoId || loading}
+            className="bg-gray-300 text-black rounded px-6 py-2"
+            whileTap={{ scale: 0.9 }}
+          >
             <FiThumbsDown size={24} />
           </motion.button>
-          <motion.button onClick={likeVideo} disabled={!videoId || loading} className="bg-blue-500 text-black rounded px-6 py-2" style={{ backgroundColor: "#ABD6E0", color: "black" }} whileTap={{ scale: 0.9 }}>
+          <motion.button
+            onClick={likeVideo}
+            disabled={!videoId || loading}
+            className="bg-blue-500 text-black rounded px-6 py-2"
+            style={{ backgroundColor: "#ABD6E0", color: "black" }}
+            whileTap={{ scale: 0.9 }}
+          >
             <FiThumbsUp size={24} />
           </motion.button>
         </div>

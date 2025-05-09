@@ -4,7 +4,7 @@ import React, { useEffect, useState } from "react";
 import Arrows from "@/app/_assets/arrows.png";
 import Rewards from "@/app/_assets/rewards.png";
 import Question from "@/app/_assets/box.png";
-import { AchievementDrawer } from "@/app/(main)/profile/drawer";
+import { AchievementDrawer } from "@/app/profile/drawer";
 import { Button } from "@/components/ui/button";
 import { Carousel } from "@/components/carousel";
 import { Achievement, ChallengeData, Notification } from "@/types/entities";
@@ -133,7 +133,7 @@ export default function ProfilePage({ params }: { params?: { id: number } }) {
     }
   };
 
-  const handleAchievementClick = async (id: string | null) => {
+   const handleAchievementClick = async (id: string | null) => {
     if (!id || !userData) return;
     const achievement = userData.achievementListDTO.find((el) => el.userAchievement?.toString() === id);
     if (!achievement) return;
@@ -196,7 +196,9 @@ export default function ProfilePage({ params }: { params?: { id: number } }) {
       <div className="absolute text-gray-500 top-7 left-5">
         <button onClick={handleNotificationsClick} className="relative">
           <FiBell size={24} />
-          {unreadCount > 0 && <span className="absolute -top-2 -right-2 bg-red-500 text-white rounded-full px-1 text-xs">{unreadCount}</span>}
+          {unreadCount > 0 && (
+            <span className="absolute -top-2 -right-2 bg-red-500 text-white rounded-full px-1 text-xs">{unreadCount}</span>
+          )}
         </button>
       </div>
 
@@ -231,8 +233,16 @@ export default function ProfilePage({ params }: { params?: { id: number } }) {
         containerClassName="[&>*:nth-child(odd)]:mt-2 select-none"
         options={{ loop: true, align: "center", dragFree: true }}
         items={sliders.top.map((el, idx) => (
-          <div key={`a-top-${idx}`} className="flex-shrink-0 size-16 rounded-xl bg-[#F6F6F6] px-1 mr-8 mb-4 flex items-center justify-center" onClick={() => handleAchievementClick(el?.id ?? null)}>
-            <img src={el?.imageUrl ?? Question.src} alt={el?.imageUrl ? `Достижение ${idx + 1}` : "Достижение скрыто"} className="size-16 object-contain cursor-pointer" />
+          <div
+            key={`a-top-${idx}`}
+            className="flex-shrink-0 size-16 rounded-xl bg-[#F6F6F6] px-1 mr-8 mb-4 flex items-center justify-center"
+            onClick={() => handleAchievementClick(el?.id ?? null)}
+          >
+            <img
+              src={el?.imageUrl ?? Question.src}
+              alt={el?.imageUrl ? `Достижение ${idx + 1}` : "Достижение скрыто"}
+              className="size-16 object-contain cursor-pointer"
+            />
           </div>
         ))}
       />
@@ -242,8 +252,16 @@ export default function ProfilePage({ params }: { params?: { id: number } }) {
         containerClassName="[&>*:nth-child(odd)]:mt-2 select-none"
         options={{ loop: true, align: "center", dragFree: true }}
         items={sliders.bottom.map((el, idx) => (
-          <div key={`a-bot-${idx}`} className="flex-shrink-0 size-16 rounded-xl bg-[#F6F6F6] px-1 mr-8 mb-4 flex items-center justify-center" onClick={() => handleAchievementClick(el?.id ?? null)}>
-            <img src={el?.imageUrl ?? Question.src} alt={el?.imageUrl ? `Достижение ${idx + 7}` : "hidden"} className="size-16 object-contain cursor-pointer" />
+          <div
+            key={`a-bot-${idx}`}
+            className="flex-shrink-0 size-16 rounded-xl bg-[#F6F6F6] px-1 mr-8 mb-4 flex items-center justify-center"
+            onClick={() => handleAchievementClick(el?.id ?? null)}
+          >
+            <img
+              src={el?.imageUrl ?? Question.src}
+              alt={el?.imageUrl ? `Достижение ${idx + 7}` : "hidden"}
+              className="size-16 object-contain cursor-pointer"
+            />
           </div>
         ))}
       />
@@ -251,7 +269,10 @@ export default function ProfilePage({ params }: { params?: { id: number } }) {
       {/* Раздел с количеством выполненных заданий и заработанным рейтингом */}
       <section className="mb-6">
         <h1 className="text-black text-2xl font-medium tracking-[-0.05em] mb-2">
-          {t("done")} <span className="text-gradient font-black">{userData.taskCount}</span> {t("task", { count: userData.taskCount })} <img src={Rewards.src} width={32} height={32} alt="rewards" className="inline relative -left-1 top-0" />
+          {t("done")}{" "}
+          <span className="text-gradient font-black">{userData.taskCount}</span>{" "}
+          {t("task", { count: userData.taskCount })}{" "}
+          <img src={Rewards.src} width={32} height={32} alt="rewards" className="inline relative -left-1 top-0" />
           <br />
           <img src={Arrows.src} width={32} height={32} alt="arrows" className="inline relative -left-1" />
           {t("earned")} <span className="text-gradient">{userData.earnedCount}</span> {t("reputations")}
@@ -297,7 +318,14 @@ export default function ProfilePage({ params }: { params?: { id: number } }) {
       </nav>
 
       {/* Дровер с уведомлениями */}
-      {isNotificationsOpen && <NotificationsDrawer isOpen={isNotificationsOpen} onClose={handleNotificationsClose} notifications={notifications} unreadCount={unreadCount} />}
+      {isNotificationsOpen && (
+        <NotificationsDrawer
+          isOpen={isNotificationsOpen}
+          onClose={handleNotificationsClose}
+          notifications={notifications}
+          unreadCount={unreadCount}
+        />
+      )}
 
       {/* Дровер с достижением */}
       {selectedAchievement && (

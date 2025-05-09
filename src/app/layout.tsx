@@ -4,7 +4,7 @@ import { getLocale } from "next-intl/server";
 
 import { cn } from "@/lib/utils";
 import { fontInter } from "@/lib/fonts";
-
+import { Root } from "@/components/Root/Root";
 import YandexMetrika from "@/components/YandexMetrika";
 import { I18nProvider } from "@/core/i18n/provider";
 
@@ -33,7 +33,7 @@ export default async function RootLayout({ children }: PropsWithChildren) {
     <html lang={locale}>
       <body className={cn("bg-background min-h-screen font-inter antialiased", fontInter.className)}>
         <I18nProvider>
-          {children}
+          <Root>{children}</Root>
           {process.env.NODE_ENV === "production" && (
             <Suspense>
               <YandexMetrika />
