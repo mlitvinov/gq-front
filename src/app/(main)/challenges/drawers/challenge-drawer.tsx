@@ -239,7 +239,7 @@ export function ChallengeDrawer({
 
   return (
     <Drawer open={isOpen} onClose={onClose}>
-      <div className="flex flex-col items-center">
+      <div className="flex flex-col mb-6 items-center">
         <img
           src={`${BASE_URL}/api/images/${achievementPicsUrl}`}
           alt={achievementTitle}
