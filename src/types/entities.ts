@@ -74,3 +74,10 @@ export interface Notification {
   read: boolean;
 }
 
+export type Leader = {
+  id: number;
+  name: string;
+  rating: number;
+  you: boolean;
+};
+
