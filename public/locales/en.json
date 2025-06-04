@@ -92,13 +92,9 @@
     "friend": "Friends",
     "task": "{count, plural, =0 {tasks} =1 {task} one {task} few {tasks} many {tasks} other {tasks}}"
   },
-  "leaders": {
-    "title": "Leaderboard"
-  },
   "navigation": {
     "recommendations": "Recommendations",
     "friends": "Friends",
-    "leaders": "Leaders",
     "challenges": "Challenges",
     "profile": "Profile"
   },

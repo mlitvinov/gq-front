@@ -7,12 +7,10 @@ import friends from "@/app/_assets/friends.png";
 import friendsA from "@/app/_assets/friends-a.png";
 import challenges from "@/app/_assets/challenges.png";
 import challengesA from "@/app/_assets/challenges-a.png";
-import rewards from "@/app/_assets/rewards.png";
 import profile from "@/app/_assets/profile.png";
 import play from "@/app/_assets/play.png";
 import playA from "@/app/_assets/play-a.png";
 import profileA from "@/app/_assets/profile-a.png";
-import rewardsA from "@/app/_assets/rewards.png";
 import { usePathname } from "next/navigation";
 import Link from "next/link";
 import { useTranslations } from "next-intl";
@@ -37,13 +35,6 @@ const Navigation = () => {
       iconA: friendsA,
       label: t("friends"),
       link: "/friends",
-    },
-    {
-      id: "leaders",
-      icon: rewards,
-      iconA: rewardsA,
-      label: t("leaders"),
-      link: "/leaders",
     },
     {
       id: "challenges",
