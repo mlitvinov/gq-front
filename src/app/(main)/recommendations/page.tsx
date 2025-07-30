@@ -49,7 +49,7 @@ const RecommendationsPage = () => {
       }
 
       // Запрашиваем текущее видео
-      const response = await fetch("https://getquest.tech/api/feed/current", {
+      const response = await fetch("https://isoslf.club/api/feed/current", {
         method: "GET",
         headers,
       });
@@ -66,7 +66,7 @@ const RecommendationsPage = () => {
           setDescription(videoData.description);
 
           // Получаем URL для скачивания видео
-          const videoUrl = `https://getquest.tech/api/videos/download?fileId=${videoData.videoUrl}`;
+          const videoUrl = `https://isoslf.club/api/videos/download?fileId=${videoData.videoUrl}`;
 
           setVideoSrc(videoUrl);
           setPage((p) => p + 1);
@@ -133,7 +133,7 @@ const RecommendationsPage = () => {
         headers.initData = initDataRaw;
       }
 
-      const response = await fetch(`https://getquest.tech/api/feed/like?videoId=${videoId}`, {
+      const response = await fetch(`https://isoslf.club/api/feed/like?videoId=${videoId}`, {
         method: "POST",
         headers,
       });
@@ -162,7 +162,7 @@ const RecommendationsPage = () => {
         headers.initData = initDataRaw;
       }
 
-      const response = await fetch(`https://getquest.tech/api/feed/dislike?videoId=${videoId}`, {
+      const response = await fetch(`https://isoslf.club/api/feed/dislike?videoId=${videoId}`, {
         method: "POST",
         headers,
       });
